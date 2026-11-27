@@ -2,6 +2,7 @@
 
 > **누구를 위한 문서인가**: 프론트엔드는 해 봤지만 배포는 처음인 사람. 위에서부터 순서대로 따라 하면 된다.
 > **기준 시점**: 2026-11-27. 대시보드(Vercel·Supabase·Google)의 메뉴 이름은 가끔 바뀐다 — 이름이 다르면 **같은 뜻의 메뉴**를 찾으면 된다.
+> **보기 좋은 HTML판**: 같은 폴더의 `setup-and-release.html`을 더블클릭하면 브라우저에서 열린다(목차·코드 복사 버튼). 이 md가 정본이고, md를 고친 뒤 `node scripts/docs-to-html.mjs docs/setup-and-release.md docs/setup-and-release.html`로 다시 만든다.
 > **비밀값은 이 문서에 없다.** 「어디서 찾는지」만 적는다. 이 문서는 GitHub에 올라가므로 여기에 키·비밀번호를 적지 않는다.
 
 각 단계는 같은 모양이다.
