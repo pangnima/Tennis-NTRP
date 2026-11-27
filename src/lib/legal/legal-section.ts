@@ -13,7 +13,9 @@ export type LegalSection = {
 }
 
 /** 시행일 — 본문을 고치면 함께 올린다(두 문서 공통) */
-export const LEGAL_EFFECTIVE_DATE = '2026-09-17'
+// 2026-12-04: 개인정보처리방침 개정 — 2조(성별·등급을 다른 회원에게 표시, 11-26 작성) + 비회원 참가자·초대 링크로 보이는 범위(0108, 11-27).
+// 방침 9조에 따라 시행 7일 전(11-27)부터 공지가 필요하다. 아직 prod에 공지하기 전이라 두 개정을 한 번에 묶었다
+export const LEGAL_EFFECTIVE_DATE = '2026-12-04'
 
 /** 서비스 이름 — 두 문서가 같은 이름을 부른다 */
 export const SERVICE_NAME = 'BASELINE'

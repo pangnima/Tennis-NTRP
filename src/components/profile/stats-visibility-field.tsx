@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { Switch } from '@/components/ui/switch'
-import { FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
 /** 전적 통계 공개 여부 — 스위치 + 폼에 실리는 hidden input(`stats_hidden`) */
 export function StatsVisibilityField({ initialHidden }: { initialHidden: boolean }) {

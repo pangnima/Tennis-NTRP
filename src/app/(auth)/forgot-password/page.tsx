@@ -5,7 +5,7 @@ import { BrandLogo } from '@/components/common/brand-logo'
 import { mapResetQueryError } from '@/lib/auth/auth-error-messages'
 import { PASSWORD_RESET_MAIL_ENABLED } from '@/lib/auth/password-reset-mode'
 
-const linkCls = 'text-foreground hover:text-foreground/80 underline underline-offset-2 transition-colors'
+const linkCls = 'text-foreground hover:text-primary underline underline-offset-2 transition-colors'
 
 /**
  * 비밀번호 찾기. 메일 재설정이 켜져 있으면 「아이디」 폼, 꺼져 있으면(도메인·SMTP 준비 전)

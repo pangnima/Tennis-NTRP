@@ -17,8 +17,8 @@ import { validatePassword, WEAK_PASSWORD_NOTICE } from '@/lib/auth/password-poli
 import { LOGIN_ID_TAKEN_MESSAGE, normalizeLoginId, validateLoginId } from '@/lib/auth/login-id'
 import { parseFindIdResult, type FindIdResult } from '@/lib/auth/find-id'
 import { PASSWORD_RESET_MAIL_ENABLED } from '@/lib/auth/password-reset-mode'
-import { personalNavHref } from '@/lib/nav-items'
-import { WELCOME_NOTICE } from '@/lib/onboarding'
+import { resolveInviteLanding } from '@/lib/matches/invite-landing'
+import { HOME_PATH, statsHref } from '@/lib/nav-items'
 
 /**
  * 로그인 칸의 값을 signInWithPassword가 받을 이메일로 바꾼다.
@@ -83,9 +83,10 @@ export async function loginAction(
     const next = formData.get('next') as string | null
     // Supabase 최소 길이 설정을 넘지 못하는 옛 비밀번호는 로그인은 되지만 weakPassword가 실려 온다(Week 60).
     // 강제하지 않고 착지 화면에서 한 줄 안내한다 — next가 있으면 가려던 곳이 우선이다(초대 링크 복귀).
-    const weakSuffix = data.weakPassword ? `&notice=${WEAK_PASSWORD_NOTICE}` : ''
-    const fallback = data.user ? `/profile/${data.user.id}?scope=personal${weakSuffix}` : '/login'
-    const dest = isSafeNext(next) ? next : fallback
+    // 약한 비밀번호 안내는 통계 화면이 그린다 — 그때만 그리로 보내고, 평소 착지는 홈이다
+    const fallback = !data.user ? '/login' : data.weakPassword ? `${statsHref(data.user.id)}?notice=${WEAK_PASSWORD_NOTICE}` : HOME_PATH
+    // 가려던 곳이 초대 링크면 여기서 참가시키고 매칭 주소로 보낸다(주소창에 초대 주소가 남지 않게 — `resolveInviteLanding`)
+    const dest = isSafeNext(next) && data.user ? await resolveInviteLanding(supabase, next) : fallback
 
     revalidatePath('/', 'layout')
     redirect(dest)
@@ -227,8 +228,12 @@ export async function signupAction(
 
     // 착지는 로그인·소셜 완성과 같은 프로필(체크리스트가 다음 행동을 말한다) + 환영 배너 1회(F-pre-4·U-6).
     // 옛 착지 /clubs는 동결된 더미 클럽 목록이라 신규 회원의 첫 화면이 픽스처였다.
+    // 가입 전 가려던 내부 경로가 있으면 그곳으로(0108 — 초대 링크로 와서 가입한 사람이 그 매칭에 바로 참가하게).
+    // 로그인의 `next`와 같은 규칙이다(오픈 리다이렉트 방지: 내부 경로만).
+    const next = formData.get('next')
+    const dest = typeof next === 'string' && isSafeNext(next) && data.user ? await resolveInviteLanding(supabase, next) : HOME_PATH
     revalidatePath('/', 'layout')
-    redirect(data.user ? `${personalNavHref(data.user.id)}&notice=${WELCOME_NOTICE}` : '/login')
+    redirect(data.user ? dest : '/login')
 }
 
 export async function logoutAction() {
@@ -247,18 +252,6 @@ export async function deleteAccountAction(): Promise<{ error: string } | null> {
         data: { user },
     } = await supabase.auth.getUser()
     if (!user) return { error: '로그인이 필요합니다' }
-
-    // 소유한 클럽이 있으면 탈퇴 불가 (clubs.owner_id ON DELETE RESTRICT 및 클럽 탈퇴 정책과 일관)
-    const { count: ownedClubs } = await supabase
-        .from('clubs')
-        .select('id', { count: 'exact', head: true })
-        .eq('owner_id', user.id)
-    if (ownedClubs && ownedClubs > 0) {
-        return { error: '소유한 클럽을 먼저 삭제하거나 양도해야 탈퇴할 수 있습니다.' }
-    }
-
-    // 모든 클럽에서 탈퇴 (본인 멤버십 행 전부 삭제)
-    await supabase.from('club_members').delete().eq('user_id', user.id)
 
     // 개인정보 익명화 + 탈퇴 마킹. 과거 경기/레이팅의 player id는 보존되어 '탈퇴한 회원'으로 표시된다.
     const { error } = await supabase

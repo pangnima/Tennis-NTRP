@@ -1,16 +1,12 @@
 import { YearMonthField } from '@/components/common/year-month-field'
+import { PRESS_HEIGHT } from '@/components/common/action-button-class'
+import { FIELD_LABEL as labelCls, FIELD_READONLY as readonlyFieldCls } from '@/components/common/field-class'
 import { formatYearMonthLabel } from '@/lib/format/year-month'
 import { GENDER_OPTIONS, HAND_OPTIONS } from '@/lib/profile/signup-fields'
-import { FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
-// 변경 불가 필드 표시용 (입력 불가, 회색 톤)
-const readonlyFieldCls = [
-    'w-full rounded-lg px-3 py-3 text-body2 text-muted-foreground',
-    'bg-muted/50 border border-input',
-].join(' ')
-
-const toggleBase = 'py-2 text-caption rounded-md border text-center cursor-default pointer-events-none'
-const toggleActive = 'border-primary/40 bg-primary/5 text-primary/60 font-semibold'
+// 변경 불가 토글 — 고를 수 있는 토글(FieldToggle)과 같은 높이(lg 44px)
+const toggleBase = `${PRESS_HEIGHT.lg} flex items-center justify-center text-body2 rounded-md border cursor-default pointer-events-none`
+const toggleActive = 'border-primary/40 bg-primary/5 text-foreground font-semibold'
 const toggleInactive = 'border-border text-muted-foreground'
 
 type Props = {
@@ -56,13 +52,13 @@ export function ProfileReadonlyFields({ gender, dominantHand, tennisStartDate, n
                     {/* null을 '남성'으로 그리면 고른 적 없는 값을 고른 것처럼 단언하게 된다 */}
                     {gender
                         ? <ReadonlyToggle options={GENDER_OPTIONS} current={gender} />
-                        : <div className={readonlyFieldCls}>미입력</div>}
+                        : <div className={`${readonlyFieldCls} text-muted-foreground`}>미입력</div>}
                 </div>
                 <div>
                     <ReadonlyLabel>주력손</ReadonlyLabel>
                     {dominantHand
                         ? <ReadonlyToggle options={HAND_OPTIONS} current={dominantHand} />
-                        : <div className={readonlyFieldCls}>미입력</div>}
+                        : <div className={`${readonlyFieldCls} text-muted-foreground`}>미입력</div>}
                 </div>
             </div>
 
@@ -83,7 +79,7 @@ export function ProfileReadonlyFields({ gender, dominantHand, tennisStartDate, n
                 )}
                 <div>
                     <ReadonlyLabel>NTRP</ReadonlyLabel>
-                    <div className={readonlyFieldCls}>{ntrp != null ? ntrp.toFixed(1) : '미입력'}</div>
+                    <div className={ntrp != null ? readonlyFieldCls : `${readonlyFieldCls} text-muted-foreground`}>{ntrp != null ? ntrp.toFixed(1) : '미입력'}</div>
                 </div>
             </div>
         </>

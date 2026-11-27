@@ -1,5 +1,4 @@
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 import { PROVISIONAL_THRESHOLD } from '@/lib/rating/constants'
 
 export type RatingSummary = {
@@ -29,13 +28,13 @@ function buildProvisionalHint(matchesPlayed?: number): string {
     return `정착까지 ${remaining}경기 더 필요 · 현재 ${matchesPlayed}/${PROVISIONAL_THRESHOLD}경기 (개인 경기가 쌓이면 확정값으로 전환)`
 }
 
-// 레이팅 단일 칩. 잠정(경기 수 부족)이면 흐리게 + 물결(~) + '잠정' 라벨로 추정값임을 알린다.
+// 레이팅 단일 칩. 잠정(경기 수 부족)이면 물결(~) + '잠정' 라벨로 추정값임을 알린다(값을 흐리게 하지 않는다).
 function RatingChip({ label, value, provisional, matchesPlayed }: ChipProps) {
     const hint = provisional ? buildProvisionalHint(matchesPlayed) : undefined
     return (
         <Badge
             variant="outline"
-            className={cn('gap-1 text-caption font-normal', provisional && 'opacity-70')}
+            className="gap-1 text-caption font-normal"
             title={hint}
             aria-label={hint ? `${label} ${value} — ${hint}` : undefined}
         >
@@ -45,7 +44,7 @@ function RatingChip({ label, value, provisional, matchesPlayed }: ChipProps) {
                 {value}
             </span>
             {provisional && (
-                <span className="text-caption font-normal text-muted-foreground" aria-hidden>
+                <span className="text-micro text-spot" aria-hidden>
                     잠정
                 </span>
             )}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { requestPasswordResetAction } from '@/lib/actions/auth'
 import { TextField } from '@/components/common/text-field'
 
@@ -11,7 +11,7 @@ export function ForgotPasswordForm() {
     // 전송 성공 시 폼 대신 안내 문구만 노출 (계정 존재 여부는 노출하지 않음)
     if (state?.success) {
         return (
-            <div className="rounded-md border border-border bg-muted/40 px-4 py-5 text-body text-foreground/80">
+            <div className="rounded-md border border-border bg-muted/40 px-4 py-5 text-body text-foreground">
                 입력한 정보가 가입되어 있다면 가입한 이메일로 비밀번호 재설정 링크를 보냈습니다.
                 메일함을 확인해 주세요.
             </div>
@@ -32,9 +32,9 @@ export function ForgotPasswordForm() {
                 </p>
             )}
 
-            <Button variant="accent" type="submit" disabled={isPending} className="w-full h-11 font-semibold">
+            <ActionButton variant="solid" size="lg" type="submit" disabled={isPending} className="w-full">
                 {isPending ? '전송 중...' : '재설정 링크 보내기'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

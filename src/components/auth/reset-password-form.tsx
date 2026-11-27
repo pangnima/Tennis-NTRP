@@ -1,13 +1,13 @@
 'use client'
 
 import { useActionState, useState } from 'react'
+import { fieldClass, FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { Eye, EyeOff } from 'lucide-react'
 
 import { PasswordRulesHint } from '@/components/auth/password-rules-hint'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { resetPasswordAction } from '@/lib/actions/auth'
 import { PASSWORD_MIN_LEN } from '@/lib/auth/password-policy'
-import { FORM_INPUT_BASE as inputCls, FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 import { TextField } from '@/components/common/text-field'
 import { cn } from '@/lib/utils'
 
@@ -28,7 +28,7 @@ export function ResetPasswordForm() {
                         placeholder="영문·숫자·특수문자"
                         required minLength={PASSWORD_MIN_LEN} autoComplete="new-password"
                         value={password} onChange={(e) => setPassword(e.target.value)}
-                        className={cn(inputCls, 'pr-10')}
+                        className={cn(fieldClass(), 'pr-10')}
                     />
                     <button
                         type="button"
@@ -56,9 +56,9 @@ export function ResetPasswordForm() {
                 </p>
             )}
 
-            <Button variant="accent" type="submit" disabled={isPending} className="w-full h-11 font-semibold">
+            <ActionButton variant="solid" size="lg" type="submit" disabled={isPending} className="w-full">
                 {isPending ? '변경 중...' : '비밀번호 변경'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

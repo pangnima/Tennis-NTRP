@@ -475,22 +475,18 @@ export type MatchRequest = {
     groupSeq?: number
 }
 
-// ── 알림 (0094, Week 71) ──────────────────────────────────────────────────────
+// ── 알림 (0094 테이블 · 0096 타입, Week 72) ─────────────────────────────────────
 // DB `notifications.type` CHECK와 1:1. 문구·링크는 lib/notifications/labels.ts가 단일 출처.
 export const NOTIFICATION_TYPES = [
-    // 사건 — 트리거·RPC가 즉시 방출
-    'room_invited', 'invite_accepted', 'invite_declined', 'room_entered',
-    'member_removed', 'member_left',
-    'result_proposed', 'result_confirmed', 'result_auto_confirmed', 'result_disputed', 'result_reopen_requested',
-    'room_closed', 'lineup_saved', 'lineup_changed', 'room_deleted', 'invite_expired',
-    // 예약 — 0095 run_notification_jobs(pg_cron)가 시각에 맞춰 방출
-    'invite_reminder', 'room_tomorrow', 'result_missing', 'auto_confirm_reminder', 'reentry_reminder',
+    'match_added', 'match_joined', 'match_left', 'match_confirmed', 'match_deleted', 'match_tomorrow',
+    'match_applied', 'match_approved', 'match_declined', 'match_removed',
+    'game_recorded', 'game_updated', 'game_deleted',
 ] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
 
 /**
- * 알림 payload — DB `room_snapshot` + `actorName` + 타입별 키. 전부 **스냅샷**이라 방·사람이 지워져도 문구가 선다.
- * 키 이름은 `RoomTitleInput`과 맞춰 두어 `buildRoomTitle(payload)`가 변환 없이 읽는다.
+ * 알림 payload — 매칭 스냅샷 + `actorName` + 타입별 키. 전부 **스냅샷**이라 매칭·사람이 지워져도 문구가 선다.
+ * 키 이름은 `matchTitle`의 입력과 맞춰 두어 변환 없이 읽는다.
  */
 export type NotificationPayload = {
     playedAt?: string
@@ -500,26 +496,88 @@ export type NotificationPayload = {
     courtName?: string
     hostName?: string
     actorName?: string
-    /** invite_expired — 응답하지 않은 사람 */
-    inviteeName?: string
-    /** result_proposed — 제안자 본인의 수정(재제안) */
-    revised?: boolean
-    /** invite_reminder — 1 = 시작 2시간 전, 2 = 시작 시각 */
-    stage?: 1 | 2
-    /** auto_confirm_reminder — 자동 확정 예정 시각(ISO) */
-    deadlineAt?: string
-    disputeReason?: string
-    /** lineup_saved / lineup_changed */
-    gameCount?: number
+    /** match_confirmed — 호스트가 아니라 종료 7일 뒤 자동으로 확정됐다 */
+    auto?: boolean
+    /** match_declined — 신청이 취소된 이유(0101): 모집 마감 · 비공개 전환. 없으면 호스트의 거절 */
+    reason?: 'closed' | 'private'
+    /** match_joined — 회원이 아니라 **비회원**이 명단에 올랐다(0108). 참가자가 넣었으면 actorName이 그 사람 */
+    guestName?: string
+    /** match_joined + guestName — 비회원이 초대 링크로 스스로 등록했다 */
+    viaLink?: boolean
 }
 
 export type Notification = {
     id: string
     type: NotificationType
-    roomId: string | null
-    requestId: string | null
+    matchId: string | null
+    gameId: string | null
     actorUserId: string | null
     payload: NotificationPayload
     createdAt: string
     readAt: string | null
+}
+
+// ── 게임·매칭 (0096 재구축 — 게임 1건 = 1행, 관점은 읽을 때 만든다) ──────────
+
+/** 세트 하나 = 통계의 게임 하나. t1Ad/t2Ad = 그 팀에서 애드(백) 코트에 선 사람의 slot — 복식만, 미지정은 undefined. */
+export type GameSet = { t1: number; t2: number; t1Ad?: 1 | 2; t2Ad?: 1 | 2 }
+
+export type GamePlayer = {
+    team: 1 | 2
+    slot: 1 | 2            // 단식은 언제나 1
+    userId?: string        // 없으면 비회원(이름이 정체성)
+    name: string           // 회원이면 기록 시점 이름 스냅샷
+    hand?: 'right' | 'left'
+    ntrp?: number          // 기록 시점 스냅샷
+    gender?: 'male' | 'female'  // 비회원만(0107) — 회원의 성별은 프로필이 정본
+    deleted?: boolean      // 탈퇴한 회원 — 이름은 스냅샷 그대로, 화면은 배지만
+}
+
+export type Game = {
+    id: string
+    matchId?: string       // 없으면 매칭 없이 직접 기록
+    createdBy: string
+    matchType: MatchType
+    playedAt: string       // "2026-11-25"
+    playedTime?: string    // "18:00"
+    /** 직접 기록의 길이(분, 0105) — 매칭 게임은 매칭의 값을 읽는다 */
+    durationMinutes?: number
+    surface?: CourtSurface
+    courtName?: string
+    /** 직접 기록의 코트 번호(0105) */
+    courtNo?: string
+    notes?: string
+    /** 스코어 — **한 줄에 하나**(0105). 비어 있으면 매칭의 예정 게임 */
+    sets: GameSet[]
+    players: GamePlayer[]
+    updatedBy?: string     // 마지막으로 고친 사람(생성만 했으면 없음)
+    updatedByName?: string
+    updatedAt?: string
+    locked: boolean        // 매칭 최종 확정 또는 게임 잠금 — 수정·삭제 불가
+    createdAt: string
+}
+
+export type TennisMatch = {
+    id: string
+    hostId: string
+    /** 방 제목(0101) — 새 매칭은 필수, 그 전 매칭은 없다(`displayMatchTitle`이 종목으로 대신 부른다) */
+    title?: string
+    matchType: MatchType
+    playedAt: string
+    playedTime?: string
+    durationMinutes: number
+    surface?: CourtSurface
+    courtName?: string
+    /** 코트 번호(0102, 선택) — 「3」「3, 4」「A」. 표시는 `formatCourt` */
+    courtNo?: string
+    /** 코트 비용 총액(원, 0104) — 선택. 화면이 정원으로 나눠 1인당 금액을 보여 준다 */
+    courtFee?: number
+    /** 정원(0104, 호스트 포함) — 차면 신청·입장을 막는다 */
+    capacity: number
+    notes?: string
+    isListed: boolean
+    confirmedAt?: string   // 호스트 최종 확정 시각 — 있으면 게임이 잠긴다
+    /** 모집 마감 시각(0101) — 매칭 상태가 아니라 모집 여부다. 있으면 신청·입장을 받지 않는다 */
+    closedAt?: string
+    createdAt: string
 }

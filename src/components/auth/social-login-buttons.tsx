@@ -1,7 +1,6 @@
 import { signInWithOAuthAction } from '@/lib/actions/auth'
 import { GoogleMark } from '@/components/auth/provider-marks'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { ActionButton } from '@/components/common/action-button'
 
 type Props = {
     /**
@@ -28,13 +27,10 @@ export function SocialLoginButtons({ next }: Props) {
                 <form key={provider.id} action={signInWithOAuthAction}>
                     <input type="hidden" name="provider" value={provider.id} />
                     {next && <input type="hidden" name="next" value={next} />}
-                    <button
-                        type="submit"
-                        className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full h-11 gap-2')}
-                    >
+                    <ActionButton type="submit" size="lg" className="w-full gap-2">
                         <GoogleMark />
                         {provider.label}
-                    </button>
+                    </ActionButton>
                 </form>
             ))}
         </div>

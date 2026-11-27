@@ -1,0 +1,108 @@
+import { describe, expect, it } from 'vitest'
+
+import type { Game, TennisMatch } from '@/types'
+
+import {
+    filterSessions, formatTally, gameOutcome, gameRole, groupGamesIntoSessions, groupSessionsByMonth, parseGameFilter, sessionKey, sessionTally,
+    sessionWhen,
+} from './list'
+
+type Opts = { doubles?: boolean; meTeam?: 1 | 2; matchId?: string; time?: string; court?: string; no?: string; duration?: number; createdAt?: string }
+const game = (id: string, playedAt: string, t1: number, t2: number, o: Opts = {}): Game => {
+    const meTeam = o.meTeam ?? 1
+    return {
+        id, createdBy: 'me', matchId: o.matchId, matchType: o.doubles ? 'men_doubles' : 'singles', playedAt, playedTime: o.time,
+        durationMinutes: o.duration, courtName: o.court, courtNo: o.no, sets: [{ t1, t2 }],
+        players: [{ team: meTeam, slot: 1, userId: 'me', name: '나' }, { team: meTeam === 1 ? 2 : 1, slot: 1, name: '상대' }],
+        locked: false, createdAt: o.createdAt ?? id,
+    }
+}
+const match = (id: string, hostId: string, over: Partial<TennisMatch> = {}): TennisMatch => ({
+    id, hostId, title: `${id} 제목`, matchType: 'men_doubles', playedAt: '2026-11-26', playedTime: '20:00', durationMinutes: 120,
+    courtName: '양재 시민의숲', courtNo: '3', surface: 'hard', capacity: 4, isListed: true, createdAt: '', ...over,
+})
+
+describe('gameOutcome — 한 게임의 승패(스코어 하나)', () => {
+    it('내 팀 기준', () => {
+        expect(gameOutcome(game('a', '2026-11-25', 6, 4), 'me')).toBe('win')
+        expect(gameOutcome(game('a', '2026-11-25', 6, 4, { meTeam: 2 }), 'me')).toBe('loss')
+        expect(gameOutcome(game('a', '2026-11-25', 5, 5), 'me')).toBe('draw')
+    })
+    it('뛰지 않은 게임은 null', () => expect(gameOutcome(game('a', '2026-11-25', 6, 4), 'other')).toBeNull())
+})
+
+describe('묶음 — 매칭 게임은 같은 매칭, 직접 기록은 같은 날짜·시각·코트·종목', () => {
+    // 최신순으로 들어온다(get_user_games)
+    const games = [
+        game('m4', '2026-11-26', 7, 5, { doubles: true, matchId: 'm1', createdAt: '4' }),
+        game('m3', '2026-11-26', 4, 6, { doubles: true, matchId: 'm1', createdAt: '3' }),
+        game('m2', '2026-11-26', 6, 3, { doubles: true, matchId: 'm1', createdAt: '2' }),
+        game('m1', '2026-11-26', 6, 4, { doubles: true, matchId: 'm1', createdAt: '1' }),
+        game('d2', '2026-11-25', 2, 6, { time: '16:00', court: '목동 실내코트', duration: 90, createdAt: '6' }),
+        game('d1', '2026-11-25', 6, 3, { time: '16:00', court: '목동실내코트', duration: 90, createdAt: '5' }),
+        game('d3', '2026-11-25', 6, 0, { time: '16:00', court: '목동 실내코트', no: '2', createdAt: '7' }),
+        game('g1', '2026-10-30', 6, 4, { matchId: 'm2', createdAt: '0' }),
+    ]
+    const matches = new Map([['m1', match('m1', 'me')], ['m2', match('m2', 'someone', { title: undefined, matchType: 'singles', playedAt: '2026-10-30' })]])
+    const sessions = groupGamesIntoSessions(games, matches, new Set(['m1']))
+
+    it('묶음은 최신순, 묶음 안은 1게임부터', () => {
+        expect(sessions.map((s) => [s.key, s.games.map((g) => g.id)])).toEqual([
+            ['m:m1', ['m1', 'm2', 'm3', 'm4']],
+            ['d|2026-11-25|16:00|목동실내코트||singles', ['d1', 'd2']],
+            ['d|2026-11-25|16:00|목동실내코트|2|singles', ['d3']],
+            ['m:m2', ['g1']],
+        ])
+    })
+    it('매칭 묶음은 매칭의 제목·일시·길이·코트 번호, 구분은 호스트/게스트', () => {
+        expect(sessions[0]).toMatchObject({ kind: 'match', title: 'm1 제목', durationMinutes: 120, courtNo: '3', role: 'host' })
+        expect(sessions[3]).toMatchObject({ role: 'guest', title: undefined })
+        expect(sessions[1]).toMatchObject({ kind: 'direct', role: 'direct', durationMinutes: 90 })
+    })
+    it('일시 — 길이가 있으면 시작~종료, 없으면 시작만', () => {
+        expect(sessionWhen(sessions[0])).toBe('11.26 (목) 20:00~22:00')
+        expect(sessionWhen(sessions[1])).toBe('11.25 (수) 16:00~17:30')
+        expect(sessionWhen(sessions[2])).toBe('11.25 (수) 16:00')
+        expect(sessionWhen({ playedAt: '2026-11-25' })).toBe('11.25 (수)')
+    })
+    it('내 전적 — 「4게임 3승 1패」', () => {
+        expect(formatTally(sessionTally(sessions[0], 'me'))).toBe('4게임 3승 1패')
+        expect(formatTally(sessionTally(sessions[1], 'me'))).toBe('2게임 1승 1패')
+        expect(formatTally(sessionTally(sessions[2], 'me'))).toBe('1게임 1승')
+    })
+    it('거르기 — 구분·종목은 묶음, 승패는 게임 단위(빈 묶음은 뺀다)', () => {
+        const ids = (f: Partial<Parameters<typeof filterSessions>[2]>) =>
+            filterSessions(sessions, 'me', { type: 'all', result: 'all', role: 'all', ...f }).map((s) => s.games.map((g) => g.id).join('+'))
+        expect(ids({ role: 'host' })).toEqual(['m1+m2+m3+m4'])
+        expect(ids({ role: 'direct' })).toEqual(['d1+d2', 'd3'])
+        expect(ids({ type: 'doubles' })).toEqual(['m1+m2+m3+m4'])
+        expect(ids({ result: 'loss' })).toEqual(['m3', 'd2'])
+        expect(ids({ role: 'guest', result: 'loss' })).toEqual([])
+    })
+    it('월로 묶고 게임 수를 센다', () => {
+        expect(groupSessionsByMonth(sessions).map((g) => [g.label, g.sessions.length, g.games])).toEqual([['2026년 11월', 3, 7], ['2026년 10월', 1, 1]])
+    })
+    it('매칭을 못 읽으면 게임의 값으로', () => {
+        const [s] = groupGamesIntoSessions([games[0]], new Map(), new Set())
+        expect(s).toMatchObject({ playedAt: '2026-11-26', role: 'guest', title: undefined, durationMinutes: undefined })
+    })
+})
+
+describe('gameRole · sessionKey · parseGameFilter', () => {
+    it('매칭이 없으면 직접 기록, 내가 호스트인 매칭이면 호스트, 아니면 게스트', () => {
+        const hosted = new Set(['mine'])
+        expect(gameRole(game('a', '2026-11-25', 6, 4, { matchId: 'mine' }), hosted)).toBe('host')
+        expect(gameRole(game('a', '2026-11-25', 6, 4, { matchId: 'theirs' }), hosted)).toBe('guest')
+        expect(gameRole(game('a', '2026-11-25', 6, 4), hosted)).toBe('direct')
+    })
+    it('직접 기록의 키 — 띄어쓰기만 다른 코트는 같은 묶음, 종목이 다르면 다른 묶음', () => {
+        const ref = { playedAt: '2026-11-25', playedTime: '16:00:00', courtName: '양재 시민의숲', matchType: 'singles' as const }
+        expect(sessionKey(ref)).toBe(sessionKey({ ...ref, playedTime: '16:00', courtName: '양재시민의숲' }))
+        expect(sessionKey(ref)).not.toBe(sessionKey({ ...ref, matchType: 'men_doubles' }))
+        expect(sessionKey({ ...ref, matchId: 'm9' })).toBe('m:m9')
+    })
+    it('주소의 모르는 값은 전체', () => {
+        expect(parseGameFilter({ type: 'x', result: 'y', role: 'z' })).toEqual({ type: 'all', result: 'all', role: 'all' })
+        expect(parseGameFilter({ type: 'doubles', result: 'win', role: 'direct' })).toEqual({ type: 'doubles', result: 'win', role: 'direct' })
+    })
+})

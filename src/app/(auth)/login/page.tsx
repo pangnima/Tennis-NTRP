@@ -24,7 +24,7 @@ export default async function LoginPage({
                     <p className="mt-2 text-body2 text-muted-foreground">
                         계정이 없으신가요?{' '}
                         <Link
-                            href="/signup"
+                            href={safeNext ? `/signup?next=${encodeURIComponent(safeNext)}` : '/signup'}
                             className="font-semibold text-foreground underline underline-offset-2 hover:opacity-80"
                         >
                             회원가입

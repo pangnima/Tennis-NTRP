@@ -8,7 +8,7 @@ import { ADMIN_CONTACT_EMAIL } from '@/lib/auth/password-reset-mode'
  */
 export function PasswordResetContactNotice() {
     return (
-        <div className="rounded-md border border-border bg-muted/40 px-4 py-5 space-y-4 text-body text-foreground/80">
+        <div className="rounded-md border border-border bg-muted/40 px-4 py-5 space-y-4 text-body text-foreground">
             <p className="break-keep">
                 지금은 이메일로 비밀번호를 재설정하는 기능을 준비 중입니다.
                 <span className="font-semibold text-foreground"> 운영자에게 문의</span>하시면 임시 비밀번호로 초기화해 드립니다.

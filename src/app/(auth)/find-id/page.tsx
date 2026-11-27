@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { FindIdForm } from '@/components/auth/find-id-form'
 import { BrandLogo } from '@/components/common/brand-logo'
 
-const linkCls = 'text-foreground hover:text-foreground/80 underline underline-offset-2 transition-colors'
+const linkCls = 'text-foreground hover:text-primary underline underline-offset-2 transition-colors'
 
 /**
  * 아이디 찾기(0086) — 이름 + 이메일이 맞으면 마스킹된 아이디를 보여준다. 메일을 보내지 않는다.

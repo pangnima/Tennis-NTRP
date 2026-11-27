@@ -1,4 +1,5 @@
-import { CARD_BASE, FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
+import { CARD_BASE } from '@/lib/dashboard/tokens'
+import { FIELD_LABEL as labelCls } from '@/components/common/field-class'
 
 type Props = {
     /** '구글' 같은 문장용 이름 */

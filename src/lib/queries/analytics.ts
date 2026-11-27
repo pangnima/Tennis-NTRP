@@ -1,13 +1,13 @@
 import 'server-only'
 
-import { fetchMatchesByUser } from '@/lib/queries/match-games'
-import { fetchPersonalMatchesByUser, fetchPublicPersonalMatchesByUser } from '@/lib/queries/personal-matches'
+import { toPersonalMatches } from '@/lib/games/perspective'
+import { fetchUserGames } from '@/lib/queries/games'
 import { explodePersonalMatchSets } from '@/lib/personal-matches/explode'
 import { buildUserMap, extractUnifiedH2hIds } from '@/lib/queries/_shared'
 import { aggregateByMatchType, toQuadStats, type QuadStats } from '@/lib/analytics/match-type'
 import { buildHeadToHeadList } from '@/lib/analytics/head-to-head'
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
-import type { Match, PersonalMatch, User } from '@/types'
+import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
+import type { CourtSurface, Match, PersonalMatch, User } from '@/types'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 
 // ── scope 타입 ────────────────────────────────────────────────────────────
@@ -34,9 +34,10 @@ export type AnalyticsBundle = {
     h2hList: UnifiedHeadToHead[]
     // 카드 집계용 원본 (scope 적용 완료 상태)
     matches: Match[]
-    gameMetaById: Awaited<ReturnType<typeof fetchMatchesByUser>>['gameMetaById']
-    courtSurfaceByMatchId: Awaited<ReturnType<typeof fetchMatchesByUser>>['courtSurfaceByMatchId']
-    matchTimeById: Awaited<ReturnType<typeof fetchMatchesByUser>>['matchTimeById']
+    // 아래 넷(matches 포함)은 클럽 대진표의 자리다 — 클럽이 없는 지금은 언제나 비어 있고, 집계 함수의 입력 모양만 지킨다
+    gameMetaById: Record<string, { id: string; name: string; date: string; clubId: string }>
+    courtSurfaceByMatchId: Record<string, CourtSurface | null>
+    matchTimeById: Record<string, string | null>
     // 표시용 원본 (레코드 1건 = 카드 1개)
     personalMatches: PersonalMatch[]
     // 통계용 분해본 (세트 1개 = 게임 1개). 집계·레이팅 경로 전용
@@ -47,30 +48,13 @@ export type AnalyticsBundle = {
 // ── 번들 fetch ────────────────────────────────────────────────────────────
 
 export async function fetchAnalyticsBundle(userId: string, options: AnalyticsOptions): Promise<AnalyticsBundle> {
-    const { scope, source = 'self' } = options
-
-    // 전체 매치를 한 번 fetch 후 JS로 scope 필터
-    const [{ matches: allMatches, gameMetaById, courtSurfaceByMatchId, matchTimeById }, personalMatches] = await Promise.all([
-        source === 'public'
-            ? Promise.resolve({ matches: [] as Match[], gameMetaById: {}, courtSurfaceByMatchId: {}, matchTimeById: {} } as Awaited<ReturnType<typeof fetchMatchesByUser>>)
-            : fetchMatchesByUser(userId),
-        source === 'public' ? fetchPublicPersonalMatchesByUser(userId) : fetchPersonalMatchesByUser(userId),
-    ])
-
-    // scope 분기: club → 해당 클럽 매치만, personal → 개인 매치만, total → 모두
-    let matches: Match[]
-    let filteredPersonalMatches: PersonalMatch[]
-
-    if (scope.kind === 'club') {
-        matches = allMatches.filter((m) => gameMetaById[m.matchGameId]?.clubId === scope.clubId)
-        filteredPersonalMatches = []
-    } else if (scope.kind === 'personal') {
-        matches = []
-        filteredPersonalMatches = personalMatches
-    } else {
-        matches = allMatches
-        filteredPersonalMatches = personalMatches
-    }
+    // 0096 — 게임은 한 번만 저장되고 관점은 여기서 만든다. 본인·타인 모두 get_user_games(통계 비공개·탈퇴면 빈 배열)
+    const filteredPersonalMatches = toPersonalMatches(await fetchUserGames(userId), userId)
+    void options
+    const matches: Match[] = []
+    const gameMetaById: AnalyticsBundle['gameMetaById'] = {}
+    const courtSurfaceByMatchId: AnalyticsBundle['courtSurfaceByMatchId'] = {}
+    const matchTimeById: AnalyticsBundle['matchTimeById'] = {}
 
     // 통계용 분해본: 세트 1개 = 게임 1개 (집계·레이팅 경로 전용)
     const personalGames = explodePersonalMatchSets(filteredPersonalMatches)

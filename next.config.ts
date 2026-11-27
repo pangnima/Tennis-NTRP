@@ -20,6 +20,16 @@ const nextConfig: NextConfig = {
             // 미들웨어가 로그인 상태면 프로필로 보낸다. /clubs는 해동 가능성이 있어 permanent가 아니다.
             { source: '/dashboard', destination: '/', permanent: true },
             { source: '/clubs/:path*', destination: '/', permanent: false },
+            // Week 72 재구축 — 옛 경로의 북마크·알림 링크가 404 대신 새 화면에 닿게
+            { source: '/match-rooms/new', destination: '/matches/new', permanent: false },
+            { source: '/match-rooms/:path*', destination: '/matches', permanent: false },
+            { source: '/me/match-rooms', destination: '/matches?tab=mine', permanent: false },
+            { source: '/me/match-requests', destination: '/matches?tab=mine', permanent: false },
+            { source: '/me/personal-matches/new', destination: '/record', permanent: false },
+            { source: '/me/personal-matches/:path*', destination: '/games', permanent: false },
+            { source: '/me/personal-matches', destination: '/games', permanent: false },
+            { source: '/me/analytics', destination: '/home', permanent: false },
+            { source: '/tiers', destination: '/', permanent: false },
         ]
     },
     /**

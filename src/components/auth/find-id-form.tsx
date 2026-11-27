@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { FindIdResultCard } from '@/components/auth/find-id-result'
 import { findLoginIdAction } from '@/lib/actions/auth'
 import { TextField } from '@/components/common/text-field'
@@ -32,9 +32,9 @@ export function FindIdForm() {
                 </p>
             )}
 
-            <Button variant="accent" type="submit" disabled={isPending} className="w-full h-11 font-semibold">
+            <ActionButton variant="solid" size="lg" type="submit" disabled={isPending} className="w-full">
                 {isPending ? '확인 중...' : '아이디 찾기'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

@@ -130,7 +130,7 @@
   --secondary: #e6edf2;  /* surface-2 — 인셋·헤더 */
   --secondary-foreground: #1d2d35;
   --muted: #e6edf2;
-  --muted-foreground: #5e7383; /* 보조 텍스트 — 배경 대비 ≈4.6:1 (WCAG AA 본문) */
+  --muted-foreground: #435562; /* 보조 텍스트(이름표·도움말) — 카드 ≈7.7:1 · 배경 ≈7.2:1 · 회색 바탕 ≈6.5:1. 값은 foreground로 쓴다(docs/color-system.md §5) */
   --accent: #e6edf2;
   --accent-foreground: #1d2d35;
   --border: #d3dde4;     /* 1px 에어라인 */
@@ -181,7 +181,7 @@
   --secondary: #1e2e38;  /* surface-2 */
   --secondary-foreground: #e6edf0;
   --muted: #1e2e38;
-  --muted-foreground: #8d9fa8; /* 카드 대비 ≈5.9:1 */
+  --muted-foreground: #a9b9c1; /* 보조 텍스트 — 카드 ≈8.0:1 · 배경 ≈9.3:1 · 회색 바탕 ≈6.9:1 */
   --accent: #1e2e38;
   --accent-foreground: #e6edf0;
   --border: #344854;     /* 카드 대비 ~1.7:1 — 시인성 확보 */

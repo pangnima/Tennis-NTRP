@@ -24,7 +24,7 @@ export function StrengthWeaknessCard({ diagnosis }: Props) {
                             {strengths.map((item, i) => (
                                 <li key={i} className="text-body2">
                                     <span className="font-medium text-foreground">{item.label}</span>
-                                    <span className="text-muted-foreground"> — {item.description}</span>
+                                    <span className="text-foreground"> — {item.description}</span>
                                 </li>
                             ))}
                         </ul>
@@ -37,7 +37,7 @@ export function StrengthWeaknessCard({ diagnosis }: Props) {
                             {weaknesses.map((item, i) => (
                                 <li key={i} className="text-body2">
                                     <span className="font-medium text-foreground">{item.label}</span>
-                                    <span className="text-muted-foreground"> — {item.description}</span>
+                                    <span className="text-foreground"> — {item.description}</span>
                                 </li>
                             ))}
                         </ul>

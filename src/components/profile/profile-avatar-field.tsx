@@ -1,13 +1,13 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { ImagePlus, Shuffle } from 'lucide-react'
 
 import { UserAvatar } from '@/components/common/user-avatar'
 import { useAvatarFile } from '@/components/auth/use-avatar-file'
 import { DEFAULT_AVATAR_PATHS } from '@/lib/default-images'
 import { AVATAR_ACCEPT, AVATAR_HINT } from '@/lib/profile/avatar-limits'
-import { FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
 const pillBtnCls = 'inline-flex items-center gap-1.5 text-caption border border-border rounded-full px-3 py-1.5 text-foreground hover:bg-muted hover:border-input transition-colors cursor-pointer'
 

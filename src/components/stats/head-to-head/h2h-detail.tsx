@@ -31,19 +31,19 @@ export function H2HDetail({ detail, myName, opponentDisplayName }: Props) {
 
             <div className="grid grid-cols-3 gap-2 text-center border-b border-border pb-4">
                 <div>
-                    <p className="text-body2 font-medium text-muted-foreground mb-2 truncate">{myName}</p>
+                    <p className="text-body2 font-medium text-foreground mb-2 truncate">{myName}</p>
                     <p className="text-h2 font-bold tabular-nums text-foreground">{detail.myWins}</p>
-                    <p className="text-body2 text-muted-foreground mt-1">승 ({detail.winRate}%)</p>
+                    <p className="text-body2 text-foreground mt-1">승 ({detail.winRate}%)</p>
                 </div>
                 <div className="flex flex-col items-center justify-center">
-                    <p className="text-caption text-muted-foreground mb-1">총 {detail.totalMatches}경기</p>
+                    <p className="text-caption text-foreground mb-1">총 {detail.totalMatches}경기</p>
                     <p className="text-h4 font-bold text-muted-foreground">vs</p>
-                    {detail.draws > 0 && <p className="text-caption text-muted-foreground mt-1">무 {detail.draws}</p>}
+                    {detail.draws > 0 && <p className="text-caption text-foreground mt-1">무 {detail.draws}</p>}
                 </div>
                 <div>
-                    <p className="text-body2 font-medium text-muted-foreground mb-2 truncate">{opponentDisplayName}</p>
+                    <p className="text-body2 font-medium text-foreground mb-2 truncate">{opponentDisplayName}</p>
                     <p className="text-h2 font-bold tabular-nums text-foreground">{detail.myLosses}</p>
-                    <p className="text-body2 text-muted-foreground mt-1">승 ({calcWinRate(detail.myLosses, detail.myWins) ?? 0}%)</p>
+                    <p className="text-body2 text-foreground mt-1">승 ({calcWinRate(detail.myLosses, detail.myWins) ?? 0}%)</p>
                 </div>
             </div>
 

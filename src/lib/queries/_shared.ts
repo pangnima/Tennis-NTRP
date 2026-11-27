@@ -2,7 +2,7 @@ import 'server-only'
 
 import { fetchUsersByIds } from '@/lib/queries/users'
 import type { Match, User } from '@/types'
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
+import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { HeadToHead, PartnerStat } from '@/lib/stats'
 
 /**

@@ -58,7 +58,7 @@ export function WinRateRing({ wins, losses, draws = 0, size = 148 }: Props) {
     const legend = [
         { label: '승', value: wins, dot: 'bg-win', text: 'text-win' },
         { label: '패', value: losses, dot: 'bg-loss', text: 'text-loss' },
-        ...(draws > 0 ? [{ label: '무', value: draws, dot: 'bg-muted-foreground', text: 'text-muted-foreground' }] : []),
+        ...(draws > 0 ? [{ label: '무', value: draws, dot: 'bg-muted-foreground', text: 'text-foreground' }] : []),
     ]
 
     return (

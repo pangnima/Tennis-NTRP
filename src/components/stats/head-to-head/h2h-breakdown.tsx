@@ -12,7 +12,7 @@ export function H2HAnalysisComment({ lines }: { lines: string[] }) {
             <p className={TYPO.caption}>분석</p>
             <p className="text-body2 text-foreground">{lines[0]}</p>
             {lines.slice(1).map((l, i) => (
-                <p key={i} className="text-body2 text-muted-foreground">· {l}</p>
+                <p key={i} className="text-body2 text-foreground">· {l}</p>
             ))}
         </div>
     )

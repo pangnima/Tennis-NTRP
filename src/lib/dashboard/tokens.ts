@@ -23,96 +23,88 @@ export const TYPO = {
     h2: 'text-h2 font-bold text-foreground',
     h3: 'text-h3 font-semibold text-foreground',
     h4: 'text-h4 font-semibold text-foreground',
+    // 값은 Strong·기본(둘 다 기본색 — 위계는 굵기로), Muted는 값이 아닌 설명·도움말 전용이다(글자색 두 단계 — TEXT_TONES)
+    bodyStrong: 'text-body font-semibold text-foreground',
     body: 'text-body text-foreground',
     bodyMuted: 'text-body text-muted-foreground',
+    body2Strong: 'text-body2 font-medium text-foreground',
     body2: 'text-body2 text-foreground',
     body2Muted: 'text-body2 text-muted-foreground',
-    caption: 'text-caption text-muted-foreground',
     captionStrong: 'text-caption font-medium text-foreground',
+    caption: 'text-caption text-muted-foreground',
+    /** 열 제목·필드 캡션 — 12px medium muted. 표의 머리 줄과 통계 수치의 이름표 */
+    label: 'text-caption font-medium text-muted-foreground',
     /** 소형 대문자 라벨(구 mono-label) — 12px caps + 넓은 자간 */
     eyebrow: 'text-caption font-medium tracking-eyebrow uppercase tabular-nums text-muted-foreground',
     /** 배지·카운트 전용 예외 11px */
     micro: 'text-micro font-medium leading-none',
 } as const
 
+/**
+ * 타이포 단계표 — `/styleguide`와 문서가 이 배열을 그대로 그린다(화면이 코드와 어긋날 수 없다).
+ * `use`가 **자리 규칙**이다: 크기는 자리가 정하고, 한 줄(행) 안에서는 크기 단계 하나만 쓴다(필·칩 제외).
+ */
+export const TYPO_SCALE: ReadonlyArray<{ token: keyof typeof TYPO; size: string; use: string }> = [
+    { token: 'display', size: '36→48px', use: '랜딩 최상단 카피' },
+    { token: 'h1', size: '28→36px', use: '페이지 제목 — PageHeader만' },
+    { token: 'h2', size: '24→28px', use: '문서형 화면(랜딩·가이드·약관)의 섹션' },
+    { token: 'h3', size: '20→24px', use: '앱 화면의 섹션 제목(h2 태그)' },
+    { token: 'h4', size: '18→20px', use: '카드·빈 상태·폼 그룹 제목' },
+    { token: 'bodyStrong', size: '16px', use: '모바일 카드의 주 정보' },
+    { token: 'body', size: '16px', use: '본문·폼 입력' },
+    { token: 'body2Strong', size: '14px', use: '목록(표) 행의 주 정보' },
+    { token: 'body2', size: '14px', use: '목록 행의 값(날짜·장소·숫자)·메뉴·버튼' },
+    { token: 'body2Muted', size: '14px', use: '설명·도움말 문장 — 값에는 쓰지 않는다' },
+    { token: 'captionStrong', size: '12px', use: '12px 자리의 값' },
+    { token: 'label', size: '12px', use: '열 제목·필드 이름표' },
+    { token: 'caption', size: '12px', use: '도움말·범례·눈금 — 값이 아닌 12px' },
+    { token: 'micro', size: '11px', use: '배지·카운트 전용(본문 금지)' },
+]
+
 // 칩 radius 4px(rounded-sm)
 export const PILL_BASE = 'inline-flex items-center text-caption px-2 py-0.5 rounded-sm border'
 // '승인 필요' 같은 주의 필 — 대기·주의는 spot(docs/color-system.md §4). 테두리형 필이라 클릭 대상에는 쓰지 않는다
-// (채움 CTA는 Button `accent` / CTA_LINK — 같은 옐로우지만 형태(테두리 vs 채움)로 갈린다)
+// (채움 버튼은 ActionButton `solid` — 같은 옐로우지만 형태(테두리 vs 채움)로 갈린다)
 export const ATTENTION_PILL = `${PILL_BASE} border-spot/50 text-spot`
-// 중립 필 — 상태를 말하지 않는 메타 칩(방식·비노출·진행도·손잡이). 열 곳이 같은 조합을 손으로 적고 있었다(Week 69)
-export const NEUTRAL_PILL = `${PILL_BASE} border-border text-muted-foreground`
+// 중립 필 — 색으로 뜻을 싣지 않는 칩(확정됨·비공개·진행 중·손잡이). 담긴 글자는 값이므로 기본색이다(테두리가 중립을 말한다)
+export const NEUTRAL_PILL = `${PILL_BASE} border-border text-foreground`
 // 목록 컨테이너 — 카드 안에서 행을 구분선으로 가른다(목록 화면·명단·라운드 묶음)
 export const LIST_CARD = `${CARD_BASE} divide-y divide-border`
-// 본문 안 텍스트 링크 — 색·밑줄만 든다. 크기는 자리마다 TYPO를 앞에 붙인다(채움 CTA는 CTA_LINK)
+// 본문 안 텍스트 링크 — 색·밑줄만 든다. 크기는 자리마다 TYPO를 앞에 붙인다(버튼은 ActionButton)
 export const TEXT_LINK = 'text-primary hover:underline'
 // 빈 상태도 데이터 카드(CARD_BASE)와 동일한 채워진 surface로 표시 — 라이트 모드 시인성.
 // break-keep: 한글이 글자 단위가 아닌 어절(띄어쓰기) 단위로 줄바꿈되도록.
 export const EMPTY_BLOCK =
     'rounded-lg border border-border bg-card text-muted-foreground text-body2 text-center py-8 px-4 break-keep'
 
-export const TEXT_META = 'text-muted-foreground'
 export const TEXT_MUTED = 'text-muted-foreground'
 
 /**
- * 폼 입력 필드 공통 스타일 (auth/profile 폼에서 공유).
- * 폰트는 Body1 16px 고정(iOS Safari 포커스 줌 방지 — 전 뷰포트). py-3로 ~48px 높이,
- * 동일 토큰을 textarea에 써도 자연 확장되도록 고정 높이를 두지 않는다.
+ * **글자색은 두 단계다** — 기본(값)과 보조(값이 아닌 것). 그 사이 단계를 알파(`text-foreground/70`)나 `opacity`로 만들지 않는다.
+ *   · 판정: 그 글자를 지우면 정보가 사라지면 값, 값은 남고 설명만 줄면 이름표·도움말
+ *   · 위계는 색이 아니라 굵기로 만든다(주 정보 medium·semibold, 나머지 regular)
+ *   · 회색 바탕(`bg-muted`) 위의 값도 기본색. 누를 수 없는 컨트롤만 `disabled:opacity-50`
+ * 대비 문턱(`colors.test.ts`가 강제): 기본 7:1 이상, 보조도 카드·배경 위 7:1 이상 · 회색 바탕 위 5.5:1 이상.
  */
-export const FORM_INPUT_BASE = [
-    'w-full rounded-lg px-3 py-3 text-body text-foreground',
-    'bg-background border border-input dark:bg-input/30',
-    'placeholder:text-muted-foreground',
-    'outline-none focus:border-ring transition-colors',
-].join(' ')
+export const TEXT_TONE = { base: 'text-foreground', sub: 'text-muted-foreground' } as const
+/** 단계표 — `/styleguide`와 문서가 그대로 그린다 */
+export const TEXT_TONES: ReadonlyArray<{ tone: keyof typeof TEXT_TONE; name: string; use: string; sample: string }> = [
+    { tone: 'base', name: '기본', use: '읽어야 하는 값 — 이름·날짜·시간·장소·숫자·메모·본문. 회색 바탕 위의 값도 기본', sample: '11.26 (목) 10:00~12:00 · 목동 실내코트 · 6-4' },
+    { tone: 'sub', name: '보조', use: '값이 아닌 것 — 열 제목·필드 이름표·도움말·구분 기호(· vs)·placeholder·선택 안 된 탭/칩', sample: '날짜 · 경기장 · 스코어 · 한 번만 입력할 수 있습니다' },
+]
 
-/** 폼 라벨 공통 스타일 (auth/profile 폼에서 공유) — Caption 12px caps */
-export const FORM_LABEL_BASE = 'block text-caption font-medium tracking-eyebrow uppercase text-muted-foreground mb-1.5'
-
-/**
- * 경기 입력 폼(개인 경기기록 등) 공통 인풋/라벨 스타일.
- * auth용 FORM_*_BASE와 시각 위계가 달라(라벨 일반 케이스) 별도 토큰으로 둔다. 인풋 폰트는 동일하게 16px.
- */
-export const MATCH_FORM_INPUT =
-    'w-full rounded-lg border border-input bg-background dark:bg-input/30 px-3 py-3 text-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring'
-export const MATCH_FORM_LABEL = 'text-body font-medium text-foreground block mb-2'
-/**
- * 경기 폼의 셀렉트 트리거 — date input(MATCH_FORM_INPUT + h-12)과 **같은 높이**여야 한다.
- * EnumSelect 기본은 h-11이라 한 줄에 섞으면 1px 단위로 어긋난다(날짜·시각·경기 시간·면 수가 한 줄인 매칭 만들기).
- */
-export const MATCH_FORM_FIELD_HEIGHT = 'h-12'
-export const MATCH_FORM_SELECT_TRIGGER =
-    'w-full h-12 data-[size=default]:h-12 rounded-lg px-3 text-body bg-background dark:bg-input/30 border-input focus:border-ring'
+// 폼의 칸·라벨·아래 한 줄은 `components/common/field-class.ts` 한 곳이 정한다(`docs/forms.md`).
+// 옛 칸·라벨 토큰(로그인 폼용 한 벌, 경기 폼용 한 벌)은 칸 모양 두 벌·높이 세 가지를 만들어 지웠다(11-26).
 
 /**
- * 폼·팝업 하단 액션 줄 — 저장(옐로우, Button `accent`) 왼쪽 / 취소 오른쪽, 우측 정렬.
+ * 폼·팝업 하단 액션 줄 — 저장(옐로우, ActionButton `solid`) 왼쪽 / 취소 오른쪽, 우측 정렬.
  * 직접 기록 폼의 치수가 정본이고 모든 저장형 팝업과 매칭 만들기가 이것을 그대로 쓴다.
  * 좁은 화면에서는 저장이 폭을 채우고(flex-1), lg부터 고정 폭으로 우측에 붙는다.
  */
 export const FORM_ACTION_ROW = 'flex w-full gap-3 lg:justify-end'
-export const FORM_SUBMIT = 'h-11 flex-1 lg:flex-none lg:min-w-44'
-export const FORM_CANCEL = 'h-11 lg:min-w-24'
-
-/**
- * 목록 화면 상단의 "만들기·기록" 링크 — 내 경기 결과의 [직접 기록] 칩이 정본이다
- * (테두리만 있고 채움 없음, hover는 배경이 아니라 테두리 색).
- * radius는 PILL_BASE와 같은 4px(rounded-sm).
- *
- * ⚠ Button의 outline variant를 쓰지 않는 이유 — button.tsx base가 `text-sm`이라
- * 페이지에서 buttonVariants를 가져다 쓰면 시맨틱 타이포 규칙을 우회하게 된다.
- * 네 목록 화면(매칭 리스트·참여 중인 매칭·내 경기 결과·클럽·대진표)이 전부 이것을 쓴다(Week 66).
- */
-export const HEADER_ACTION_LINK =
-    'inline-flex items-center gap-1 text-body2 border border-border rounded-sm px-3 py-2 hover:border-input transition-colors whitespace-nowrap'
-
-/**
- * 에러·404·빈 상태·안내 카드의 채움 CTA 링크/버튼 — **채움 버튼은 전부 옐로우(spot-solid)** 다(Week 66).
- * 채움 색의 출처가 둘(Button `accent` = 옐로우 / `bg-primary` = 다크 민트·라이트 블루)이라 화면마다 갈리던 것을
- * 한 출처로 모았다. Button `accent`와 같은 색이고, Button을 쓰지 않는 이유는 HEADER_ACTION_LINK와 같다(`text-sm` 우회).
- * 치수만 다르게 쓸 자리는 `cn(CTA_LINK, 'px-3 py-1.5')`처럼 덮는다.
- */
-export const CTA_LINK =
-    'inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-body2 font-medium bg-spot-solid text-spot-foreground hover:bg-spot-solid/90 transition-colors'
+// 높이는 여기 적지 않는다 — 버튼 단계(ActionButton lg = 44px)가 정한다. 여기는 폭만
+export const FORM_SUBMIT = 'flex-1 lg:flex-none lg:min-w-44'
+export const FORM_CANCEL = 'lg:min-w-24'
 
 /** 승률 계산 (무승부 제외 분모). 경기 없으면 null. */
 export function calcWinRate(wins: number, losses: number): number | null {

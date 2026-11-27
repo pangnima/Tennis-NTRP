@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { fieldClass, FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { parseYearMonth } from '@/lib/format/year-month'
-import { FORM_INPUT_BASE as inputCls, FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
 type Props = {
     label?: string
@@ -57,7 +57,7 @@ export function YearMonthField({
                 onChange={(e) => handleChange(e.target.value)}
                 onBlur={() => setTouched(true)}
                 aria-invalid={invalid}
-                className={inputCls}
+                className={fieldClass()}
             />
             {invalid ? (
                 <p className="mt-1 text-caption text-destructive">

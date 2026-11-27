@@ -1,10 +1,10 @@
 'use client'
 
 import { useMemo } from 'react'
+import { FIELD_LABEL } from '@/components/common/field-class'
 import type { OpponentCandidate } from '@/lib/queries/users'
-import type { PastOpponent } from '@/lib/queries/personal-matches'
+import type { PastOpponent } from '@/lib/personal-matches/player-suggestions'
 import { buildPlayerSuggestionGroups, type PlayerSuggestion } from '@/lib/personal-matches/player-suggestions'
-import { MATCH_FORM_LABEL } from '@/lib/dashboard/tokens'
 import { HAND_OPTIONS, type HandValue } from '@/lib/profile/signup-fields'
 import { FieldToggle } from '@/components/common/field-toggle'
 import { PlayerAutocomplete } from '@/components/personal-matches/player-autocomplete'
@@ -66,7 +66,7 @@ export function PlayerPicker({
     return (
         <div>
             <div className="flex items-center justify-between gap-2 mb-2">
-                <label className={`${MATCH_FORM_LABEL} mb-0`}>{label}</label>
+                <label className={`${FIELD_LABEL} mb-0`}>{label}</label>
                 {value.userId && (
                     <span className="text-micro px-1.5 py-0.5 rounded-sm border border-primary/40 text-primary">
                         {linked?.isGuest ? '비회원' : '회원 연결됨'}

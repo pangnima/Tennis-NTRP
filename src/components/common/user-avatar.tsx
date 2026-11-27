@@ -32,7 +32,7 @@ export function UserAvatar({ name, nickname, image, userId, size = 'md', alt, cl
     return (
         <Avatar className={cn(s.box, 'shrink-0', className)}>
             {image && <AvatarImage src={image} alt={alt ?? nickname ?? name} />}
-            <AvatarFallback className={cn(userId ? avatarColorClass(userId) : 'bg-muted text-muted-foreground', s.text, 'font-bold')}>
+            <AvatarFallback className={cn(userId ? avatarColorClass(userId) : 'bg-muted text-foreground', s.text, 'font-bold')}>
                 {initial}
             </AvatarFallback>
         </Avatar>

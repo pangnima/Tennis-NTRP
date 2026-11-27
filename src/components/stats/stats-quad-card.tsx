@@ -16,7 +16,7 @@ export function StatsQuadCard({ matchType, stats, variant = 'match', masked, sho
     // 중립('전체') 카드는 MatchType 색상 테이블 대신 회색 토큰을 사용
     const style =
         variant === 'neutral' || !matchType
-            ? { label: '전체', textClass: 'text-foreground/80', borderClass: 'border-border', bgClass: 'bg-muted/40' }
+            ? { label: '전체', textClass: 'text-foreground', borderClass: 'border-border', bgClass: 'bg-muted/40' }
             : getMatchTypeStyle(matchType)
 
     const winRateLabel =
@@ -37,7 +37,7 @@ export function StatsQuadCard({ matchType, stats, variant = 'match', masked, sho
                     {style.label}
                 </span>
                 <span className="text-h2 font-bold tabular-nums text-foreground leading-none">
-                    {showRateSuffix && <span className="text-caption font-normal text-foreground/70 mr-1.5">승률</span>}
+                    {showRateSuffix && <span className="text-caption font-normal text-muted-foreground mr-1.5">승률</span>}
                     {winRateLabel}
                 </span>
             </div>
@@ -45,27 +45,27 @@ export function StatsQuadCard({ matchType, stats, variant = 'match', masked, sho
             {/* 승·패·무 — 들어간 내부 블록 3칸 */}
             <div className="grid grid-cols-3 gap-2 mt-3">
                 <div className="rounded-lg bg-background/50 py-2.5 text-center">
-                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-foreground/70' : 'text-win'}`}>{masked ? '*' : stats.wins}</p>
-                    <p className="text-caption text-foreground/70 mt-0.5">승</p>
+                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-muted-foreground' : 'text-win'}`}>{masked ? '*' : stats.wins}</p>
+                    <p className="text-caption text-muted-foreground mt-0.5">승</p>
                 </div>
                 <div className="rounded-lg bg-background/50 py-2.5 text-center">
-                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-foreground/70' : 'text-loss'}`}>{masked ? '*' : stats.losses}</p>
-                    <p className="text-caption text-foreground/70 mt-0.5">패</p>
+                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-muted-foreground' : 'text-loss'}`}>{masked ? '*' : stats.losses}</p>
+                    <p className="text-caption text-muted-foreground mt-0.5">패</p>
                 </div>
                 <div className="rounded-lg bg-background/50 py-2.5 text-center">
-                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-foreground/70' : 'text-muted-foreground'}`}>{masked ? '*' : stats.draws}</p>
-                    <p className="text-caption text-foreground/70 mt-0.5">무</p>
+                    <p className={`text-h2 font-bold tabular-nums ${masked ? 'text-muted-foreground' : 'text-foreground'}`}>{masked ? '*' : stats.draws}</p>
+                    <p className="text-caption text-muted-foreground mt-0.5">무</p>
                 </div>
             </div>
 
             {/* 푸터(세트 옵션 + 총경기). mt-auto로 카드 하단 고정 */}
             <div className="pt-2 mt-auto">
                 {!masked && showSets && (stats.setsWon > 0 || stats.setsLost > 0) && (
-                    <p className="text-caption text-foreground/70 text-right">
+                    <p className="text-caption text-foreground text-right">
                         세트 {stats.setsWon} : {stats.setsLost}
                     </p>
                 )}
-                <p className="text-caption text-foreground/70 text-right">
+                <p className="text-caption text-foreground text-right">
                     {masked ? '* 경기' : `총 ${stats.totalMatches}경기`}
                 </p>
             </div>

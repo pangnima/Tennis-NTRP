@@ -65,6 +65,43 @@ describe('색상 하드코딩 금지', () => {
     })
 })
 
+// ── 글자색은 두 단계 — 흐리게 만드는 다른 길을 막는다 ──────────────────
+// 기본(foreground) = 읽어야 하는 값, 보조(muted-foreground) = 이름표·도움말. 그 사이 단계를 알파나 투명도로
+// 만들면 대비가 검사 밖으로 빠져나간다(지난 매칭 행의 opacity-60은 보조색을 2.4:1까지 떨어뜨렸다).
+/** `text-foreground/70`처럼 알파를 붙인 글자색 — 토큰 이름을 가리지 않고, 상태 접두어(`hover:`)가 붙어도 같다 */
+const ALPHA_TEXT = /(?<![\w-])(?:[\w[\]=-]+:)*text-[a-z][\w-]*\/\d+/g
+/** `opacity-NN`(임의값 포함)과 그 앞의 접두어들 */
+const OPACITY = /(?<![\w-])((?:[\w[\]=-]+:)*)opacity-(\d+|\[[^\]]+\])(?![\w-])/g
+/** 투명도를 써도 되는 상태 — 누를 수 없음·마우스 올림. 화면 폭·테마 접두어(`md:`·`dark:`)로는 통과하지 못한다 */
+const OPACITY_STATE = /^(hover|focus|focus-visible|active|disabled|aria-disabled|data-disabled|data-\[disabled[^\]]*\]|group-hover|group-disabled|peer-disabled)$/
+/** 정보가 아닌 장식에 투명도를 쓰는 자리 — `파일 경로`를 이유와 함께 올린다 */
+const OPACITY_ALLOWED: string[] = []
+
+/** 줄 단위로 찾는다 — 주석 줄(금지 예시를 적어 둔 곳)은 건너뛰고, 실패하면 `파일:줄`을 보여 준다 */
+function hitsOf(re: RegExp, keep: (m: RegExpMatchArray) => boolean = () => true): string[] {
+    return SOURCES.flatMap((f) => {
+        const rel = path.relative(SRC, f).split(path.sep).join('/')
+        return readFileSync(f, 'utf-8').split('\n').flatMap((line, i) =>
+            /^\s*(\/\/|\*|\/\*|\{\/\*)/.test(line) ? [] : [...line.matchAll(re)].filter(keep).map((m) => `${rel}:${i + 1}: ${m[0]}`),
+        )
+    })
+}
+
+describe('글자색은 두 단계 — 흐리게 만드는 다른 길 금지', () => {
+    it('알파를 붙인 글자색을 쓰지 않는다', () => {
+        expect(hitsOf(ALPHA_TEXT)).toEqual([])
+    })
+
+    it('opacity로 내용을 흐리게 하지 않는다(비활성·마우스 올림 상태와 펼침 전환 제외)', () => {
+        const hits = hitsOf(OPACITY, (m) => {
+            if (m[2] === '0' || m[2] === '100') return false
+            const prefixes = m[1].split(':').filter(Boolean)
+            return prefixes.length === 0 || prefixes.some((p) => !OPACITY_STATE.test(p))
+        }).filter((h) => !OPACITY_ALLOWED.some((p) => h.startsWith(`${p}:`)))
+        expect(hits).toEqual([])
+    })
+})
+
 // ── globals.css 토큰 파싱 + 대비 계산 ────────────────────────────────
 // 주석에 중괄호가 섞이면 블록 파싱이 끊기므로 먼저 제거한다.
 const CSS = readFileSync(GLOBALS, 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '')
@@ -114,7 +151,7 @@ function contrast(a: string, b: string): number {
 /** [전경, 배경, 최소 대비] — 배경은 카드·배경 중 불리한 쪽까지 함께 본다. */
 const TEXT_ON_SURFACE: [string, number][] = [
     ['foreground', 7], // 본문 (AAA)
-    ['muted-foreground', 4.5], // 보조 텍스트 (AA)
+    ['muted-foreground', 7], // 보조 텍스트(이름표·도움말)도 AAA — 4.5였을 때 "연한 글자가 안 보인다"는 피드백을 받았다
     ['primary', 4.5], // 링크·액션 텍스트
     ['info', 4.5],
     ['win', 4.5],
@@ -146,6 +183,27 @@ describe.each([
         for (const surface of ['card', 'background'] as const) {
             expect(contrast(fg, resolve(tokens, surface))).toBeGreaterThanOrEqual(min)
         }
+    })
+
+    it('--muted-foreground는 회색 바탕(muted·secondary) 위에서도 5.5:1 이상이다', () => {
+        // 열 제목 줄·구분 줄·중립 칩처럼 회색 바탕 위에 보조색을 얹는 자리가 있다. 카드·배경만 보면 여기가 샌다(옛 값은 라이트 4.17).
+        const fg = resolve(tokens, 'muted-foreground')
+        // accent = 자동완성에서 고른 줄의 바탕 — 그 위에도 보조색 글자가 놓인다
+        for (const surface of ['muted', 'secondary', 'accent'] as const) {
+            expect(contrast(fg, resolve(tokens, surface)), surface).toBeGreaterThanOrEqual(5.5)
+        }
+    })
+
+    it('--foreground는 회색 바탕 위에서도 7:1 이상이다', () => {
+        // "회색 바탕 위의 값은 기본색" 규칙을 값으로 고정한다(무승부 배지·집계 필·읽기 전용 입력칸)
+        for (const surface of ['muted', 'secondary'] as const) {
+            expect(contrast(resolve(tokens, 'foreground'), resolve(tokens, surface)), surface).toBeGreaterThanOrEqual(7)
+        }
+    })
+
+    it('글자색 두 단계(기본·보조)가 서로 구분된다', () => {
+        // 보조색을 밝히다 기본색과 뭉개지면 "값"과 "이름표"의 구분이 사라진다.
+        expect(contrast(resolve(tokens, 'muted-foreground'), resolve(tokens, 'foreground'))).toBeGreaterThanOrEqual(1.5)
     })
 
     it.each(SOLID_PAIRS)('--%s는 --%s 위에서 4.5:1 이상이다', (fg, bg) => {

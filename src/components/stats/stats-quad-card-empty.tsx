@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 import { CalendarDays } from 'lucide-react'
 import type { MatchType } from '@/types'
 import { getMatchTypeStyle, MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { CARD_BASE, PILL_BASE, CTA_LINK } from '@/lib/dashboard/tokens'
+import { CARD_BASE, PILL_BASE } from '@/lib/dashboard/tokens'
+import { actionButtonClass } from '@/components/common/action-button-class'
 
 type Props = {
     matchType: MatchType
@@ -29,10 +29,10 @@ export function StatsQuadCardEmpty({ matchType, recordHref }: Props) {
                 {recordHref && (
                     <Link
                         href={recordHref}
-                        className={cn(CTA_LINK, 'gap-1 text-caption px-2.5 py-1')}
+                        className={actionButtonClass({ variant: 'solid', size: 'xs' })}
                     >
                         <CalendarDays className="w-3 h-3" />
-                        매칭 참여
+                        경기 기록
                     </Link>
                 )}
             </div>
@@ -41,7 +41,7 @@ export function StatsQuadCardEmpty({ matchType, recordHref }: Props) {
                 {/* 정적 SVG 장식 (빈 상태 일러스트 관례) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={image} alt="" aria-hidden width={96} height={64} draggable={false} />
-                <p className="text-body2 text-muted-foreground">아직 {MATCH_TYPE_LABELS[matchType]} 기록이 없어요</p>
+                <p className="text-body2 text-foreground">아직 {MATCH_TYPE_LABELS[matchType]} 기록이 없어요</p>
             </div>
         </div>
     )

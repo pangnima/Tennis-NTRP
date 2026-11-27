@@ -28,15 +28,15 @@ export function NotificationRow({ notification, compact = false, read }: Props) 
             />
             <div className="min-w-0 flex-1 space-y-0.5">
                 <div className="flex items-baseline justify-between gap-2">
-                    <p className={cn('text-body2 truncate', unread ? 'font-semibold text-foreground' : 'font-medium text-foreground/80')}>
+                    <p className={cn('text-body2 truncate', unread ? 'font-semibold text-foreground' : 'font-medium text-foreground')}>
                         {label.title}
                     </p>
-                    <time className="text-caption text-muted-foreground shrink-0" dateTime={notification.createdAt}>
+                    <time className="text-caption text-foreground shrink-0" dateTime={notification.createdAt}>
                         {formatRelativeTime(notification.createdAt)}
                     </time>
                 </div>
-                <p className={cn('text-caption text-muted-foreground break-keep', compact && 'line-clamp-2')}>{label.body}</p>
-                {roomLine && <p className="text-caption text-muted-foreground/80 truncate">{roomLine}</p>}
+                <p className={cn('text-caption text-foreground break-keep', compact && 'line-clamp-2')}>{label.body}</p>
+                {roomLine && <p className="text-caption text-foreground truncate">{roomLine}</p>}
             </div>
         </div>
     )

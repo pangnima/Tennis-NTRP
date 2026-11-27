@@ -1,11 +1,10 @@
 'use client'
 
 import { Lock } from 'lucide-react'
+import { FIELD_LABEL, fieldClass } from '@/components/common/field-class'
 import type { OpponentCandidate } from '@/lib/queries/users'
-import type { PastOpponent } from '@/lib/queries/personal-matches'
-import type { PlayerSuggestion } from '@/lib/personal-matches/player-suggestions'
+import type { PastOpponent, PlayerSuggestion } from '@/lib/personal-matches/player-suggestions'
 import { PlayerPicker, type PlayerPickerValue } from '@/components/personal-matches/player-picker'
-import { MATCH_FORM_INPUT as inputClass, MATCH_FORM_LABEL } from '@/lib/dashboard/tokens'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -24,6 +23,8 @@ type Props = {
     ntrpLocked?: boolean
     // 플랫폼 전체 회원 검색 (선택) — PlayerPicker로 그대로 전달
     searchSelfUserId?: string
+    // 손잡이 토글 노출(기본 true) — 통계가 읽지 않는 자리(비회원 파트너)에서는 끈다
+    showHand?: boolean
 }
 
 /**
@@ -44,6 +45,7 @@ export function PlayerNtrpField({
     placeholder,
     ntrpLocked = false,
     searchSelfUserId,
+    showHand = true,
 }: Props) {
     function handlePlayerChange(next: PlayerPickerValue, picked?: PlayerSuggestion) {
         onPlayerChange(next)
@@ -64,9 +66,10 @@ export function PlayerNtrpField({
                 onChange={handlePlayerChange}
                 placeholder={placeholder}
                 searchSelfUserId={searchSelfUserId}
+                showHand={showHand}
             />
             <div>
-                <label className={MATCH_FORM_LABEL}>
+                <label className={FIELD_LABEL}>
                     NTRP{ntrpLocked ? '' : ntrpRequired ? ' *' : ' (선택)'}
                 </label>
                 <div className="relative">
@@ -78,7 +81,7 @@ export function PlayerNtrpField({
                         value={ntrp}
                         onChange={(e) => onNtrpChange(e.target.value)}
                         placeholder="예: 2.439"
-                        className={cn(inputClass, ntrpLocked && 'bg-muted text-muted-foreground pr-10')}
+                        className={cn(fieldClass(), ntrpLocked && 'bg-muted text-foreground pr-10')}
                         required={ntrpRequired && !ntrpLocked}
                         readOnly={ntrpLocked}
                         aria-readonly={ntrpLocked}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { FieldToggle } from '@/components/common/field-toggle'
 import { RacketField } from '@/components/common/racket-field'
 import { YearMonthField } from '@/components/common/year-month-field'
@@ -12,7 +13,6 @@ import {
     type HandValue,
     type SignupNtrp,
 } from '@/lib/profile/signup-fields'
-import { FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
 const GENDERS = GENDER_OPTIONS.map((o) => ({ value: o.value, label: o.label }))
 const HANDS = HAND_OPTIONS.map((o) => ({ value: o.value, label: o.label }))

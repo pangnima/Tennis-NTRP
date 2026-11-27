@@ -1,6 +1,6 @@
 'use client'
 
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
+import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { User } from '@/types'
 import {
     Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue,

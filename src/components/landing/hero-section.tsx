@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 
 import { HeroCollage } from '@/components/landing/hero-collage'
-import { buttonVariants } from '@/components/ui/button'
+import { actionButtonClass } from '@/components/common/action-button-class'
 import { TYPO } from '@/lib/dashboard/tokens'
 import { cn } from '@/lib/utils'
 
@@ -28,14 +28,14 @@ export function HeroSection() {
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
                     <Link
                         href="/signup"
-                        className={cn(buttonVariants({ variant: 'accent', size: 'lg' }), 'h-11 px-6 text-body2')}
+                        className={actionButtonClass({ variant: 'solid', size: 'lg', className: 'px-6' })}
                     >
                         회원가입
                         <ArrowUpRight className="size-4" />
                     </Link>
                     <Link
                         href="/guide"
-                        className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'h-11 px-6 text-body2')}
+                        className={actionButtonClass({ size: 'lg', className: 'px-6' })}
                     >
                         사용 가이드
                     </Link>

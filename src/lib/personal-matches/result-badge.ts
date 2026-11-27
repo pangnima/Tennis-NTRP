@@ -25,7 +25,7 @@ export type ResultBadge = {
 const SINGLE_GAME: Record<PersonalMatchWinner, ResultBadge> = {
     me: { label: OUTCOME_LABEL.win, badgeClass: 'bg-win text-win-foreground', barClass: 'bg-win-solid' },
     opponent: { label: OUTCOME_LABEL.loss, badgeClass: 'bg-loss text-loss-foreground', barClass: 'bg-loss-solid' },
-    draw: { label: OUTCOME_LABEL.draw, badgeClass: 'bg-muted text-muted-foreground', barClass: 'bg-muted-foreground/40' },
+    draw: { label: OUTCOME_LABEL.draw, badgeClass: 'bg-muted text-foreground', barClass: 'bg-muted-foreground/40' },
 }
 
 /** 결과 미확정 — 게임 스코어 미등록. 통계에 반영되지 않는다. */
@@ -41,7 +41,7 @@ export function resolveResultBadge(sets: PersonalMatchSetScore[]): ResultBadge {
     const t = tallySets(sets)
     return {
         label: formatGameSummary(sets.length, t.wins, t.losses, t.draws),
-        badgeClass: 'bg-muted text-muted-foreground',
+        badgeClass: 'bg-muted text-foreground',
         // 게임마다 승패가 다르므로 다수결 색을 쓰지 않는다. 다만 미확정(PENDING_RESULT_BAR)과는 구분한다.
         barClass: 'bg-muted-foreground/25',
     }
@@ -50,7 +50,7 @@ export function resolveResultBadge(sets: PersonalMatchSetScore[]): ResultBadge {
 const GAME_CHIP: Record<PersonalMatchWinner, string> = {
     me: 'bg-win/15 text-win',
     opponent: 'bg-loss/15 text-loss',
-    draw: 'bg-muted text-muted-foreground',
+    draw: 'bg-muted text-foreground',
 }
 
 /** 스코어 칩 색 — 게임마다 승/패/무를 따로 판정한다(패와 무를 같은 회색으로 뭉개지 않는다). */

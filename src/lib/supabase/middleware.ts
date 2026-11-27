@@ -4,7 +4,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/supabase'
-import { personalNavHref } from '@/lib/nav-items'
+import { HOME_PATH } from '@/lib/nav-items'
 import { supabaseEnv } from '@/lib/supabase/env'
 
 // 오픈 리다이렉트 방지: 같은 사이트 내부 경로(/ 로 시작, // 프로토콜상대 제외)만 허용.
@@ -56,10 +56,17 @@ export async function updateSession(request: NextRequest) {
     // /onboarding은 (main) 밖이지만 로그인한 사람만 쓰는 화면이라 같은 가드를 받는다
     // (그 레이아웃 안에 두면 게이트가 스스로를 리다이렉트해 루프가 된다 — lib/profile/onboarding-gate.ts)
     // /clubs는 Week 69에 UI를 삭제해 라우트가 없다(next.config가 루트로 보낸다).
+    // 초대 링크 착지(`/matches/join/<token>`)는 보호하지 않는다(0108) — 비로그인 방문자를 그 핸들러가 초대 화면(`/invite/<token>`)으로
+    // 보낸다. 여기서 로그인으로 튕기면 회원이 아닌 사람은 무슨 링크인지도 모른 채 로그인 화면만 본다.
+    const isInviteLanding = path.startsWith('/matches/join/')
     const isMainRoute =
         path.startsWith('/profile') ||
         path.startsWith('/me') ||
-        path.startsWith('/match-rooms') ||
+        path.startsWith('/home') ||
+        (path.startsWith('/matches') && !isInviteLanding) ||
+        path.startsWith('/games') ||
+        path.startsWith('/record') ||
+        path.startsWith('/ranking') ||
         path.startsWith('/onboarding')
     if (isMainRoute && !user) {
         // 원래 가려던 경로(+쿼리)를 next로 넘겨 로그인 후 복귀시킨다 (예: 초대 링크).
@@ -76,14 +83,14 @@ export async function updateSession(request: NextRequest) {
     const isAuthRoute = path === '/login' || path === '/signup' || path === '/find-id' || path === '/forgot-password'
     if (isAuthRoute && user) {
         const next = request.nextUrl.searchParams.get('next')
-        const dest = isSafeNext(next) ? next : personalNavHref(user.id)
+        const dest = isSafeNext(next) ? next : HOME_PATH
         return NextResponse.redirect(new URL(dest, request.url))
     }
 
     // 랜딩(/): 로그인 상태면 서비스 소개가 아니라 '개인' 메뉴로 보낸다.
     // 착지 경로는 로그인 직후와 같아야 하므로 personalNavHref 하나만 본다.
     if (path === '/' && user) {
-        return NextResponse.redirect(new URL(personalNavHref(user.id), request.url))
+        return NextResponse.redirect(new URL(HOME_PATH, request.url))
     }
 
     return supabaseResponse

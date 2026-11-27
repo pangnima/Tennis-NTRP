@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { fieldClass, FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { useActionState, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 
 import { SocialLoginButtons } from '@/components/auth/social-login-buttons'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { authButtonClass } from '@/components/auth/auth-button-class'
 import { loginAction } from '@/lib/actions/auth'
-import { FORM_INPUT_BASE as inputCls, FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 import { cn } from '@/lib/utils'
 
 export function LoginForm({ next, notice }: { next?: string; notice?: string }) {
@@ -33,7 +33,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
                         id="identifier" name="identifier" type="text"
                         placeholder="아이디를 입력하세요"
                         required autoComplete="username" autoCapitalize="none" spellCheck={false}
-                        className={inputCls}
+                        className={fieldClass()}
                     />
                 </div>
 
@@ -52,7 +52,7 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
                             type={showPassword ? 'text' : 'password'}
                             placeholder="비밀번호를 입력하세요"
                             required autoComplete="current-password"
-                            className={cn(inputCls, 'pr-10')}
+                            className={cn(fieldClass(), 'pr-10')}
                         />
                         <button
                             type="button"
@@ -72,16 +72,16 @@ export function LoginForm({ next, notice }: { next?: string; notice?: string }) 
                     </p>
                 )}
 
-                <Button variant="accent" type="submit" disabled={isPending} className="w-full h-11 font-semibold">
+                <ActionButton variant="solid" size="lg" type="submit" disabled={isPending} className="w-full">
                     {isPending ? '로그인 중...' : '로그인'}
-                </Button>
+                </ActionButton>
             </form>
 
             {/* 회원가입 유도 — 시인성을 위해 소셜 로그인 위로 배치 */}
             <div className="space-y-2 pt-1">
                 <p className="text-center text-caption text-muted-foreground">계정이 없으신가요?</p>
                 <Link
-                    href="/signup"
+                    href={next ? `/signup?next=${encodeURIComponent(next)}` : '/signup'}
                     className={authButtonClass('outline')}
                 >
                     회원가입

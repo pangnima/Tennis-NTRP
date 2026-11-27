@@ -13,7 +13,7 @@ export const OG = {
     background: '#f4f7f9',      // --background
     foreground: '#1d2d35',      // --foreground
     spot: '#ffd166',            // --spot-solid
-    mutedForeground: '#5e7383', // --muted-foreground
+    mutedForeground: '#435562', // --muted-foreground
     card: '#ffffff',            // --card
     border: '#d3dde4',          // --border
 } as const

@@ -60,7 +60,7 @@ function TrendBody({ points, provisional }: { points: PersonalRatingPoint[]; pro
                     <TierEmblem rating={current} provisional={provisional} />
                     <TierDeltaBadge before={start} after={current} />
                 </div>
-                <span className={`text-caption ${TEXT_MUTED}`}>{matchesPlayed}경기</span>
+                <span className="text-caption text-foreground">{matchesPlayed}경기</span>
             </div>
             <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-16" preserveAspectRatio="none" role="img" aria-label="개인 레이팅 추세">
                 <defs>
@@ -81,8 +81,8 @@ function TrendBody({ points, provisional }: { points: PersonalRatingPoint[]; pro
                 />
             </svg>
             <div className={`flex justify-between text-caption ${TEXT_MUTED}`}>
-                <span>시작 {TIER_LABELS[getTier(start)]}</span>
-                <span>현재 {TIER_LABELS[getTier(current)]}</span>
+                <span>시작 <span className="text-foreground">{TIER_LABELS[getTier(start)]}</span></span>
+                <span>현재 <span className="text-foreground">{TIER_LABELS[getTier(current)]}</span></span>
             </div>
         </div>
     )

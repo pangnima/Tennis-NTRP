@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 
-import { buttonVariants } from '@/components/ui/button'
+import { actionButtonClass } from '@/components/common/action-button-class'
 import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
 import { cn } from '@/lib/utils'
 
@@ -13,7 +13,7 @@ export function CtaBanner() {
                 <h2 className={cn(TYPO.h2, 'break-keep')}>첫 매칭을 열어 보세요</h2>
                 <Link
                     href="/signup"
-                    className={cn(buttonVariants({ variant: 'accent', size: 'lg' }), 'h-11 px-6 text-body2')}
+                    className={actionButtonClass({ variant: 'solid', size: 'lg', className: 'px-6' })}
                 >
                     회원가입
                     <ArrowUpRight className="size-4" />

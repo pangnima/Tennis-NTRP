@@ -2,7 +2,7 @@
 
 import { useEffect, useActionState, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { ProfileAvatarField } from '@/components/profile/profile-avatar-field'
 import { ProfileReadonlyFields } from '@/components/profile/profile-readonly-fields'
 import { RacketField } from '@/components/common/racket-field'
@@ -92,9 +92,9 @@ export function ProfileSettingsForm({ initialProfile, userId, canSetLoginId }: P
                 </p>
             )}
 
-            <Button variant="accent" type="submit" disabled={isPending || avatarError || nicknameTaken || phoneInvalid} className="w-full rounded-full font-semibold h-11">
+            <ActionButton variant="solid" size="lg" type="submit" disabled={isPending || avatarError || nicknameTaken || phoneInvalid} className="w-full">
                 {isPending ? '저장 중...' : '저장하기'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

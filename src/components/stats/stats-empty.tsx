@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 import { CalendarDays, Users } from 'lucide-react'
-import { CTA_LINK, NEUTRAL_PILL } from '@/lib/dashboard/tokens'
+import { NEUTRAL_PILL } from '@/lib/dashboard/tokens'
+import { actionButtonClass } from '@/components/common/action-button-class'
 import { EmptyState } from '@/components/common/empty-state'
 
 type Props = {
@@ -28,9 +28,9 @@ export function StatsEmpty({ recordHref, browseHref, recordLabel, browseLabel }:
             actions={(recordHref || browseHref) && (
                 <>
                     {recordHref && (
-                        <Link href={recordHref} className={cn(CTA_LINK, 'px-3 py-1.5')}>
+                        <Link href={recordHref} className={actionButtonClass({ variant: 'solid', size: 'sm' })}>
                             <CalendarDays className="w-3.5 h-3.5" />
-                            {recordLabel ?? '매칭 참여하기'}
+                            {recordLabel ?? '경기 기록'}
                         </Link>
                     )}
                     {browseHref && (
@@ -49,7 +49,7 @@ export function StatsEmpty({ recordHref, browseHref, recordLabel, browseLabel }:
             {/* 4분기 미리보기 칩 (비활성 장식) */}
             <div className="flex items-center gap-1.5">
                 {DECO_CHIPS.map((chip) => (
-                    <span key={chip} className={`${NEUTRAL_PILL}`}>
+                    <span key={chip} className={`${NEUTRAL_PILL} text-muted-foreground`}>
                         {chip}
                     </span>
                 ))}

@@ -1,10 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
+import { fieldClass } from '@/components/common/field-class'
 import { Autocomplete } from '@base-ui/react/autocomplete'
 import type { PlayerSuggestion, PlayerSuggestionGroup } from '@/lib/personal-matches/player-suggestions'
 import { PlayerSuggestionItem } from '@/components/personal-matches/player-suggestion-item'
-import { MATCH_FORM_INPUT } from '@/lib/dashboard/tokens'
 import { ITEM_CLASS, NOTE_CLASS, POPUP_CLASS } from '@/components/personal-matches/autocomplete-classes'
 
 type Props = {
@@ -54,7 +54,7 @@ export function PlayerAutocomplete({
         >
             <Autocomplete.Input
                 placeholder={placeholder}
-                className={MATCH_FORM_INPUT}
+                className={fieldClass()}
                 autoComplete="off"
                 onKeyDown={handleKeyDown}
             />

@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation'
+import { ActionButton } from '@/components/common/action-button'
 
 import { createClient } from '@/lib/supabase/server'
 import { isSafeNext } from '@/lib/supabase/middleware'
-import { personalNavHref } from '@/lib/nav-items'
+import { HOME_PATH } from '@/lib/nav-items'
 import { needsProfileOnboarding } from '@/lib/profile/onboarding-gate'
 import { logoutAction } from '@/lib/actions/auth'
 import { ProfileOnboardingForm } from '@/components/onboarding/profile-onboarding-form'
@@ -35,7 +36,7 @@ export default async function ProfileOnboardingPage({ searchParams }: Props) {
     const safeNext = isSafeNext(next) ? next : undefined
 
     // 이미 채운 사람이 URL로 들어오면 할 일이 없다 — 게이트의 거울이다
-    if (!needsProfileOnboarding(profile)) redirect(safeNext ?? personalNavHref(user.id))
+    if (!needsProfileOnboarding(profile)) redirect(safeNext ?? HOME_PATH)
 
     return (
         <div className="h-dvh overflow-y-auto bg-background text-foreground">
@@ -65,9 +66,9 @@ export default async function ProfileOnboardingPage({ searchParams }: Props) {
 
                     {/* 다른 계정으로 들어온 사람의 탈출구 — 이 화면에는 헤더가 없다 */}
                     <form action={logoutAction} className="mt-6 text-center">
-                        <button type="submit" className="text-caption text-muted-foreground hover:text-foreground">
+                        <ActionButton type="submit" variant="ghost" size="xs">
                             다른 계정으로 로그인
-                        </button>
+                        </ActionButton>
                     </form>
                 </div>
             </div>

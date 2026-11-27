@@ -1,5 +1,6 @@
 'use client'
 
+import { FIELD_SELECT_TRIGGER } from '@/components/common/field-class'
 import {
     Select,
     SelectContent,
@@ -28,7 +29,7 @@ export function EnumSelect<T extends string>({
     onValueChange,
     options,
     placeholder,
-    triggerClassName = 'w-full data-[size=default]:h-11 bg-background dark:bg-input/30 border-input focus:border-ring',
+    triggerClassName = FIELD_SELECT_TRIGGER,
     ariaLabel,
 }: EnumSelectProps<T>) {
     return (

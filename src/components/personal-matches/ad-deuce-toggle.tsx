@@ -1,5 +1,7 @@
 'use client'
 
+import { PRESS_HEIGHT } from '@/components/common/action-button-class'
+
 type Option<T extends string> = { value: T; label: string }
 
 type Props<T extends string> = {
@@ -27,7 +29,7 @@ export function AdDeuceToggle<T extends string>({ label, options, value, onChang
                             key={o.value}
                             type="button"
                             onClick={() => onChange(isAd ? undefined : o.value)}
-                            className={`flex items-center justify-between gap-1 px-2.5 py-2 text-body2 rounded-md border transition-colors ${
+                            className={`${PRESS_HEIGHT.md} flex items-center justify-between gap-1 px-2.5 text-body2 rounded-md border transition-colors ${
                                 isAd
                                     ? 'border-spot-solid bg-spot-solid text-spot-foreground font-semibold'
                                     : 'border-border text-muted-foreground hover:border-input hover:text-foreground'

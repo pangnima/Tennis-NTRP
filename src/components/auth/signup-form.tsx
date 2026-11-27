@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { AvatarUploadField } from '@/components/auth/avatar-upload-field'
 import { ConsentCheckbox } from '@/components/auth/consent-checkbox'
 import { NameField } from '@/components/auth/name-field'
@@ -12,7 +12,8 @@ import { SignupAccountSection } from '@/components/auth/signup-account-section'
 import { SignupTennisSection } from '@/components/auth/signup-tennis-section'
 import { signupAction } from '@/lib/actions/auth'
 
-export function SignupForm() {
+/** next = 가입한 뒤 돌아갈 내부 경로(초대 링크 — 0108). 페이지가 `isSafeNext`로 거른 값만 넘긴다 */
+export function SignupForm({ next }: { next?: string }) {
     const [state, formAction, isPending] = useActionState(signupAction, null)
     // 제출을 잠그는 조건은 대개 **화면만 보고는 알 수 없는 것**이다(중복·불일치).
     // 형식 오류는 필드가 그 자리에서 말하고 서버가 최종 판정한다.
@@ -33,6 +34,7 @@ export function SignupForm() {
 
     return (
         <form action={formAction} className="space-y-5">
+            {next && <input type="hidden" name="next" value={next} />}
             {/* ── 프로필 사진 ── */}
             <AvatarUploadField onErrorChange={setAvatarError} />
 
@@ -71,14 +73,14 @@ export function SignupForm() {
                 </p>
             )}
 
-            <Button
-                variant="accent"
+            <ActionButton
+                variant="solid" size="lg"
                 type="submit"
                 disabled={isPending || pwMismatch || pwWeak || emailTaken || loginIdTaken || nicknameTaken || tennisMissing || avatarError}
-                className="w-full h-11 font-semibold mt-2"
+                className="w-full mt-2"
             >
                 {isPending ? '가입 중...' : '회원가입'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

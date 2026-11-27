@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { aggregateHeadToHeadUnified, type UnifiedHeadToHeadDetail } from '@/lib/analytics/head-to-head'
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
+import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { CourtSurface, Match, User } from '@/types'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
@@ -68,12 +68,12 @@ export function HeadToHeadCard({ h2hList, bundle, userId, userMap }: Props) {
                     detail.totalMatches > 0 ? (
                         <H2HDetail detail={detail} myName={myName} opponentDisplayName={opponentDisplayName} />
                     ) : (
-                        <p className="text-body2 text-muted-foreground text-center py-4">
+                        <p className="text-body2 text-foreground text-center py-4">
                             해당 상대와의 맞대결 기록이 없습니다
                         </p>
                     )
                 ) : (
-                    <p className="text-body2 text-muted-foreground text-center py-6">
+                    <p className="text-body2 text-foreground text-center py-6">
                         상대를 선택하면 1:1 대결 기록을 확인할 수 있습니다
                     </p>
                 )}

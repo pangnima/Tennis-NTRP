@@ -3,7 +3,7 @@ import {
     calcWinRate,
 } from '@/lib/analytics/shared'
 import { aggregateHeadToHeadUnified } from '@/lib/analytics/head-to-head'
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
+import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { User } from '@/types'
 
 // ── 라이벌 분석 (맞대결 빈도순 상대 + 최근 결과) ─────────────────────────

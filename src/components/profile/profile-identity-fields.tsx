@@ -1,14 +1,8 @@
 'use client'
 
 import { LoginIdField } from '@/components/auth/login-id-field'
+import { FIELD_LABEL as labelCls, FIELD_READONLY as readonlyFieldCls } from '@/components/common/field-class'
 import { NicknameField } from '@/components/auth/nickname-field'
-import { FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
-
-// 변경 불가 필드 표시용 (입력 불가, 회색 톤) — profile-readonly-fields와 같은 클래스
-const readonlyFieldCls = [
-    'w-full rounded-lg px-3 py-3 text-body2 text-muted-foreground',
-    'bg-muted/50 border border-input',
-].join(' ')
 
 type Props = {
     name: string

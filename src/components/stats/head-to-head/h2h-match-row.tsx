@@ -21,24 +21,24 @@ export function H2HMatchRow({ m, myName, opponentDisplayName }: Props) {
     return (
         <div className="py-1.5 border-b border-border last:border-0 space-y-1">
             <div className="flex items-center gap-2 text-caption">
-                <span className="w-20 shrink-0 text-left text-muted-foreground">{m.date}</span>
+                <span className="w-20 shrink-0 text-left text-foreground">{m.date}</span>
                 <span className={`shrink-0 font-medium ${getMatchTypeStyle(m.matchType).textClass}`}>
                     {MATCH_TYPE_LABELS[m.matchType]}
                 </span>
-                {m.surface && <span className="shrink-0 text-muted-foreground">{SURFACE_LABELS[m.surface]}</span>}
+                {m.surface && <span className="shrink-0 text-foreground">{SURFACE_LABELS[m.surface]}</span>}
                 <span className="flex-1 min-w-0 text-left text-foreground truncate">{m.score || '—'}</span>
-                <span className="w-7 shrink-0 text-left text-muted-foreground">{SOURCE_LABEL[m.source]}</span>
+                <span className="w-7 shrink-0 text-left text-foreground">{SOURCE_LABEL[m.source]}</span>
                 <span className={`inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-[4px] text-caption font-bold border ${H2H_OUTCOME_STYLE[m.outcome]}`}>
                     {H2H_OUTCOME_LABEL[m.outcome]}
                 </span>
             </div>
             {isDoubles && (m.myPartnerName || m.opponentPartnerName) && (
-                <p className="text-caption text-muted-foreground pl-1 truncate">
+                <p className="text-caption text-foreground pl-1 truncate">
                     {myName}{m.myPartnerName ? `·${m.myPartnerName}` : ''} vs {opponentDisplayName}{m.opponentPartnerName ? `·${m.opponentPartnerName}` : ''}
                 </p>
             )}
             {sub.length > 0 && (
-                <p className="text-caption text-muted-foreground pl-1 truncate">{sub.join(' · ')}</p>
+                <p className="text-caption text-foreground pl-1 truncate">{sub.join(' · ')}</p>
             )}
         </div>
     )

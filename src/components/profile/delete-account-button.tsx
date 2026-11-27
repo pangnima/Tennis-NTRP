@@ -9,7 +9,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { UserX } from 'lucide-react'
 import { deleteAccountAction } from '@/lib/actions/auth'
 import { CARD_BASE, FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT } from '@/lib/dashboard/tokens'
@@ -37,12 +37,12 @@ export function DeleteAccountButton() {
         <div className={`${CARD_BASE} p-5 sm:p-6 border-destructive/30`}>
             <h2 className="text-h4 font-semibold text-destructive">회원 탈퇴</h2>
             <p className="text-caption text-muted-foreground mt-1">
-                탈퇴 시 모든 클럽에서 나가지고 계정 정보가 삭제됩니다. 되돌릴 수 없습니다.
+                탈퇴하면 계정 정보가 삭제됩니다. 되돌릴 수 없습니다.
             </p>
-            <Button
-                variant="outline"
+            <ActionButton
+                variant="dangerFill"
                 size="sm"
-                className="mt-3 gap-1.5 text-caption text-destructive border-destructive/40 hover:bg-destructive/10"
+                className="mt-3"
                 onClick={() => {
                     setError(null)
                     setOpen(true)
@@ -50,7 +50,7 @@ export function DeleteAccountButton() {
             >
                 <UserX className="w-3.5 h-3.5" />
                 회원 탈퇴
-            </Button>
+            </ActionButton>
 
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent showCloseButton={false}>
@@ -66,18 +66,18 @@ export function DeleteAccountButton() {
 
                     <DialogFooter>
                         <div className={FORM_ACTION_ROW}>
-                            <Button
-                                type="button"
-                                variant="destructive"
+                            <ActionButton
+                                variant="dangerFill"
+                                size="lg"
                                 className={FORM_SUBMIT}
                                 onClick={handleDelete}
                                 disabled={isPending}
                             >
                                 {isPending ? '탈퇴 중...' : '탈퇴하기'}
-                            </Button>
-                            <Button type="button" variant="outline" className={FORM_CANCEL} onClick={() => setOpen(false)}>
+                            </ActionButton>
+                            <ActionButton size="lg" className={FORM_CANCEL} onClick={() => setOpen(false)}>
                                 취소
-                            </Button>
+                            </ActionButton>
                         </div>
                     </DialogFooter>
                 </DialogContent>

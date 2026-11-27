@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { AvatarUploadField } from '@/components/auth/avatar-upload-field'
 import { ConsentCheckbox } from '@/components/auth/consent-checkbox'
 import { NameField } from '@/components/auth/name-field'
@@ -82,14 +82,14 @@ export function ProfileOnboardingForm({ next, defaultName, defaultNickname, defa
                 </p>
             )}
 
-            <Button
-                variant="accent"
+            <ActionButton
+                variant="solid" size="lg"
                 type="submit"
                 disabled={isPending || nicknameTaken || tennisMissing || avatarError}
-                className="w-full h-11 font-semibold mt-2"
+                className="w-full mt-2"
             >
                 {isPending ? '가입 중...' : '회원가입'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

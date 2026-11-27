@@ -1,16 +1,9 @@
 /**
  * 경기 결과(승/패/무) 공통 스타일 및 라벨 정의.
- * 여러 컴포넌트에서 중복 정의되던 OUTCOME_STYLE/LABEL/WINNER_STYLE을 단일화.
+ * 여러 컴포넌트에서 중복 정의되던 결과 라벨·배지 스타일을 단일화. 무·미확정은 회색 바탕 + 기본색 글자다(값을 흐리게 하지 않는다).
  */
 
-// ── 클럽 매치용 (win/loss/draw/unknown) ─────────────────────────────
-export const OUTCOME_STYLE: Record<'win' | 'loss' | 'draw' | 'unknown', string> = {
-    win: 'border-win/40 text-win bg-win/10',
-    loss: 'border-loss/40 text-loss bg-loss/10',
-    draw: 'border-border text-muted-foreground bg-muted/50',
-    unknown: 'border-border text-muted-foreground bg-muted/30',
-}
-
+// ── 결과 라벨 (win/loss/draw/unknown) ─────────────────────────────
 export const OUTCOME_LABEL: Record<'win' | 'loss' | 'draw' | 'unknown', string> = {
     win: '승',
     loss: '패',
@@ -22,14 +15,14 @@ export const OUTCOME_LABEL: Record<'win' | 'loss' | 'draw' | 'unknown', string> 
 export const FORM_BADGE_STYLE: Record<'W' | 'L' | 'D', string> = {
     W: 'bg-win/20 text-win border border-win/30',
     L: 'bg-loss/20 text-loss border border-loss/30',
-    D: 'bg-muted text-muted-foreground border border-border',
+    D: 'bg-muted text-foreground border border-border',
 }
 
 // ── H2H 상세 패널용 (W/L/D 문자 기반, 인라인 border 포함) ────────────
 export const H2H_OUTCOME_STYLE: Record<'W' | 'L' | 'D', string> = {
     W: 'bg-win/20 text-win border-win/30',
     L: 'bg-loss/20 text-loss border-loss/30',
-    D: 'bg-muted text-muted-foreground border-border',
+    D: 'bg-muted text-foreground border-border',
 }
 
 export const H2H_OUTCOME_LABEL: Record<'W' | 'L' | 'D', string> = {
@@ -40,7 +33,7 @@ export const H2H_OUTCOME_LABEL: Record<'W' | 'L' | 'D', string> = {
 
 // ── 내 경기 결과 미확정(게임 스코어 없음) 배지 — 경기 카드·확인 요청 요약이 공유 ──────
 export const PENDING_RESULT_LABEL = '미확정'
-export const PENDING_RESULT_BADGE = 'bg-muted text-muted-foreground border border-dashed border-border'
+export const PENDING_RESULT_BADGE = 'bg-muted text-foreground border border-dashed border-border'
 export const PENDING_RESULT_BAR = 'bg-border'
 
 /** 전적 문자열: "3승 1패" / 무가 있으면 "3승 1패 1무". draws 기본값 0. */

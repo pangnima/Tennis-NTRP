@@ -7,8 +7,6 @@ import { HeadToHeadCard } from '@/components/stats/head-to-head-card'
 import { SurfaceStatsCard } from '@/components/stats/surface-stats-card'
 import { NtrpDifferentialCard } from '@/components/stats/ntrp-differential-card'
 import { StrengthWeaknessCard } from '@/components/stats/strength-weakness-card'
-import { PersonalMatchesPreview } from '@/components/stats/personal-matches-preview'
-import { ClubRatingTrendCard } from '@/components/stats/club-rating-trend-card'
 import { PersonalRatingTrendCard } from '@/components/stats/personal-rating-trend-card'
 import { WinRateTrendCard } from '@/components/stats/win-rate-trend-card'
 import { ActivityHourHeatmapCard } from '@/components/stats/activity-hour-heatmap-card'
@@ -33,13 +31,14 @@ import { aggregatePartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import { replayPersonalRatings } from '@/lib/rating/personal-rating'
 import { effectiveNtrp } from '@/lib/rating/display'
 import { TYPO } from '@/lib/dashboard/tokens'
-import type { RatingHistoryPoint } from '@/lib/queries/ratings'
+import { EmptyState } from '@/components/common/empty-state'
+import { ActionButton } from '@/components/common/action-button'
+import { NAV_LABEL, RECORD_PATH } from '@/lib/nav-items'
 
 type Props = {
     bundle: AnalyticsBundle
     me: User
     scope: AnalyticsScope
-    ratingHistory?: RatingHistoryPoint[]
     /**
      * `self`는 본인 프로필(공개 토글·빈 상태 CTA·[+ 직접 기록]), `public`은 타인이 보는 공개 전적(F-24) —
      * 카드는 같은 한 벌이고 손댈 수 있는 것만 뺀다. 통계 비공개는 페이지가 이 섹션 대신 잠긴 4카드를 그린다.
@@ -58,17 +57,27 @@ type EmptyCta = { recordHref?: string; recordLabel?: string; browseHref?: string
 // 기록 CTA는 매칭 리스트로 간다(Week 57) — 회원이 끼는 경기는 매칭을 거치고 직접 기록은 비회원 전용이라,
 // 신규 회원을 `/me/personal-matches/new`로 보내면 첫 행동이 어긋난다(헤더 빈 상태·체크리스트와 같은 목적지).
 function getEmptyCta(scope: AnalyticsScope): EmptyCta {
-    if (scope.kind === 'club') {
-        return { browseHref: `/clubs/${scope.clubId}/match-games`, browseLabel: '대진표 보기' }
-    }
-    return { recordHref: '/match-rooms', recordLabel: '매칭 참여하기' }
+    return scope.kind === 'personal' ? { recordHref: RECORD_PATH, recordLabel: NAV_LABEL.record } : {}
 }
 
 /**
  * 개인 분석 풀버전 섹션 — 본인 프로필과 타인의 공개 전적(F-24)이 같은 카드 한 벌을 쓴다.
  */
-export async function PersonalAnalyticsSection({ bundle, me, scope, ratingHistory, viewer = 'self' }: Props) {
+export async function PersonalAnalyticsSection({ bundle, me, scope, viewer = 'self' }: Props) {
     const isSelf = viewer === 'self'
+
+    // 기록이 없으면 빈 카드 열두 장을 늘어놓지 않는다 — 무엇을 하면 채워지는지 한 장으로 말한다
+    if (bundle.personalGames.length === 0) {
+        return (
+            <EmptyState
+                size="md"
+                image="/empty/record-empty.svg"
+                title={isSelf ? '아직 기록한 경기가 없습니다' : '아직 기록된 경기가 없습니다'}
+                description={isSelf ? '경기를 기록하면 승률·강약점·맞대결·레이팅 추이가 여기에 채워집니다' : undefined}
+                actions={isSelf ? <ActionButton href={RECORD_PATH} variant="solid" size="md">+ {NAV_LABEL.record}</ActionButton> : undefined}
+            />
+        )
+    }
     // 시간순/날짜 집계가 공유하는 번들 부분(클럽 매치 날짜는 gameMetaById에서 해석).
     // 개인 경기는 통계용 분해본(세트 1개 = 게임 1개)을 사용한다.
     const timeBundle = {
@@ -207,20 +216,8 @@ export async function PersonalAnalyticsSection({ bundle, me, scope, ratingHistor
                 <DoublesCourtStatsCard court={doublesCourtStats} />
             </div>
 
-            {/* 클럽 레이팅 추세 (클럽 scope 전용) */}
-            {scope.kind === 'club' && ratingHistory && ratingHistory.length > 0 && (
-                <ClubRatingTrendCard points={ratingHistory} clubName={scope.clubName} />
-            )}
-
             {/* 개인 경기 기록 + 1:1 맞대결 비교 — 1행 50/50 (클럽 scope는 개인 기록 숨김 → 맞대결만 풀폭) */}
-            {scope.kind === 'club' ? (
-                headToHead
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                    <PersonalMatchesPreview personalMatches={bundle.personalMatches} readOnly={!isSelf} />
-                    {headToHead}
-                </div>
-            )}
+            {headToHead}
 
             {/* 개인 레이팅 추세 (개인 scope — 개인 경기가 있을 때) */}
             {personalRating && personalRating.history.length > 0 && (

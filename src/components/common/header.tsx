@@ -1,55 +1,48 @@
 'use client'
 
 import Link from 'next/link'
-import { personalNavHref } from '@/lib/nav-items'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { UserAvatar } from '@/components/common/user-avatar'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
-import { MobileNav } from '@/components/common/mobile-nav'
+import { LogOut, PanelLeft, Shield } from 'lucide-react'
+
+import { ActionButton } from '@/components/common/action-button'
 import { BrandLogo } from '@/components/common/brand-logo'
+import { MobileNav } from '@/components/common/mobile-nav'
 import { useSidebar } from '@/components/common/sidebar-context'
-import { logoutAction } from '@/lib/actions/auth'
+import { UserAvatar } from '@/components/common/user-avatar'
 import { NotificationBell } from '@/components/notifications/notification-bell'
+import { Badge } from '@/components/ui/badge'
+import { logoutAction } from '@/lib/actions/auth'
+import { TYPO } from '@/lib/dashboard/tokens'
+import { HOME_PATH, SETTINGS_PATH } from '@/lib/nav-items'
 import type { NotificationInbox } from '@/lib/queries/notifications'
-import { Shield, LogOut, PanelLeft } from 'lucide-react'
 
-type UserDisplay = {
-    id: string
-    name: string
-    nickname: string
-    role: string
-    profileImage?: string | null
-}
+type UserDisplay = { id: string; name: string; nickname: string; role: string; profileImage?: string | null }
 
-type HeaderProps = {
-    userDisplay?: UserDisplay | null
-    /** 로그인 사용자 id — 모바일 nav 개인 섹션용 (userDisplay는 프로필 행이 없으면 null일 수 있어 별도 전달) */
-    userId?: string | null
-    /** 매칭 리스트 뱃지 건수 — 서버에서 계산해 모바일 nav로 전달 */
-    myTurnCount?: number
-    /** 알림 받은 편지함(Week 71) — 로그인 시에만. 종 = "일어난 일", 사이드바 뱃지 = "내가 할 일" */
-    inbox?: NotificationInbox | null
-}
+type HeaderProps = { userDisplay?: UserDisplay | null; userId?: string | null; inbox?: NotificationInbox | null }
 
-export function Header({ userDisplay = null, userId = null, myTurnCount = 0, inbox = null }: HeaderProps) {
+/**
+ * 전역 헤더 — 모바일: 서랍 · 가운데 로고 · 알림 종 / PC: 사이드바 토글 · 알림 종 · 내 정보 · 로그아웃.
+ * 모바일의 로그아웃은 서랍으로 갔다(종 옆에서 잘못 누르기 쉬웠다). 「내 정보」는 PC에서 여기 아바타가,
+ * 모바일에서는 하단 탭이 맡는다(PC 사이드바에는 없다).
+ */
+export function Header({ userDisplay = null, userId = null, inbox = null }: HeaderProps) {
     const { collapsed, toggle } = useSidebar()
 
     return (
-        <header className="relative min-h-14 border-b border-foreground/5 dark:border-foreground/10 bg-card flex items-center px-4 md:px-6 shrink-0 gap-3 pt-[env(safe-area-inset-top)]">
-            <MobileNav userId={userId} myTurnCount={myTurnCount} />
-            <button
-                type="button"
+        <header className="relative min-h-14 border-b border-foreground/5 dark:border-foreground/10 bg-card flex items-center px-2 md:px-6 shrink-0 gap-3 pt-[env(safe-area-inset-top)]">
+            <MobileNav userId={userId} />
+            <ActionButton
+                variant="ghost"
+                size="md"
+                square
                 onClick={toggle}
                 aria-label={collapsed ? '사이드바 펼치기' : '사이드바 접기'}
                 aria-pressed={collapsed}
-                className="hidden md:inline-flex p-2 rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="hidden md:inline-flex"
             >
                 <PanelLeft className="w-5 h-5" />
-            </button>
-            {/* 모바일 전용 — 헤더 정중앙에 배치 (safe-area pt를 제외한 콘텐츠 영역 기준 수직 중앙) */}
+            </ActionButton>
             <Link
-                href={userId ? personalNavHref(userId) : '/'}
+                href={userId ? HOME_PATH : '/'}
                 aria-label="BASELINE 홈"
                 className="md:hidden absolute left-1/2 -translate-x-1/2 top-[env(safe-area-inset-top)] bottom-0 flex items-center"
             >
@@ -57,43 +50,28 @@ export function Header({ userDisplay = null, userId = null, myTurnCount = 0, inb
             </Link>
             <div className="flex-1" />
             <nav className="flex items-center gap-2">
-                {/*
-                  * [클럽 찾기]는 1차 오픈에서 내렸다(Week 54) — 클럽이 동결 상태라 갈 곳이 없다.
-                  * 되살리려면 여기에 ghost 링크(href="/clubs", hidden md:inline-flex)를 다시 둔다.
-                  * 로고 링크(위)와 사이드바 로고의 /clubs 착지는 그대로다 — '홈'의 정의는 별개 문제다.
-                  */}
                 {userDisplay ? (
-                    <div className="flex items-center gap-2">
+                    <>
                         {inbox && <NotificationBell inbox={inbox} />}
-                        <Link href="/profile/settings" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
+                        <Link href={SETTINGS_PATH} className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity">
                             <UserAvatar size="sm" name={userDisplay.name} nickname={userDisplay.nickname} image={userDisplay.profileImage} userId={userId} />
-                            <span className="text-body2 font-medium">{userDisplay.name}</span>
+                            <span className={TYPO.body2Strong}>{userDisplay.name}</span>
                             {userDisplay.role === 'admin' && (
-                                <Badge
-                                    variant="outline"
-                                    className="text-caption px-1.5 py-0 h-5 border-spot/50 text-spot gap-1"
-                                >
+                                <Badge variant="outline" className="text-caption px-1.5 py-0 h-5 border-spot/50 text-spot gap-1">
                                     <Shield className="w-2.5 h-2.5" />
                                     관리자
                                 </Badge>
                             )}
                         </Link>
-                        <form action={logoutAction}>
-                            <Button
-                                type="submit"
-                                variant="ghost"
-                                size="sm"
-                                className="text-muted-foreground hover:text-foreground gap-1.5"
-                            >
+                        <form action={logoutAction} className="hidden md:block">
+                            <ActionButton type="submit" variant="ghost" size="sm">
                                 <LogOut className="w-3.5 h-3.5" />
-                                <span className="hidden sm:inline">로그아웃</span>
-                            </Button>
+                                로그아웃
+                            </ActionButton>
                         </form>
-                    </div>
+                    </>
                 ) : (
-                    <Link href="/login" className={cn(buttonVariants({ variant: 'accent', size: 'sm' }))}>
-                        로그인
-                    </Link>
+                    <ActionButton href="/login" variant="solid" size="md">로그인</ActionButton>
                 )}
             </nav>
         </header>

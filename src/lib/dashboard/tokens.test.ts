@@ -1,13 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import {
-    TYPO,
-    FORM_INPUT_BASE,
-    MATCH_FORM_INPUT,
-    EMPTY_BLOCK,
-    PILL_BASE,
-    FORM_LABEL_BASE,
-    MATCH_FORM_LABEL,
-} from './tokens'
+
+import { FIELD_LABEL, FIELD_SELECT_TRIGGER, fieldClass, fieldMessageClass } from '@/components/common/field-class'
+
+import { EMPTY_BLOCK, PILL_BASE, TYPO } from './tokens'
 
 const SEMANTIC_TOKEN = /(?:^|\s)text-(display|h[1-4]|body2?|caption|micro)(?=\s|$)/g
 const BANNED_SIZE = /\btext-(xs|sm|base|lg|xl|\dxl|\[[^\]]+\])\b/
@@ -22,18 +17,20 @@ describe('TYPO 시맨틱 타이포 토큰', () => {
     it('Tailwind 기본 사이즈·임의값 클래스를 쓰지 않는다', () => {
         const all = [
             ...Object.values(TYPO),
-            FORM_INPUT_BASE,
-            MATCH_FORM_INPUT,
+            fieldClass(),
+            fieldClass({ multiline: true }),
+            FIELD_LABEL,
+            FIELD_SELECT_TRIGGER,
+            fieldMessageClass(),
             EMPTY_BLOCK,
             PILL_BASE,
-            FORM_LABEL_BASE,
-            MATCH_FORM_LABEL,
         ]
         for (const value of all) expect(value).not.toMatch(BANNED_SIZE)
     })
 
-    it('폼 인풋 토큰은 Body1 16px(text-body)로 iOS 줌을 방지한다', () => {
-        expect(FORM_INPUT_BASE).toMatch(/\btext-body\b/)
-        expect(MATCH_FORM_INPUT).toMatch(/\btext-body\b/)
+    it('폼 칸은 Body1 16px(text-body)로 iOS 줌을 방지한다', () => {
+        expect(fieldClass()).toMatch(/\btext-body\b/)
+        expect(fieldClass({ size: 'md' })).toMatch(/\btext-body\b/)
+        expect(FIELD_SELECT_TRIGGER).toMatch(/\btext-body\b/)
     })
 })

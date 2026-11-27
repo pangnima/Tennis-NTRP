@@ -1,8 +1,8 @@
 'use client'
 
 import { Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { MATCH_FORM_INPUT } from '@/lib/dashboard/tokens'
+import { fieldClass } from '@/components/common/field-class'
+import { ActionButton } from '@/components/common/action-button'
 
 type Props = {
     value: string
@@ -41,18 +41,17 @@ export function MemberSearchField({ value, onChange, onSearch, loading = false, 
                 autoComplete="off"
                 autoFocus={autoFocus}
                 aria-label="회원 검색"
-                className={`${MATCH_FORM_INPUT} min-w-0 flex-1`}
+                className={`${fieldClass()} min-w-0 flex-1`}
             />
-            <Button
-                type="button"
-                variant="outline"
+            <ActionButton
+                size="lg"
                 onClick={onSearch}
                 disabled={loading}
-                className="h-12 shrink-0 gap-1 px-4 text-body"
+                className="h-auto self-stretch gap-1"
             >
                 <Search className="size-4" />
                 {loading ? '검색 중…' : '검색'}
-            </Button>
+            </ActionButton>
         </div>
     )
 }

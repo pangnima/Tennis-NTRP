@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
  */
 export function DeletedBadge({ className }: { className?: string }) {
     return (
-        <Badge variant="outline" className={`text-caption text-muted-foreground shrink-0 ${className ?? ''}`}>
+        <Badge variant="outline" className={`text-caption text-foreground shrink-0 ${className ?? ''}`}>
             탈퇴
         </Badge>
     )

@@ -1,54 +1,26 @@
 import { notFound, redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { fetchUserById } from '@/lib/queries/users'
-import { fetchClubById, fetchMyClubs } from '@/lib/queries/clubs'
-import { fetchAnalyticsBundle, type AnalyticsScope } from '@/lib/queries/analytics'
-import { fetchRoomQueue } from '@/lib/queries/room-queue'
-import {
-    fetchClubRatingHistory,
-    fetchClubRatingRanking,
-    fetchUserClubRatings,
-    type ClubRatingRankingEntry,
-    type RatingHistoryPoint,
-} from '@/lib/queries/ratings'
-import { ProfileScopeTabs } from '@/components/profile/profile-scope-tabs'
-import { NAV_LABEL, personalNavHref } from '@/lib/nav-items'
-import type { RatingSummary } from '@/components/profile/rating-summary-row'
-import { isProvisional } from '@/lib/rating/display'
-import { replayPersonalRatings } from '@/lib/rating/personal-rating'
-import { aggregateRecentForm, type RecentFormResult } from '@/lib/analytics/form'
-import { combinePlayerStats, type PlayerStats } from '@/lib/stats'
-import type { ProfileSummary } from '@/components/profile/profile-summary-row'
-import type { MatchType } from '@/types'
+
+import { LinkTabs } from '@/components/common/link-tabs'
+import { PageContainer } from '@/components/common/page-container'
 import { MemberProfileHeader } from '@/components/profile/member-profile-header'
 import { PersonalAnalyticsSection } from '@/components/profile/personal-analytics-section'
-import { StatsQuadGrid } from '@/components/stats/stats-quad-grid'
-import { EMPTY_PLAYER_STATS } from '@/lib/stats'
-import { PageContainer } from '@/components/common/page-container'
-import { TYPO } from '@/lib/dashboard/tokens'
-import { OnboardingChecklist } from '@/components/onboarding/onboarding-checklist'
+import type { ProfileSummary } from '@/components/profile/profile-summary-row'
 import { WeakPasswordNotice } from '@/components/profile/weak-password-notice'
+import { StatsQuadGrid } from '@/components/stats/stats-quad-grid'
+import { aggregateRecentForm, type RecentFormResult } from '@/lib/analytics/form'
 import { WEAK_PASSWORD_NOTICE } from '@/lib/auth/password-policy'
-import { WelcomeNotice } from '@/components/onboarding/welcome-notice'
-import { WELCOME_NOTICE } from '@/lib/onboarding'
-import { buildOnboardingSteps, isOnboardingComplete } from '@/lib/onboarding'
-import { isDefaultAvatar } from '@/lib/default-images'
+import { TYPO } from '@/lib/dashboard/tokens'
+import { NAV_LABEL, statsHref } from '@/lib/nav-items'
+import { fetchAnalyticsBundle, type AnalyticsScope } from '@/lib/queries/analytics'
+import { fetchUserById } from '@/lib/queries/users'
+import { replayPersonalRatings } from '@/lib/rating/personal-rating'
+import { combinePlayerStats, EMPTY_PLAYER_STATS, type PlayerStats } from '@/lib/stats'
+import { createClient } from '@/lib/supabase/server'
+import type { MatchType } from '@/types'
 
 type Props = {
     params: Promise<{ userId: string }>
-    searchParams: Promise<{ clubId?: string; scope?: string; notice?: string }>
-}
-
-// 추세 이력 마지막 ratingAfter = 현재 클럽 레이팅, 길이 = 경기 수 → 헤더 뱃지 파생.
-function deriveHeaderRating(history: RatingHistoryPoint[]): { clubRating?: number; provisional: boolean } {
-    if (history.length === 0) return { clubRating: undefined, provisional: false }
-    return { clubRating: history[history.length - 1].ratingAfter, provisional: isProvisional(history.length) }
-}
-
-// 레이팅 랭킹에서 본인 순위(1-based). 행 없으면 undefined.
-function rankOf(ranking: ClubRatingRankingEntry[], userId: string): number | undefined {
-    const i = ranking.findIndex((r) => r.userId === userId)
-    return i >= 0 ? i + 1 : undefined
+    searchParams: Promise<{ notice?: string }>
 }
 
 type QuarterStats = { singles: PlayerStats; menDoubles: PlayerStats; womenDoubles: PlayerStats; mixedDoubles: PlayerStats }
@@ -60,7 +32,7 @@ function deriveHeaderStats(stats: QuarterStats, form: RecentFormResult): { games
     return { games: overall.totalMatches, winRate: overall.winRate, winStreak }
 }
 
-// 비클럽 scope(본인) 헤더 요약: 승률 링 + 보조 행. 주력 종목 = 경기 수 최다 종류.
+// 헤더 요약: 승률 링 + 보조 행. 주력 종목 = 경기 수 최다 종류.
 function deriveSummary(stats: QuarterStats): ProfileSummary {
     const overall = combinePlayerStats(stats.singles, stats.menDoubles, stats.womenDoubles, stats.mixedDoubles)
     const counts: Array<[MatchType, number]> = [
@@ -79,148 +51,36 @@ function deriveSummary(stats: QuarterStats): ProfileSummary {
     }
 }
 
+/**
+ * 통계 — 본인이면 「통계」 메뉴의 착지(탭 [내 통계 / 랭킹]), 타인이면 공개 요약.
+ * 재료는 그 사람이 뛴 게임 전부(get_user_games → toPersonalMatches)이고, 통계 비공개·탈퇴는 RPC가 빈 배열을 준다.
+ */
 export default async function MemberProfilePage({ params, searchParams }: Props) {
     const supabase = await createClient()
     const { data: { user: authUser } } = await supabase.auth.getUser()
     if (!authUser) redirect('/login')
 
     const { userId } = await params
-    const { clubId, scope: scopeParam, notice } = await searchParams
-
-    const [target, club] = await Promise.all([
-        fetchUserById(userId),
-        clubId ? fetchClubById(clubId) : Promise.resolve(null),
-    ])
+    const { notice } = await searchParams
+    const target = await fetchUserById(userId)
     if (!target) notFound()
 
     const isSelf = authUser.id === userId
 
-    if (isSelf) {
-        // 가입 클럽 목록 로드 (scope 탭 + 클럽 ID 검증에 사용)
-        const myClubs = await fetchMyClubs(userId)
-
-        // scope 결정: total(명시) | <clubId>(가입 클럽 중 일치) | personal(기본 — '개인 통계' 메뉴·로그인 진입점과 동일)
-        const matchedClub = myClubs.find((c) => c.id === scopeParam)
-        const scope: AnalyticsScope = scopeParam === 'total'
-            ? { kind: 'total' }
-            : matchedClub
-            ? { kind: 'club', clubId: matchedClub.id, clubName: matchedClub.name }
-            : { kind: 'personal' }
-
-        const personalHref = personalNavHref(userId)
-
-        // 통계 번들 + 클럽 레이팅 추세/순위(클럽 scope에서만 — 헤더 뱃지·순위에 쓴다)
-        // 방 큐는 React cache라 레이아웃(뱃지)과 같은 한 벌 — 온보딩의 「매칭 참여」 판정에만 쓴다
-        const [bundle, ratingHistory, ranking, roomQueue] = await Promise.all([
-            fetchAnalyticsBundle(userId, { scope }),
-            scope.kind === 'club' ? fetchClubRatingHistory(scope.clubId, userId) : Promise.resolve([] as RatingHistoryPoint[]),
-            scope.kind === 'club' ? fetchClubRatingRanking(scope.clubId) : Promise.resolve([] as ClubRatingRankingEntry[]),
-            fetchRoomQueue(userId),
-        ])
-        const { clubRating, provisional } = deriveHeaderRating(ratingHistory)
-        const clubRank = scope.kind === 'club' ? rankOf(ranking, userId) : undefined
-        // 최근 폼은 통계 분해본(personalGames)으로 — 원본(personalMatches)을 넘기면 미확정(세트 없음) 레코드가 승패 없이 섞인다
-        const form = aggregateRecentForm(
-            { matches: bundle.matches, gameMetaById: bundle.gameMetaById, personalMatches: bundle.personalGames },
-            userId,
-        )
-        const headerStats = deriveHeaderStats(bundle.stats, form)
-        // 클럽 scope는 티어 헤더, 그 외는 승률 링 요약 헤더
-        const summary = scope.kind !== 'club' ? deriveSummary(bundle.stats) : undefined
-        // 개인 경기 레이팅(온더플라이). 개인 탭은 티어 방패로, 통합 탭은 요약 칩으로 쓴다. 클럽 scope는 불필요.
-        const personalRatingSnapshot = scope.kind !== 'club'
-            ? replayPersonalRatings(bundle.personalGames, target.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
-            : null
-        const personalRating = personalRatingSnapshot && personalRatingSnapshot.matchesPlayed > 0
-            ? {
-                  rating: personalRatingSnapshot.rating,
-                  provisional: personalRatingSnapshot.provisional,
-                  matchesPlayed: personalRatingSnapshot.matchesPlayed,
-              }
-            : undefined
-
-        // 통합 탭: 자가선언·개인·가입 클럽별 레이팅을 헤더에 요약(클럽별 본인 레이팅 일괄 조회).
-        let ratingSummary: RatingSummary | undefined
-        if (scope.kind === 'total') {
-            const clubRatingMap = await fetchUserClubRatings(userId, myClubs.map((c) => c.id))
-            const clubs = myClubs
-                .map((c) => {
-                    const r = clubRatingMap[c.id]
-                    return r
-                        ? {
-                              clubName: c.name,
-                              rating: r.rating,
-                              provisional: isProvisional(r.matchesPlayed),
-                              matchesPlayed: r.matchesPlayed,
-                          }
-                        : null
-                })
-                .filter(
-                    (c): c is { clubName: string; rating: number; provisional: boolean; matchesPlayed: number } =>
-                        c !== null,
-                )
-            ratingSummary = { selfNtrp: target.ntrp, personal: personalRating, clubs }
-        }
-
-        // 온보딩 체크리스트 — 기본 탭(개인)에서만, 미완료 단계가 남았을 때 노출.
-        // 완료 판정은 이미 로드한 데이터(참가 중인 방·개인 경기 수·프로필 이미지)만 사용.
-        const onboardingSteps = buildOnboardingSteps({
-            userId,
-            hasJoinedRoom: roomQueue.joinedRoomIds.length > 0,
-            hasPersonalMatch: bundle.personalMatches.length > 0,
-            hasProfileImage: Boolean(target.profileImage) && !isDefaultAvatar(target.profileImage),
-            hasContactOrRacket: Boolean(target.phone) || Boolean(target.racketBrand),
-        })
-        const showOnboarding = scope.kind === 'personal' && !isOnboardingComplete(onboardingSteps)
-
-        return (
-            <PageContainer>
-                {/* 본인 프로필의 h1은 이름이라 메뉴 라벨과 제목이 이어지지 않았다(Week 54 잔여) —
-                    PageHeader의 eyebrow 자리에 메뉴 라벨을 둔다. 타인 프로필은 그 메뉴로 오지 않으므로 없다 */}
-                <div className="space-y-2">
-                    <p className={TYPO.eyebrow}>{NAV_LABEL.myStats}</p>
-                    <MemberProfileHeader
-                        user={target}
-                        clubName={scope.kind === 'club' ? scope.clubName : club?.name}
-                        clubRating={clubRating}
-                        provisional={provisional}
-                        clubRank={clubRank}
-                        stats={headerStats}
-                        summary={summary}
-                        recentForm={form}
-                        personalRating={scope.kind === 'personal' ? personalRating : undefined}
-                        ratingSummary={ratingSummary}
-                    />
-                </div>
-                {/* 통계 범위 탭 스캐폴드 — 개인만 동작, 클럽/통합은 준비 중 */}
-                <ProfileScopeTabs scope={scope} personalHref={personalHref} />
-                {/* 0경기에서도 그린다(Week 57) — 헤더 빈 상태는 "왜 비었나"를, 체크리스트는 "무엇을 할지"를 말한다.
-                    옛 0경기 가드는 「첫 경기」 단계를 미완료 상태로는 영영 못 보게 만들었다 */}
-                {notice === WELCOME_NOTICE && <WelcomeNotice />}
-                {notice === WEAK_PASSWORD_NOTICE && <WeakPasswordNotice />}
-                {showOnboarding && <OnboardingChecklist steps={onboardingSteps} />}
-                <PersonalAnalyticsSection bundle={bundle} me={target} scope={scope} ratingHistory={ratingHistory} />
-            </PageContainer>
-        )
-    }
-
-    // 탈퇴한 회원의 URL — 익명화된 행이라 통계도 메타도 없다(F-pre-8). 헤더만 배지와 함께 그린다
+    // 탈퇴한 회원의 URL — 익명화된 행이라 통계도 메타도 없다. 헤더만 배지와 함께 그린다
     if (target.deletedAt) {
         return (
             <PageContainer>
                 <MemberProfileHeader user={target} />
-                <p className="text-body2 text-muted-foreground">탈퇴한 회원입니다.</p>
+                <p className="text-body2 text-foreground">탈퇴한 회원입니다.</p>
             </PageContainer>
         )
     }
 
-    // 타인 프로필 — 통계 공개면 본인 개인 탭과 같은 카드 한 벌(F-24), 비공개면 잠긴 4카드만.
-    // 개인 경기는 RLS가 본인 행뿐이라 `get_public_personal_matches`(0090)로 읽는다(비공개·탈퇴는 빈 배열).
-    // 클럽 대진표는 동결이라 읽지 않는다 — 그동안 타인 요약이 그것만 세어 누구를 열어도 「0 경기」였다.
-    if (target.statsHidden) {
+    if (!isSelf && target.statsHidden) {
         return (
             <PageContainer>
-                <MemberProfileHeader user={target} clubName={club?.name} />
+                <MemberProfileHeader user={target} />
                 <StatsQuadGrid
                     gender={target.gender}
                     singles={EMPTY_PLAYER_STATS}
@@ -235,25 +95,41 @@ export default async function MemberProfilePage({ params, searchParams }: Props)
     }
 
     const scope: AnalyticsScope = { kind: 'personal' }
-    const bundle = await fetchAnalyticsBundle(userId, { scope, source: 'public' })
+    const bundle = await fetchAnalyticsBundle(userId, { scope })
+    // 최근 폼은 통계 분해본(personalGames)으로 — 세트 하나가 게임 하나다
     const form = aggregateRecentForm(
         { matches: bundle.matches, gameMetaById: bundle.gameMetaById, personalMatches: bundle.personalGames },
         userId,
     )
-    const publicRating = replayPersonalRatings(bundle.personalGames, target.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
+    const snapshot = replayPersonalRatings(bundle.personalGames, target.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
+    const personalRating = snapshot.matchesPlayed > 0
+        ? { rating: snapshot.rating, provisional: snapshot.provisional, matchesPlayed: snapshot.matchesPlayed }
+        : undefined
 
     return (
         <PageContainer>
-            <MemberProfileHeader
-                user={target}
-                clubName={club?.name}
-                stats={deriveHeaderStats(bundle.stats, form)}
-                summary={deriveSummary(bundle.stats)}
-                personalRating={publicRating.matchesPlayed > 0
-                    ? { rating: publicRating.rating, provisional: publicRating.provisional }
-                    : undefined}
-            />
-            <PersonalAnalyticsSection bundle={bundle} me={target} scope={scope} viewer="public" />
+            {isSelf && (
+                <LinkTabs
+                    ariaLabel="통계 범위"
+                    activeKey="stats"
+                    items={[
+                        { key: 'stats', label: `내 ${NAV_LABEL.stats}`, href: statsHref(userId) },
+                        { key: 'ranking', label: NAV_LABEL.ranking, href: '/ranking' },
+                    ]}
+                />
+            )}
+            <div className="space-y-2">
+                {isSelf && <p className={TYPO.eyebrow}>{NAV_LABEL.stats}</p>}
+                <MemberProfileHeader
+                    user={target}
+                    stats={deriveHeaderStats(bundle.stats, form)}
+                    summary={deriveSummary(bundle.stats)}
+                    recentForm={isSelf ? form : undefined}
+                    personalRating={personalRating}
+                />
+            </div>
+            {isSelf && notice === WEAK_PASSWORD_NOTICE && <WeakPasswordNotice />}
+            <PersonalAnalyticsSection bundle={bundle} me={target} scope={scope} viewer={isSelf ? undefined : 'public'} />
         </PageContainer>
     )
 }

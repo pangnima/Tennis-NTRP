@@ -10,7 +10,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { isSafeNext } from '@/lib/supabase/middleware'
 import { DELETED_ERROR_PARAM, OAUTH_ERROR_PARAM } from '@/lib/auth/auth-error-messages'
-import { personalNavHref } from '@/lib/nav-items'
+import { HOME_PATH } from '@/lib/nav-items'
 import { PROFILE_ONBOARDING_PATH } from '@/lib/profile/onboarding-gate'
 
 export async function GET(request: NextRequest) {
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     // 여기서 한 번 더 보내면 첫 진입에 화면이 한 번 덜 깜빡인다.
     const dest = profile?.ntrp == null
         ? `${PROFILE_ONBOARDING_PATH}${next ? `?next=${encodeURIComponent(next)}` : ''}`
-        : (next ?? personalNavHref(user.id))
+        : (next ?? HOME_PATH)
 
     return redirectTo(request, dest)
 }

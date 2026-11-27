@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import { PRESS_HEIGHT } from '@/components/common/action-button-class'
 import { PILL_BASE } from '@/lib/dashboard/tokens'
 
 /** 검색 결과에서 고른 회원 — 매칭 만들기의 InviteeRow와 같은 모양 */
@@ -24,7 +25,7 @@ export function MemberPickChips({ picks, onRemove, removeLabel = '선택 해제'
                         type="button"
                         onClick={() => onRemove(row.userId)}
                         aria-label={`${row.name} ${removeLabel}`}
-                        className={`${PILL_BASE} gap-1 border-primary/40 text-primary hover:bg-primary/10 transition-colors`}
+                        className={`${PILL_BASE} ${PRESS_HEIGHT.sm} gap-1 rounded-full px-3 border-primary/40 text-primary hover:bg-primary/10 transition-colors`}
                     >
                         {row.name}
                         <X className="size-3" />

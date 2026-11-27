@@ -1,4 +1,4 @@
-import type { DoublesCourtStats } from '@/lib/queries/stats'
+import type { DoublesCourtStats } from '@/lib/stats'
 import { calcWinRate } from '@/lib/dashboard/tokens'
 import { SectionCard } from '@/components/common/section-card'
 import { StatBarRow } from '@/components/stats/stat-bar-row'
@@ -40,7 +40,7 @@ export function DoublesCourtStatsCard({ court }: Props) {
                 winRate={calcWinRate(court.deuce.wins, court.deuce.losses)}
                 barClass={COURT_BAR_CLASS.deuce}
             />
-            <p className="text-caption text-foreground/70 border-t border-foreground/5 pt-2">
+            <p className="text-caption text-muted-foreground border-t border-foreground/5 pt-2">
                 * 복식 경기 기준. 코트 미지정 경기는 듀스에 포함.
             </p>
         </SectionCard>

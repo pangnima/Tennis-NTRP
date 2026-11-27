@@ -1,81 +1,72 @@
+import { matchTitle } from '@/lib/matches/when'
 import type { Notification, NotificationPayload, NotificationType } from '@/types'
-import { buildRoomTitle } from '@/lib/match-rooms/title'
 
 /**
- * 알림 문구·링크의 단일 출처(Week 71). DB는 사건(type)과 스냅샷(payload)만 남기고 사람이 읽는 말은 여기서 만든다 —
- * 문구를 DB에 넣으면 어휘가 바뀔 때(방장→호스트, Week 54) 이미 쌓인 행이 낡는다.
- * 어휘 규칙: '방'은 '매칭', '강퇴'는 '내보내기'(member-labels.ts) — labels.test.ts가 가드한다.
+ * 알림 문구·링크의 단일 출처. DB는 사건(type)과 스냅샷(payload)만 남기고 사람이 읽는 말은 여기서 만든다 —
+ * 문구를 DB에 넣으면 어휘가 바뀔 때 이미 쌓인 행이 낡는다.
+ *
+ * 알림은 "일어난 일"이다 — 누가 나를 불렀다, 들어왔다, 나갔다, 내 경기가 기록·수정·삭제됐다, 매칭이 확정·삭제됐다.
+ * 기다리는 단계는 공개 매칭의 참가 신청 하나뿐이다(0099, 오너 결정) — 신청·승인·거절·내보내기 알림이 그것이다.
+ * 독촉 알림은 없다.
  */
 export type NotificationLabel = { title: string; body: string }
 
-const who = (p: NotificationPayload, fallback = '상대') => p.actorName ?? fallback
-
-const REMINDER_STAGE: Record<1 | 2, string> = {
-    1: '2시간 뒤 시작합니다',
-    2: '지금 시작합니다',
-}
+const who = (p: NotificationPayload, fallback = '참가자') => p.actorName ?? fallback
 
 export const NOTIFICATION_LABEL: Record<NotificationType, (p: NotificationPayload) => NotificationLabel> = {
-    room_invited: (p) => ({ title: '매칭 초대', body: `${who(p, '호스트')}님이 매칭에 초대했습니다.` }),
-    invite_accepted: (p) => ({ title: '참가 수락', body: `${who(p)}님이 초대를 수락하고 참가했습니다.` }),
-    invite_declined: (p) => ({ title: '초대 거절', body: `${who(p)}님이 초대를 거절했습니다.` }),
-    room_entered: (p) => ({ title: '새 참가자', body: `${who(p)}님이 참가했습니다.` }),
-    member_removed: () => ({ title: '매칭에서 내보내짐', body: '호스트가 매칭에서 내보냈습니다.' }),
-    member_left: (p) => ({ title: '참가자 나감', body: `${who(p)}님이 매칭에서 나갔습니다.` }),
-    result_proposed: (p) => ({
-        title: p.revised ? '결과 다시 입력됨' : '결과 입력됨',
-        body: `${who(p)}님이 결과를 ${p.revised ? '다시 ' : ''}입력했습니다. 확인해 주세요 — 24시간 동안 이의가 없으면 자동 확정됩니다.`,
+    match_added: (p) => ({ title: '매칭에 초대됐습니다', body: `${who(p, '호스트')}님이 매칭에 추가했습니다. 원하지 않으면 매칭에서 나갈 수 있습니다.` }),
+    // 비회원이 명단에 올랐을 때도 같은 사건이다(0108) — 타입을 늘리지 않고 payload.guestName으로 가른다
+    match_joined: (p) => ({
+        title: '새 참가자',
+        body: !p.guestName
+            ? `${who(p)}님이 매칭에 참가했습니다.`
+            : p.viaLink || !p.actorName
+                ? `비회원 ${p.guestName}님이 초대 링크로 참가했습니다.`
+                : `${p.actorName}님이 비회원 ${p.guestName}님을 참가자로 추가했습니다.`,
     }),
-    result_confirmed: (p) => ({ title: '결과 확정', body: `${who(p)}님이 확인해 결과가 확정됐습니다.` }),
-    result_auto_confirmed: () => ({
-        title: '결과 자동 확정',
-        body: '24시간 동안 이의가 없어 결과가 자동 확정됐습니다. 정정이 필요하면 매칭에서 [결과 정정]을 눌러 주세요.',
+    // 초대 링크로 등록한 비회원의 본인 취소(0109)도 같은 사건
+    match_left: (p) => ({ title: '참가자 나감', body: p.guestName ? `비회원 ${p.guestName}님이 참가를 취소했습니다.` : `${who(p)}님이 매칭에서 나갔습니다.` }),
+    match_confirmed: (p) => ({
+        title: '매칭 확정',
+        body: p.auto
+            ? '종료 후 7일이 지나 매칭이 자동으로 확정됐습니다. 기록은 더 이상 수정되지 않습니다.'
+            : `${who(p, '호스트')}님이 매칭을 최종 확정했습니다. 기록은 더 이상 수정되지 않습니다.`,
     }),
-    result_disputed: (p) => ({
-        title: '이의 제기',
-        body: `${who(p)}님이 결과에 이의를 제기했습니다.${p.disputeReason ? ` 사유: ${p.disputeReason}` : ''}`,
-    }),
-    result_reopen_requested: (p) => ({
-        title: '결과 정정 요청',
-        body: `${who(p)}님이 확정된 결과의 정정을 요청했습니다.${p.disputeReason ? ` 사유: ${p.disputeReason}` : ''}`,
-    }),
-    room_closed: () => ({ title: '매칭 마감', body: '호스트가 매칭을 마감했습니다. 기록은 더 이상 수정되지 않습니다.' }),
-    lineup_saved: (p) => ({ title: '대진표 나옴', body: `호스트가 대진표를 저장했습니다${p.gameCount ? ` (${p.gameCount}게임)` : ''}.` }),
-    lineup_changed: (p) => ({ title: '대진표 변경', body: `호스트가 대진표를 고쳤습니다${p.gameCount ? ` (${p.gameCount}게임)` : ''}.` }),
-    room_deleted: () => ({ title: '매칭 취소', body: '호스트가 매칭을 내렸습니다.' }),
-    invite_expired: (p) => ({ title: '초대 만료', body: `${p.inviteeName ?? '초대한 회원'}님이 응답하지 않아 초대가 만료됐습니다.` }),
-    invite_reminder: (p) => ({
-        title: '초대에 응답해 주세요',
-        body: `초대받은 매칭이 ${REMINDER_STAGE[p.stage ?? 1]}. 아직 응답하지 않았습니다.`,
-    }),
-    room_tomorrow: (p) => ({ title: '내일 매칭', body: p.playedTime ? `내일 ${p.playedTime} 매칭이 있습니다.` : '내일 매칭이 있습니다.' }),
-    result_missing: () => ({ title: '결과를 입력해 주세요', body: '경기가 끝났는데 아직 결과가 입력되지 않은 게임이 있습니다.' }),
-    auto_confirm_reminder: () => ({
-        title: '곧 자동 확정됩니다',
-        body: '12시간 뒤 결과가 자동 확정됩니다. 다르면 지금 이의를 제기해 주세요.',
-    }),
-    reentry_reminder: () => ({ title: '결과를 다시 입력해 주세요', body: '이의가 제기된 지 하루가 지났습니다. 결과를 다시 입력해 주세요.' }),
+    match_deleted: (p) => ({ title: '매칭 삭제', body: `${who(p, '호스트')}님이 매칭을 삭제했습니다.` }),
+    match_applied: (p) => ({ title: '참가 신청', body: `${who(p, '회원')}님이 매칭 참가를 신청했습니다. 매칭 화면에서 승인하거나 거절해 주세요.` }),
+    match_approved: (p) => ({ title: '참가 확정', body: `${who(p, '호스트')}님이 참가를 승인했습니다. 이제 매칭 참가자입니다.` }),
+    // 신청이 취소된 이유(0101) — 호스트의 거절 · 모집 마감 · 비공개 전환. 타입을 늘리지 않고 payload.reason으로 가른다
+    match_declined: (p) =>
+        p.reason === 'closed'
+            ? { title: '참가 신청 취소', body: `${who(p, '호스트')}님이 모집을 마감해 참가 신청이 취소됐습니다.` }
+            : p.reason === 'private'
+                ? { title: '참가 신청 취소', body: `${who(p, '호스트')}님이 매칭을 비공개로 바꿔 참가 신청이 취소됐습니다.` }
+                : { title: '참가 신청 거절', body: `${who(p, '호스트')}님이 이번 매칭 참가 신청을 받지 않았습니다.` },
+    match_removed: (p) => ({ title: '매칭에서 빠졌습니다', body: `${who(p, '호스트')}님이 매칭 명단에서 내보냈습니다. 이미 기록된 경기는 그대로 남습니다.` }),
+    match_tomorrow: (p) => ({ title: '내일 매칭', body: p.playedTime ? `내일 ${p.playedTime} 매칭이 있습니다.` : '내일 매칭이 있습니다.' }),
+    game_recorded: (p) => ({ title: '경기가 기록됐습니다', body: `${who(p)}님이 함께 뛴 경기를 기록했습니다. 스코어가 틀리면 직접 고칠 수 있습니다.` }),
+    game_updated: (p) => ({ title: '경기가 수정됐습니다', body: `${who(p)}님이 경기 기록을 고쳤습니다. 확인해 주세요.` }),
+    game_deleted: (p) => ({ title: '경기가 삭제됐습니다', body: `${who(p)}님이 경기 기록을 삭제했습니다.` }),
 }
 
 export function notificationLabel(n: Pick<Notification, 'type' | 'payload'>): NotificationLabel {
-    return NOTIFICATION_LABEL[n.type](n.payload)
+    // 모르는 타입(배포 순서가 어긋난 순간의 새 타입)은 화면을 깨지 않고 빈 문구로 둔다
+    return NOTIFICATION_LABEL[n.type]?.(n.payload) ?? { title: '알림', body: '' }
 }
 
-/** 방 한 줄(9월 20일 10:00~12:00 · 코트 · 복식) — 스냅샷에 날짜·방식이 있을 때만 */
+/** 매칭 한 줄(12.05(토) 10:00~12:00 · 코트 · 남복) — 스냅샷에 날짜·종목이 있을 때만 */
 export function notificationTitleLine(p: NotificationPayload): string | null {
     if (!p.playedAt || !p.matchType) return null
-    return buildRoomTitle({
+    return matchTitle({
         playedAt: p.playedAt,
         playedTime: p.playedTime,
-        durationMinutes: p.durationMinutes,
+        durationMinutes: p.durationMinutes ?? 0,
         courtName: p.courtName,
         matchType: p.matchType,
     })
 }
 
-/** 눌렀을 때 갈 곳 — 방이 지워졌으면(room_id null) 내 기록·참여 중인 매칭으로 폴백 */
-export function notificationHref(n: Pick<Notification, 'roomId' | 'requestId'>): string {
-    if (n.roomId) return `/match-rooms/${n.roomId}`
-    if (n.requestId) return '/me/personal-matches'
-    return '/me/match-rooms'
+/** 눌렀을 때 갈 곳 — 매칭이 있으면 그 매칭, 없으면(직접 기록·삭제된 매칭) 내 경기 */
+export function notificationHref(n: Pick<Notification, 'matchId'>): string {
+    return n.matchId ? `/matches/${n.matchId}` : '/games'
 }

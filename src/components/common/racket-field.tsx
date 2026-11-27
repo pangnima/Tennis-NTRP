@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { fieldClass, FIELD_LABEL as labelCls } from '@/components/common/field-class'
 import { FieldToggle } from '@/components/common/field-toggle'
 import {
     RACKET_BRAND_OPTIONS,
@@ -9,7 +10,6 @@ import {
     splitRacketBrand,
     type RacketBrandChoice,
 } from '@/lib/profile/signup-fields'
-import { FORM_INPUT_BASE as inputCls, FORM_LABEL_BASE as labelCls } from '@/lib/dashboard/tokens'
 
 // 라디오 옵션은 readonly 튜플이라 FieldToggle의 가변 배열 시그니처에 맞춰 복사
 const OPTIONS = RACKET_BRAND_OPTIONS.map((o) => ({ value: o.value, label: o.label }))
@@ -55,7 +55,7 @@ export function RacketField({ initialBrand, initialModel }: RacketFieldProps) {
                             maxLength={RACKET_BRAND_MAX_LEN}
                             required
                             aria-label="기타 라켓 브랜드"
-                            className={inputCls}
+                            className={fieldClass()}
                         />
                     )}
                     <input
@@ -65,7 +65,7 @@ export function RacketField({ initialBrand, initialModel }: RacketFieldProps) {
                         placeholder="라켓명 (선택, 예: 프로스태프 97)"
                         maxLength={RACKET_MODEL_MAX_LEN}
                         aria-label="라켓명"
-                        className={`${inputCls} ${choice === 'other' ? '' : 'sm:col-span-2'}`}
+                        className={`${fieldClass()} ${choice === 'other' ? '' : 'sm:col-span-2'}`}
                     />
                 </div>
             )}

@@ -94,7 +94,7 @@ export function WinRateTrendBody({ result, minPointWidth }: Props) {
                     {/* 경기 수 (막대 값) — 막대 중앙 정렬, 0은 숨김 */}
                     <div className="mt-1 flex shrink-0">
                         {points.map((p) => (
-                            <span key={`c${p.key}`} className="min-w-0 flex-1 text-center text-caption font-medium tabular-nums text-foreground/70">
+                            <span key={`c${p.key}`} className="min-w-0 flex-1 text-center text-caption font-medium tabular-nums text-foreground">
                                 {p.total > 0 ? p.total : ''}
                             </span>
                         ))}

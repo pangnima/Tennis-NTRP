@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { PasswordRulesHint } from '@/components/auth/password-rules-hint'
-import { Button } from '@/components/ui/button'
+import { ActionButton } from '@/components/common/action-button'
 import { updatePasswordAction } from '@/lib/actions/profile'
 import { PASSWORD_MIN_LEN } from '@/lib/auth/password-policy'
 import { CARD_BASE } from '@/lib/dashboard/tokens'
@@ -63,14 +63,14 @@ export function PasswordChangeForm() {
                 </p>
             )}
 
-            <Button
-                variant="accent"
+            <ActionButton
+                variant="solid" size="lg"
                 type="submit"
                 disabled={isPending}
-                className="w-full rounded-full font-semibold h-11"
+                className="w-full"
             >
                 {isPending ? '변경 중...' : '비밀번호 변경'}
-            </Button>
+            </ActionButton>
         </form>
     )
 }

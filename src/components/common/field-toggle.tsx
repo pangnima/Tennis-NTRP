@@ -1,6 +1,7 @@
 'use client'
 
-import { MATCH_FORM_LABEL } from '@/lib/dashboard/tokens'
+import { PRESS_HEIGHT } from '@/components/common/action-button-class'
+import { FIELD_LABEL } from '@/components/common/field-class'
 
 type Option<T extends string> = { value: T; label: string }
 
@@ -15,8 +16,10 @@ type FieldToggleProps<T extends string> = {
     onChange: (v: T) => void
     // 열 수 강제 (미지정 시 옵션 개수 기준). 5·7은 좁은 화면에서 줄바꿈해 터치 타깃을 확보한다.
     columns?: FieldToggleColumns
-    // 라벨 스타일 덮어쓰기 (auth 폼은 FORM_LABEL_BASE 위계 사용)
+    // 라벨 스타일 덮어쓰기 (auth 폼은 FIELD_LABEL 위계 사용)
     labelClassName?: string
+    // 고를 수 없을 때(예: 게임이 있는 매칭의 종목) — 이유는 호출부가 옆에 적는다
+    disabled?: boolean
 }
 
 // 옵션 개수별 정적 grid 클래스 (Tailwind purge 대응 — 동적 문자열 금지)
@@ -40,7 +43,8 @@ export function FieldToggle<T extends string>({
     value,
     onChange,
     columns,
-    labelClassName = MATCH_FORM_LABEL,
+    labelClassName = FIELD_LABEL,
+    disabled = false,
 }: FieldToggleProps<T>) {
     const gridCls = GRID_COLS[columns ?? options.length] ?? 'grid-cols-2'
     return (
@@ -60,8 +64,9 @@ export function FieldToggle<T extends string>({
                             type="button"
                             role="radio"
                             aria-checked={active}
+                            disabled={disabled}
                             onClick={() => onChange(o.value)}
-                            className={`px-2.5 py-2 text-body2 rounded-md border transition-colors ${
+                            className={`${PRESS_HEIGHT.lg} px-2.5 text-body2 rounded-md border transition-colors disabled:pointer-events-none disabled:opacity-50 ${
                                 active
                                     ? 'border-spot-solid bg-spot-solid text-spot-foreground font-semibold'
                                     : 'border-input text-foreground hover:bg-muted/40'

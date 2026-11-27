@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { CTA_LINK } from '@/lib/dashboard/tokens'
+import { actionButtonClass } from '@/components/common/action-button-class'
 
 export default function NotFound() {
     return (
@@ -9,8 +8,8 @@ export default function NotFound() {
             <h1 className="text-h2 font-bold">페이지를 찾을 수 없습니다</h1>
             <p className="text-muted-foreground">요청하신 페이지가 존재하지 않거나 이동되었습니다.</p>
             <Link
-                href="/match-rooms"
-                className={cn(CTA_LINK, 'mt-2')}
+                href="/matches"
+                className={actionButtonClass({ variant: 'solid', size: 'md', className: 'mt-2' })}
             >
                 매칭 리스트로 돌아가기
             </Link>

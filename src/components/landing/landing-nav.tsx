@@ -1,8 +1,7 @@
 import Link from 'next/link'
 
 import { BrandLogo } from '@/components/common/brand-logo'
-import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { actionButtonClass } from '@/components/common/action-button-class'
 
 /** 같은 페이지 앵커 둘 + 사용 가이드 — 랜딩은 body 스크롤이라 브라우저 해시 이동이 그대로 된다 */
 const NAV_LINKS = [
@@ -33,10 +32,9 @@ export function LandingNav() {
                             {link.label}
                         </Link>
                     ))}
-                    {/* buttonVariants base가 text-sm이라 text-body2로 덮어쓴다 */}
                     <Link
                         href="/login"
-                        className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'h-10 px-4 text-body2')}
+                        className={actionButtonClass({ size: 'md' })}
                     >
                         로그인
                     </Link>

@@ -6,7 +6,17 @@ import { effectiveNtrp } from '@/lib/rating/display'
 import { formatRecord } from '@/lib/dashboard/outcome'
 import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
 import { SURFACE_LABELS } from '@/lib/dashboard/surface'
-import type { UnifiedHeadToHead } from '@/lib/queries/stats'
+/** 상대별 맞대결 요약 한 줄 — 회원이면 id, 비회원이면 이름이 정체성 */
+export type UnifiedHeadToHead = {
+    opponentUserId: string | null
+    opponentName: string | null
+    matches: number
+    wins: number
+    losses: number
+    draws: number
+    setsWon: number
+    setsLost: number
+}
 import type { CourtSurface, MatchType, User } from '@/types'
 
 // ── 클라이언트 H2H 목록 빌더 (scope-aware 번들용) ─────────────────────────

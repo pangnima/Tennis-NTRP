@@ -17,8 +17,8 @@ export function mapNotificationRow(row: Row): Notification {
     return {
         id: row.id,
         type: row.type as NotificationType,
-        roomId: row.room_id,
-        requestId: row.request_id,
+        matchId: row.match_id,
+        gameId: row.game_id,
         actorUserId: row.actor_user_id,
         // DB CHECK가 object임을 보장한다(0094) — 키는 room_snapshot·트리거가 넣은 것뿐
         payload: (row.payload ?? {}) as NotificationPayload,

@@ -30,6 +30,11 @@ export function formatMonthDay(dateStr: string): string {
     return `${mm}.${dd}`
 }
 
+/** 오늘 날짜 'YYYY-MM-DD' (Asia/Seoul). sv-SE 로케일이 ISO 형식을 그대로 낸다. */
+export function todayIsoKst(now: Date = new Date()): string {
+    return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(now)
+}
+
 // ── 경기 시각(시 단위) ──
 // 개인 경기 시각은 시(hour)만 받는다. 저장 포맷은 기존과 같은 'HH:MM'(분은 항상 00)이라 DB time 컬럼·검증 정규식은 그대로.
 
@@ -54,4 +59,15 @@ export function formatHourLabel(value: string): string {
     const m = /^(\d{2}):\d{2}$/.exec(value)
     if (!m || Number(m[1]) > 23) return value
     return `${Number(m[1])}시`
+}
+
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const
+
+/** 'YYYY-MM-DD' → '11.26 (목)' — 목록의 날짜 칸. 날짜 문자열은 KST 달력 값이라 시간대 변환 없이 요일만 구한다. */
+export function formatDayWithWeekday(dateStr: string): string {
+    const [y, m, d] = dateStr.split('-').map(Number)
+    if (!y || !m || !d) return dateStr
+    // UTC로 만들어 요일만 읽는다 — 로컬 시간대(서버 UTC·브라우저 KST)에 따라 하루가 밀리지 않게
+    const weekday = WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()]
+    return `${String(m).padStart(2, '0')}.${String(d).padStart(2, '0')} (${weekday})`
 }

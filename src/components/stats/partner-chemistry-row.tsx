@@ -1,6 +1,5 @@
 import type { PartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import type { User } from '@/types'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
 import { ProfileLink } from '@/components/common/profile-link'
 import { GuestBadge } from '@/components/common/guest-badge'
 
@@ -34,11 +33,11 @@ export function PartnerChemistryRow({ partner, userMap }: Props) {
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     {user ? (
-                        <ProfileLink userId={partner.partnerId} isGuest={user.isGuest} className="text-body2 font-medium text-foreground/90 hover:text-foreground transition-colors truncate">
+                        <ProfileLink userId={partner.partnerId} isGuest={user.isGuest} className="text-body2 font-medium text-foreground hover:underline truncate">
                             {name}
                         </ProfileLink>
                     ) : (
-                        <span className="text-body2 font-medium text-foreground/90 truncate">{name}</span>
+                        <span className="text-body2 font-medium text-foreground truncate">{name}</span>
                     )}
                     {user?.isGuest && <GuestBadge />}
                     {showStreak && (
@@ -47,9 +46,9 @@ export function PartnerChemistryRow({ partner, userMap }: Props) {
                         </span>
                     )}
                 </div>
-                <span className="text-body2 text-foreground/80 shrink-0 tabular-nums">
-                    <span className="text-foreground/90 font-semibold">{partner.winRate}%</span>
-                    <span className={`ml-1.5 ${TEXT_MUTED}`}>{partner.total}경기</span>
+                <span className="text-body2 text-foreground shrink-0 tabular-nums">
+                    <span className="font-semibold">{partner.winRate}%</span>
+                    <span className="ml-1.5">{partner.total}경기</span>
                 </span>
             </div>
 
@@ -58,7 +57,7 @@ export function PartnerChemistryRow({ partner, userMap }: Props) {
                 <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-muted">
                     <div className={chemColor(partner.chemistry)} style={{ width: `${partner.chemistry}%`, height: '100%' }} />
                 </div>
-                <span className="text-caption tabular-nums text-foreground/70 w-12 text-right">
+                <span className="text-caption tabular-nums text-foreground w-12 text-right">
                     케미 {partner.chemistry}
                 </span>
                 <span className={`text-caption ${trend.cls}`} title={`최근 호흡 ${trend.label}`}>{trend.mark}</span>

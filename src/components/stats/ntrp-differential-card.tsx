@@ -34,7 +34,7 @@ export function NtrpDifferentialCard({ ntrpStats }: Props) {
                             {wl.total > 0 ? (
                                 <>
                                     <p className="text-h2 font-bold text-foreground tabular-nums">{wl.winRate}%</p>
-                                    <p className="text-caption text-muted-foreground tabular-nums">
+                                    <p className="text-caption text-foreground tabular-nums">
                                         {formatRecord(wl.wins, wl.losses, wl.draws)}
                                     </p>
                                 </>

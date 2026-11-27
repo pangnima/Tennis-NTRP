@@ -73,7 +73,7 @@ export function MemberProfileHeader({ user, clubName, clubRating, provisional, c
                             <span className="text-caption tabular-nums">
                                 <span className="text-win font-semibold">{summary.wins}승</span>{' '}
                                 <span className="text-loss font-semibold">{summary.losses}패</span>
-                                {summary.draws > 0 && <span className="text-muted-foreground"> {summary.draws}무</span>}
+                                {summary.draws > 0 && <span> {summary.draws}무</span>}
                             </span>
                         )}
                     </div>
@@ -92,13 +92,13 @@ export function MemberProfileHeader({ user, clubName, clubRating, provisional, c
                             <div className="min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
                                     <h1 className="text-h1 font-bold">{user.name}</h1>
-                                    <span className="text-body2 text-muted-foreground">({user.nickname})</span>
+                                    <span className="text-body2 text-foreground">({user.nickname})</span>
                                     {user.isGuest && <GuestBadge />}
                                     {user.deletedAt && <DeletedBadge />}
                                 </div>
                                 {/* 탈퇴자는 성별·주력손이 익명화되어 null이다 — 기본값('남 · 오른손')을 거짓으로 그리지 않는다(F-pre-8) */}
                                 {!user.deletedAt && (
-                                    <p className="text-body2 text-muted-foreground">
+                                    <p className="text-body2 text-foreground">
                                         {genderLabel[user.gender]} · {handLabel[user.dominantHand]}
                                         {clubRank !== undefined && (
                                             <span className="ml-1.5 font-medium text-foreground">· 클럽 {clubRank}위</span>

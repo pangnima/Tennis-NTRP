@@ -52,7 +52,7 @@ export function ActivityHourHeatmapCard({ weekly, monthly }: Props) {
             headerRight={<SegmentedToggle options={OPTIONS} value={mode} onValueChange={setMode} />}
         >
             {isEmpty ? (
-                <p className={`text-body2 ${TEXT_MUTED}`}>이 기간에 시간 기록이 있는 경기가 없습니다.</p>
+                <p className="text-body2 text-foreground">이 기간에 시간 기록이 있는 경기가 없습니다.</p>
             ) : (
                 <div className="flex-1 min-h-0 overflow-x-auto overflow-y-hidden">
                 <div

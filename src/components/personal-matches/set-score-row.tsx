@@ -1,6 +1,8 @@
 'use client'
 
 import type { PersonalMatchSetScore } from '@/types'
+import { ActionButton } from '@/components/common/action-button'
+import { fieldClass } from '@/components/common/field-class'
 import { AdDeuceToggle } from '@/components/personal-matches/ad-deuce-toggle'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +25,8 @@ type SetScoreRowProps = {
     oppAdLabels?: { opponent: string; opponent2: string }
 }
 
-const scoreInputClass = 'w-14 h-10 rounded-lg border border-input bg-background px-2 text-body font-semibold text-center'
+/** 직접 기록 폼의 스코어 칸 — 폼의 칸이라 lg(44px). 칸 규칙 한 모양에 폭·가운데 정렬만 덧붙인다 */
+const scoreInputClass = fieldClass({ className: 'w-14 px-2 text-center font-semibold tabular-nums' })
 
 /**
  * 개인 경기기록의 게임(세트) 한 줄(번호 + 내/상대 점수 + 삭제 + 복식 애드/듀스).
@@ -57,14 +60,12 @@ export function SetScoreRow({
                     className={scoreInputClass}
                 />
                 {removable && (
-                    <button type="button" onClick={onRemove} className="text-caption text-destructive/80 hover:text-destructive">
-                        삭제
-                    </button>
+                    <ActionButton variant="danger" size="xs" onClick={onRemove}>삭제</ActionButton>
                 )}
             </div>
             {/* 복식: 게임별 애드/듀스 코트 */}
             {showAdDeuce && (
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     <AdDeuceToggle
                         label="내 팀 백핸드"
                         options={[

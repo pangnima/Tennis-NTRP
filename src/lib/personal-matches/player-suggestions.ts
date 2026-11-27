@@ -1,5 +1,6 @@
 import type { OpponentCandidate } from '@/lib/queries/users'
-import type { PastOpponent } from '@/lib/queries/personal-matches'
+/** 예전에 직접 입력했던 비회원 — 이름으로 다시 고르면 손잡이·NTRP를 이어받는다 */
+export type PastOpponent = { name: string; hand?: 'right' | 'left'; ntrp?: number }
 import { derivePublicNtrp } from './ntrp'
 
 /**

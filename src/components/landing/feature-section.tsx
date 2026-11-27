@@ -1,34 +1,32 @@
-import { CheckCheck, Shuffle, TrendingUp } from 'lucide-react'
+import { CalendarDays, PencilLine, TrendingUp } from 'lucide-react'
 
 import { TYPO } from '@/lib/dashboard/tokens'
 import { NAV_LABEL } from '@/lib/nav-items'
 import { cn } from '@/lib/utils'
 
-/** 실제로 있는 기능 셋 — 어휘는 사용 가이드(sections.ts)와 같다. 클럽 운영은 동결(Week 54)이라 없다 */
 const FEATURES = [
     {
-        icon: Shuffle,
-        title: '자동 대진표',
-        description: '호스트가 참가자와 코트 수를 넣으면 출전이 고르게 배분된 대진이 한 번에 나옵니다.',
+        icon: PencilLine,
+        title: '한 장으로 끝나는 기록',
+        description: '상대와 스코어를 한 화면에 넣으면 저장됩니다. 상대가 회원이 아니어도 기록할 수 있고, 틀리면 참가자 누구나 고칩니다.',
     },
     {
-        icon: CheckCheck,
-        title: '결과 상호 확인',
-        description:
-            '한 사람이 결과를 입력하면 나머지 참가자가 확인합니다. 전원이 확인해야 확정되고, 틀리면 이의 제기로 다시 입력을 요청합니다.',
+        icon: CalendarDays,
+        title: '공개 · 비공개 매칭',
+        description: '함께 칠 사람을 목록에서 모으거나, 초대 링크 하나로 아는 사람끼리만 엽니다. 매칭 안에서도 같은 화면으로 기록합니다.',
     },
     {
         icon: TrendingUp,
-        title: '개인 통계 · NTRP',
-        description: `확정된 경기가 ${NAV_LABEL.myRecords}에 쌓이고, 승률·레이팅·티어로 정리됩니다.`,
+        title: '통계 · 레이팅 · 랭킹',
+        description: `기록이 「${NAV_LABEL.games}」에 쌓이고, 승률·강약점·맞대결과 레이팅 순위로 정리됩니다.`,
     },
 ] as const
 
-/** 기능 소개 — 카드 테두리 없는 텍스트 열. 옛 3카드는 「자세히 보기 →」가 전부 죽은 링크였다 */
+/** 기능 3열 — 데모 영상이 없는 대신 "무엇이 되는가"를 세 문장으로. 수치·후기는 넣지 않는다(실제 데이터가 없다). */
 export function FeatureSection() {
     return (
         <section id="features" className="mx-auto max-w-6xl scroll-mt-4 border-t border-border px-6 py-16 lg:py-20">
-            <h2 className={TYPO.h2}>매칭 안에서 다 됩니다</h2>
+            <h2 className={TYPO.h2}>기록이 쉬워야 쌓입니다</h2>
             <ul className="mt-10 grid gap-8 md:grid-cols-3">
                 {FEATURES.map((feature) => (
                     <li key={feature.title}>

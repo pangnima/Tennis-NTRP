@@ -24,12 +24,12 @@ export function StatBarRow({ label, total, wins, losses, draws, winRate, barClas
             <div className="flex items-center justify-between gap-2 text-body2">
                 <span className="flex items-baseline gap-1.5 min-w-0">
                     <span className="font-medium text-foreground truncate">{label}</span>
-                    <span className="shrink-0 text-caption text-muted-foreground tabular-nums">총 {total}경기</span>
+                    <span className="shrink-0 text-caption text-foreground tabular-nums">총 {total}경기</span>
                 </span>
-                <span className="shrink-0 text-foreground/80 tabular-nums">
+                <span className="shrink-0 text-foreground tabular-nums">
                     {formatRecord(wins, losses, draws)}
                     {winRate !== null && (
-                        <span className="ml-1.5 text-foreground/90 font-semibold">{winRate}%</span>
+                        <span className="ml-1.5 font-semibold">{winRate}%</span>
                     )}
                 </span>
             </div>

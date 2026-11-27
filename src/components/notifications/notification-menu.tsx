@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ActionButton } from '@/components/common/action-button'
 import type { Notification } from '@/types'
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { NotificationRow } from '@/components/notifications/notification-row'
@@ -23,7 +24,7 @@ export function NotificationMenu({ recent, readIds, unreadCount, onOpen, onReadA
             <h2 className={`${TYPO.h4} px-3 py-2`}>알림</h2>
             <DropdownMenuSeparator className="my-0" />
             {recent.length === 0 ? (
-                <p className="px-3 py-6 text-center text-caption text-muted-foreground">새 알림이 없습니다</p>
+                <p className="px-3 py-6 text-center text-caption text-foreground">새 알림이 없습니다</p>
             ) : (
                 <div className="max-h-[60vh] overflow-y-auto divide-y divide-border">
                     {recent.map((n) => (
@@ -39,14 +40,14 @@ export function NotificationMenu({ recent, readIds, unreadCount, onOpen, onReadA
             )}
             <DropdownMenuSeparator className="my-0" />
             <div className="flex items-center justify-between px-3 py-2">
-                <button
-                    type="button"
-                    className={`${TEXT_LINK} text-caption disabled:text-muted-foreground disabled:no-underline`}
+                <ActionButton
+                    variant="ghost"
+                    size="xs"
                     disabled={unreadCount === 0}
                     onClick={onReadAll}
                 >
                     모두 읽음
-                </button>
+                </ActionButton>
                 <Link href="/me/notifications" className={`${TEXT_LINK} text-caption`}>전체 보기</Link>
             </div>
         </DropdownMenuContent>

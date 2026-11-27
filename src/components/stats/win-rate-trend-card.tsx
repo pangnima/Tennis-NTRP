@@ -78,7 +78,7 @@ export function WinRateTrendCard({ years }: Props) {
                         {best ? (
                             <p className={`text-caption ${TEXT_MUTED}`}>
                                 최고 승률 <span className="text-win font-semibold">{best.label} {best.winRate}%</span>
-                                <span className="mx-1.5">·</span>총 {result.totalGames}경기
+                                <span className="mx-1.5">·</span><span className="text-foreground">총 {result.totalGames}경기</span>
                             </p>
                         ) : (
                             <span />
@@ -97,7 +97,7 @@ export function WinRateTrendCard({ years }: Props) {
                 </>
             )}
             {result && isEmpty && years.length > 0 && (
-                <p className={`text-body2 ${TEXT_MUTED} text-center py-6`}>{year}년 기록이 없습니다</p>
+                <p className="text-body2 text-foreground text-center py-6">{year}년 기록이 없습니다</p>
             )}
         </SectionCard>
     )

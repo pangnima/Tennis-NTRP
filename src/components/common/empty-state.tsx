@@ -28,7 +28,7 @@ export function EmptyState({ image, title, description, children, actions, size 
                 <img src={image} alt="" aria-hidden width={md ? 132 : 96} height={md ? 96 : 64} draggable={false} />
             )}
             <div className="space-y-1">
-                <p className={md ? 'text-body font-medium text-foreground' : undefined}>{title}</p>
+                <p className={md ? 'text-body font-medium text-foreground' : 'text-foreground'}>{title}</p>
                 {description && <p className={md ? 'text-body2 text-muted-foreground' : 'text-caption'}>{description}</p>}
             </div>
             {children}
