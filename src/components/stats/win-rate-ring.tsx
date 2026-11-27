@@ -1,4 +1,4 @@
-import { calcWinRate } from '@/lib/dashboard/tokens'
+import { winRateOf } from '@/lib/stats'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -12,11 +12,10 @@ type Props = {
 /**
  * 승률 도넛 링 — 의존성 없는 순수 SVG.
  * 링은 전체 경기(승/패/무) 구성 비율로 분할되고, 중앙은 무승부 제외 승률을 표시한다.
- * 하단에는 구분선 + 색상 범례(승/패/무 개수)를 둔다. 클럽 티어 방패가 없는
- * 전체·개인 scope 헤더의 좌측 히어로 슬롯을 채운다.
+ * 하단에는 구분선 + 색상 범례(승/패/무 개수)를 둔다. 프로필 머리(`MemberProfileHeader`)의 좌측 슬롯을 채운다.
  */
 export function WinRateRing({ wins, losses, draws = 0, size = 148 }: Props) {
-    const rate = calcWinRate(wins, losses) // number | null (무승부 제외 분모, 경기 없으면 null)
+    const rate = winRateOf(wins, losses) // number | null (무승부 제외 분모, 경기 없으면 null)
     const pct = rate ?? 0
     const total = wins + losses + draws
     const stroke = 15

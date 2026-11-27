@@ -22,7 +22,7 @@ const SIZE: Record<NonNullable<Props['size']>, { box: string; text: string }> = 
 }
 
 /**
- * 사용자 아바타 — 헤더·프로필·룸 명단·회원 검색이 각자 이니셜 규칙(4종)과 fallback 색(6종)을 갖고 있던 것을
+ * 사용자 아바타 — 헤더·프로필·매칭 명단·회원 검색이 각자 이니셜 규칙(4종)과 fallback 색(6종)을 갖고 있던 것을
  * 하나로(Week 69). 이미지는 provider 외부 URL이 올 수 있어 `next/image`가 아니라 네이티브 `<img>`(shadcn Avatar)다
  * — 등록되지 않은 호스트는 렌더 중 throw라 허용목록을 쓰지 않는다(next.config.ts 주석).
  */

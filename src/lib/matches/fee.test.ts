@@ -24,7 +24,7 @@ describe('매칭 — 코트 비용 · 정원', () => {
         expect(parseAmount('')).toBeUndefined()
         expect(parseAmount('만원')).toBeNaN()
     })
-    it('매칭룸 머리 한 줄', () => {
+    it('매칭 상세 머리 한 줄', () => {
         expect(formatWon(40000)).toBe('40,000원')
         expect(formatFeeLine({ courtFee: 40000, capacity: 4 }, 2)).toBe('코트비 40,000원 · 1인당 약 10,000원 · 정원 4명 (2명 참가)')
         expect(formatFeeLine({ courtFee: undefined, capacity: 2 }, 1)).toBe('코트비 미정 · 정원 2명 (1명 참가)')

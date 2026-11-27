@@ -18,7 +18,7 @@ describe('derivePublicNtrp (DB derive_public_ntrp 미러)', () => {
         expect(derivePublicNtrp({ personalNtrp: 3.42, statsHidden: true })).toBeUndefined()
     })
 
-    it('1.0~7.0 밖이면 없음 (personal_matches check 범위)', () => {
+    it('1.0~7.0 밖이면 없음 (game_players.ntrp check 범위)', () => {
         expect(derivePublicNtrp({ personalNtrp: 0.5 })).toBeUndefined()
         expect(derivePublicNtrp({ personalNtrp: 7.5 })).toBeUndefined()
         expect(derivePublicNtrp({ ntrp: 0 })).toBeUndefined()

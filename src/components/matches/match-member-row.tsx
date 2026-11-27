@@ -8,6 +8,7 @@ import { TYPO } from '@/lib/dashboard/tokens'
 import { formatDominantHand } from '@/lib/profile/signup-fields'
 import type { MatchGuest, MatchMember } from '@/lib/queries/matches'
 import { cn } from '@/lib/utils'
+import { formatNtrp } from '@/lib/rating/display'
 
 /** 표 모드의 열 — 참가자(이름·성별) │ 구분 │ NTRP·티어 │ 주력손 │ 행동. 열 제목 줄과 같은 상수를 읽는다 */
 export const MEMBER_COLS = '@4xl:grid-cols-[minmax(0,1fr)_4.5rem_8.5rem_5rem_5.5rem]'
@@ -37,7 +38,7 @@ type Props = {
 export function MatchMemberRow({ member, isMe, action, matchId }: Props) {
     const role = member.role === 'host' ? 'host' : 'guest'
     return (
-        <div className={cn(ROW, isMe && 'bg-primary/10')}>
+        <div className={cn(ROW, isMe && 'bg-self/10')}>
             <PersonCell person={member} />
             <div className={META}>
                 <span className="justify-self-start"><span className={rolePillClass(role)}>{ROLE_LABEL[role]}</span></span>
@@ -72,7 +73,7 @@ export function MatchGuestRow({ guest, canRemove }: { guest: MatchGuest; canRemo
             </span>
             <div className={META}>
                 <span className="justify-self-start"><span className={rolePillClass('nonmember')}>{ROLE_LABEL.nonmember}</span></span>
-                <span className={cn(TYPO.body2, 'tabular-nums')}>{guest.ntrp.toFixed(1)}</span>
+                <span className={cn(TYPO.body2, 'tabular-nums')}>{formatNtrp(guest.ntrp)}</span>
                 <span className={cn(TYPO.body2, 'tabular-nums')}>{formatDominantHand(guest.hand) ?? '-'}</span>
             </div>
             {canRemove && (

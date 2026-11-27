@@ -14,12 +14,6 @@ export type WinLoss = {
     winRate: number   // decisive 기준 (draws 제외)
 }
 
-export function calcWinRate(wins: number, losses: number): number {
-    const decisive = wins + losses
-    if (decisive === 0) return 0
-    return Math.round((wins / decisive) * 100)
-}
-
 export function emptyWL(): WinLoss {
     return { wins: 0, losses: 0, draws: 0, total: 0, winRate: 0 }
 }

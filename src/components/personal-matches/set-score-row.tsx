@@ -1,7 +1,6 @@
 'use client'
 
 import type { PersonalMatchSetScore } from '@/types'
-import { ActionButton } from '@/components/common/action-button'
 import { fieldClass } from '@/components/common/field-class'
 import { AdDeuceToggle } from '@/components/personal-matches/ad-deuce-toggle'
 import { cn } from '@/lib/utils'
@@ -10,14 +9,7 @@ type SetScoreRowProps = {
     index: number
     set: PersonalMatchSetScore
     isDoubles: boolean
-    // 행 라벨 (기본 'N게임'). 로테이션 게임처럼 스코어 1줄 고정이면 '스코어'
-    label?: string
-    // 게임이 2개 이상일 때만 삭제 버튼 노출
-    removable: boolean
     onChange: (field: 'me' | 'opp', val: string) => void
-    onRemove: () => void
-    // 복식 애드/듀스 토글 노출 여부 (기본 true). 로테이션 복식은 false로 숨긴다.
-    enableAdDeuce?: boolean
     onMyAdChange?: (v: 'me' | 'partner' | undefined) => void
     onOppAdChange?: (v: 'opponent' | 'opponent2' | undefined) => void
     // 복식 애드/듀스 토글에 표시할 선수 이름
@@ -25,25 +17,25 @@ type SetScoreRowProps = {
     oppAdLabels?: { opponent: string; opponent2: string }
 }
 
-/** 직접 기록 폼의 스코어 칸 — 폼의 칸이라 lg(44px). 칸 규칙 한 모양에 폭·가운데 정렬만 덧붙인다 */
+/** 스코어 수정 폼의 스코어 칸 — 폼의 칸이라 lg(44px). 칸 규칙 한 모양에 폭·가운데 정렬만 덧붙인다 */
 const scoreInputClass = fieldClass({ className: 'w-14 px-2 text-center font-semibold tabular-nums' })
 
 /**
- * 개인 경기기록의 게임(세트) 한 줄(번호 + 내/상대 점수 + 삭제 + 복식 애드/듀스).
+ * 스코어 수정 폼의 스코어 한 줄(내/상대 점수 + 복식 애드/듀스).
  * 입력 정규화(빈값→NaN→제출 시 0)는 상위 폼이 담당하고, 여기서는 표시·이벤트 전달만 한다.
- * 클럽 대진표의 SetScore(team1/team2 문자열)와는 별개 모델(PersonalMatchSetScore)이다.
+ * 보는 사람 관점(me/opp)의 모델(PersonalMatchSetScore)이고, 저장할 때 절대 좌표(t1/t2)로 바꾼다(`setsFromSeat`).
  */
 export function SetScoreRow({
-    index, set, isDoubles, label, removable,
-    onChange, onRemove, enableAdDeuce = true, onMyAdChange, onOppAdChange,
+    index, set, isDoubles,
+    onChange, onMyAdChange, onOppAdChange,
     myAdLabels, oppAdLabels,
 }: SetScoreRowProps) {
-    // 복식 + 애드/듀스 활성 + 라벨·핸들러가 모두 주어졌을 때만 토글 렌더
-    const showAdDeuce = isDoubles && enableAdDeuce && !!myAdLabels && !!oppAdLabels && !!onMyAdChange && !!onOppAdChange
+    // 복식 + 라벨·핸들러가 모두 주어졌을 때만 토글 렌더
+    const showAdDeuce = isDoubles && !!myAdLabels && !!oppAdLabels && !!onMyAdChange && !!onOppAdChange
     return (
         <div className={isDoubles ? cn('space-y-2', index > 0 && 'mt-6 border-t border-border pt-6') : ''}>
             <div className="flex items-center gap-2">
-                <span className="text-caption text-muted-foreground w-10">{label ?? `${index + 1}게임`}</span>
+                <span className="text-caption text-muted-foreground w-10">스코어</span>
                 <input
                     type="number"
                     min={0} max={99}
@@ -59,9 +51,6 @@ export function SetScoreRow({
                     onChange={(e) => onChange('opp', e.target.value)}
                     className={scoreInputClass}
                 />
-                {removable && (
-                    <ActionButton variant="danger" size="xs" onClick={onRemove}>삭제</ActionButton>
-                )}
             </div>
             {/* 복식: 게임별 애드/듀스 코트 */}
             {showAdDeuce && (

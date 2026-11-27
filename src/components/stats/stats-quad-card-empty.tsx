@@ -13,7 +13,7 @@ type Props = {
 /**
  * 특정 매치타입만 0경기일 때의 카드 빈 상태 (레벨2).
  * 상단 pill은 일반 카드(StatsQuadCard)와 동일 위치로 유지해 그리드 정렬을 맞춘다.
- * 매칭 참여 CTA(recordHref — Week 57부터 매칭 리스트)는 헤더 우측(일반 카드의 승률 위치)에 두어 빈 카드가 세로로 늘어나지 않게 한다.
+ * [경기 기록] CTA(recordHref — 본인 화면만)는 헤더 우측(일반 카드의 승률 위치)에 두어 빈 카드가 세로로 늘어나지 않게 한다.
  */
 export function StatsQuadCardEmpty({ matchType, recordHref }: Props) {
     const style = getMatchTypeStyle(matchType)

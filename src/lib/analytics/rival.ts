@@ -1,4 +1,5 @@
-import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
+import { winRateOf } from '@/lib/stats'
+import { type BundleWithPersonal } from '@/lib/analytics/shared'
 import { aggregateHeadToHeadUnified } from '@/lib/analytics/head-to-head'
 import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { User } from '@/types'
@@ -34,7 +35,7 @@ export function selectRivals(
 ): RivalEntry[] {
     const top = h2hList
         .filter((o) => o.matches >= minGames)
-        .map((o) => ({ ...o, winRate: calcWinRate(o.wins, o.losses) }))
+        .map((o) => ({ ...o, winRate: winRateOf(o.wins, o.losses) ?? 0 }))
         .filter((o) => o.winRate >= 45 && o.winRate <= 55)
         .sort((a, b) => Math.abs(50 - a.winRate) - Math.abs(50 - b.winRate) || b.matches - a.matches)
         .slice(0, limit)

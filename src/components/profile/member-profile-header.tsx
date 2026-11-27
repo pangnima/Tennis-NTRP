@@ -9,7 +9,7 @@ import { ProfileEmptyGuide } from '@/components/profile/profile-empty-guide'
 import { WinRateRing } from '@/components/stats/win-rate-ring'
 import { RecentFormStrip } from '@/components/stats/recent-form-strip'
 import { getTier, TIER_LABELS, TIER_TEXT } from '@/lib/rating/tier'
-import { effectiveNtrp } from '@/lib/rating/display'
+import { effectiveNtrp, formatNtrp } from '@/lib/rating/display'
 import { CARD_BASE } from '@/lib/dashboard/tokens'
 import { cn } from '@/lib/utils'
 import type { RecentFormResult } from '@/lib/analytics/form'
@@ -32,7 +32,7 @@ export function MemberProfileHeader({ user, summary, recentForm, personalRating 
     // 0경기면 '0 경기' 대신 빈 상태 안내 + CTA
     const isEmptyGuide = !!summary && summary.wins + summary.losses + summary.draws === 0
     // NTRP 배지: 레이팅이 있으면 그 값(소수 3자리), 없으면 캐시(있으면)→가입 시드
-    const ntrpDisplay = personalRating ? personalRating.rating.toFixed(3) : effectiveNtrp(user).toFixed(1)
+    const ntrpDisplay = personalRating ? formatNtrp(personalRating.rating, 3) : formatNtrp(effectiveNtrp(user))
 
     return (
         <div className={cn(CARD_BASE, 'p-5 sm:p-6')}>

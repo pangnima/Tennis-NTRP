@@ -3,6 +3,7 @@ import { PRESS_HEIGHT } from '@/components/common/action-button-class'
 import { FIELD_LABEL as labelCls, FIELD_READONLY as readonlyFieldCls } from '@/components/common/field-class'
 import { formatYearMonthLabel } from '@/lib/format/year-month'
 import { GENDER_OPTIONS, HAND_OPTIONS } from '@/lib/profile/signup-fields'
+import { formatNtrp } from '@/lib/rating/display'
 
 // 변경 불가 토글 — 고를 수 있는 토글(FieldToggle)과 같은 높이(lg 44px)
 const toggleBase = `${PRESS_HEIGHT.lg} flex items-center justify-center text-body2 rounded-md border cursor-default pointer-events-none`
@@ -79,7 +80,7 @@ export function ProfileReadonlyFields({ gender, dominantHand, tennisStartDate, n
                 )}
                 <div>
                     <ReadonlyLabel>NTRP</ReadonlyLabel>
-                    <div className={ntrp != null ? readonlyFieldCls : `${readonlyFieldCls} text-muted-foreground`}>{ntrp != null ? ntrp.toFixed(1) : '미입력'}</div>
+                    <div className={ntrp != null ? readonlyFieldCls : `${readonlyFieldCls} text-muted-foreground`}>{ntrp != null ? formatNtrp(ntrp) : '미입력'}</div>
                 </div>
             </div>
         </>

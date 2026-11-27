@@ -1,4 +1,5 @@
-import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
+import { winRateOf } from '@/lib/stats'
+import { type BundleWithPersonal } from '@/lib/analytics/shared'
 import { isValidDate, isoWeekday, yearOf, weekOfYear, WEEKDAY_LABELS } from '@/lib/analytics/date-utils'
 
 // ── 승률 추이 (연도 스코프 · 일간/주간/월간 공용) ─────────────────────────
@@ -71,7 +72,7 @@ function buildResult(
             wins: acc.wins,
             losses: acc.losses,
             draws: acc.draws,
-            winRate: calcWinRate(acc.wins, acc.losses),
+            winRate: winRateOf(acc.wins, acc.losses) ?? 0,
         }
     })
     const maxTotal = points.reduce((mx, p) => Math.max(mx, p.total), 0)

@@ -1,6 +1,5 @@
 // 업로드 없이 가입 시 배정할 기본 아바타.
 // public/avatars 의 정적 파일 경로를 그대로 DB 컬럼에 저장한다. 이미지를 추가하면 아래 배열만 갱신하면 된다.
-// (클럽 로고 20장·randomClubLogoPath는 클럽 UI와 함께 Week 69에 삭제 — 태그 frozen-clubs-ui-2026-09-16)
 
 const AVATAR_FILES = [
     'avatar-ball.png', 'avatar-bounce.png', 'avatar-bull.png', 'avatar-can.png',

@@ -9,10 +9,9 @@ type Props = {
     // 'neutral'은 경기 종류가 아닌 '전체' 종합 카드용 중립 스타일
     variant?: 'match' | 'neutral'
     masked?: boolean
-    showSets?: boolean
 }
 
-export function StatsQuadCard({ matchType, stats, variant = 'match', masked, showSets = true }: Props) {
+export function StatsQuadCard({ matchType, stats, variant = 'match', masked }: Props) {
     // 중립('전체') 카드는 MatchType 색상 테이블 대신 회색 토큰을 사용
     const style =
         variant === 'neutral' || !matchType
@@ -58,13 +57,8 @@ export function StatsQuadCard({ matchType, stats, variant = 'match', masked, sho
                 </div>
             </div>
 
-            {/* 푸터(세트 옵션 + 총경기). mt-auto로 카드 하단 고정 */}
+            {/* 푸터(총경기). mt-auto로 카드 하단 고정 */}
             <div className="pt-2 mt-auto">
-                {!masked && showSets && (stats.setsWon > 0 || stats.setsLost > 0) && (
-                    <p className="text-caption text-foreground text-right">
-                        세트 {stats.setsWon} : {stats.setsLost}
-                    </p>
-                )}
                 <p className="text-caption text-foreground text-right">
                     {masked ? '* 경기' : `총 ${stats.totalMatches}경기`}
                 </p>

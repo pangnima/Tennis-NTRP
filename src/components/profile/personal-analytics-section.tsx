@@ -97,7 +97,7 @@ export async function PersonalAnalyticsSection({ bundle, me, viewer = 'self' }: 
 
     return (
         <div className="space-y-8">
-            {/* 전적 통계 (4칸) — 세트 표기 숨김(심플) */}
+            {/* 전적 통계 (4칸) */}
             <section className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
                     <h2 className={`${TYPO.h3} shrink-0`}>전적 통계</h2>
@@ -114,7 +114,6 @@ export async function PersonalAnalyticsSection({ bundle, me, viewer = 'self' }: 
                     womenDoubles={bundle.stats.womenDoubles}
                     mixedDoubles={bundle.stats.mixedDoubles}
                     privacy={isSelf && me.statsHidden ? 'self' : 'public'}
-                    showSets={false}
                     emptyRecordHref={emptyRecordHref}
                 />
             </section>

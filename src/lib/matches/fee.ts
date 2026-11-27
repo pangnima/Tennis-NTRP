@@ -39,7 +39,7 @@ export function formatAmountInput(text: string): string {
 }
 
 /**
- * 매칭룸 머리의 한 줄 — 「코트비 40,000원 · 1인당 약 10,000원 · 정원 4명 (2명 참가)」.
+ * 매칭 상세 머리의 한 줄 — 「코트비 40,000원 · 1인당 약 10,000원 · 정원 4명 (2명 참가)」.
  * 비용을 안 적었으면 「코트비 미정」, 참가 인원을 셀 수 없으면(비공개 매칭 참가 전) 괄호를 뺀다.
  */
 export function formatFeeLine(match: Pick<TennisMatch, 'courtFee' | 'capacity'>, memberCount?: number | null): string {

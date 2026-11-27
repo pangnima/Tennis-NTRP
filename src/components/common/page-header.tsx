@@ -11,7 +11,7 @@ type PageHeaderProps = {
     description?: ReactNode
     /** 제목 위 소형 대문자 라벨 (eyebrow) */
     eyebrow?: ReactNode
-    /** 제목 옆 상태 칩 — eyebrow(정적 분류)와 달리 지금 상태를 말한다 (예: 매칭 룸 진행 단계) */
+    /** 제목 옆 상태 칩 — eyebrow(정적 분류)와 달리 지금 상태를 말한다 (예: 매칭 상태) */
     badge?: ReactNode
     /** 우측 액션 영역 (버튼 등) — 좁은 화면에서는 아래로 감싼다. PC에서는 제목이 길어도 오른쪽 위에 남는다 */
     actions?: ReactNode

@@ -12,7 +12,7 @@ export type ProfileSummary = {
     topMatchType?: MatchType
 }
 
-// 비클럽 scope 헤더 보조 행: 경기 수 · 주력 종목. (연승은 최근 폼 스트립이 시각적으로 대체)
+// 프로필 머리의 보조 행: 경기 수 · 주력 종목. (연승은 최근 폼 스트립이 시각적으로 대체)
 export function ProfileSummaryRow({ wins, losses, draws, topMatchType }: ProfileSummary) {
     const games = wins + losses + draws
 

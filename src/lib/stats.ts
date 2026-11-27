@@ -22,6 +22,15 @@ export type PlayerStats = {
     byMatchType: MatchTypeStats[]
 }
 
+/**
+ * 승률(%) — 무승부는 분모에서 뺀다(승 ÷ (승 + 패), 반올림). 승패가 하나도 없으면 null.
+ * 0으로 그려야 하는 자리(통계 집계·차트)는 `?? 0`으로 받는다.
+ */
+export function winRateOf(wins: number, losses: number): number | null {
+    const decisive = wins + losses
+    return decisive === 0 ? null : Math.round((wins / decisive) * 100)
+}
+
 export const EMPTY_PLAYER_STATS: PlayerStats = {
     wins: 0,
     losses: 0,

@@ -21,6 +21,7 @@ import { fetchUserById } from '@/lib/queries/users'
 import { replayPersonalRatings } from '@/lib/rating/personal-rating'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { formatNtrp } from '@/lib/rating/display'
 
 export const metadata = { title: NAV_LABEL.home }
 
@@ -79,7 +80,7 @@ export default async function HomePage() {
                 <div className="grid grid-cols-3 gap-3">
                     <Stat label="경기" value={String(summary.games)} />
                     <Stat label="승률" value={summary.winRate == null ? '-' : `${summary.winRate}%`} />
-                    <Stat label="레이팅" value={rating == null ? '-' : rating.toFixed(2)} />
+                    <Stat label="레이팅" value={rating == null ? '-' : formatNtrp(rating, 2)} />
                 </div>
             )}
 

@@ -24,7 +24,7 @@ export function LoginHero() {
                         <line x1="1" y1="170" x2="319" y2="170" className="stroke-border" />
                         <line x1="80" y1="60" x2="80" y2="170" className="stroke-border" strokeDasharray="4 6" />
                         <line x1="240" y1="60" x2="240" y2="170" className="stroke-border" strokeDasharray="4 6" />
-                        {/* 라임 베이스라인 */}
+                        {/* 포인트색(spot) 베이스라인 */}
                         <line x1="80" y1="115" x2="319" y2="115" className="stroke-spot-solid" strokeWidth="2" />
                     </svg>
 

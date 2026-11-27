@@ -10,6 +10,7 @@ import { TYPO } from '@/lib/dashboard/tokens'
 import { NAV_LABEL } from '@/lib/nav-items'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { formatNtrp } from '@/lib/rating/display'
 
 export const metadata = { title: NAV_LABEL.ranking }
 
@@ -64,7 +65,7 @@ export default async function RankingPage({ searchParams }: Props) {
                                 aria-current={mine ? 'true' : undefined}
                                 className={cn(
                                     'flex items-center gap-3 transition-colors hover:bg-muted/50',
-                                    CARD_ONLY, ROW_GRID, ROW_PAD, ROW_BOX, RANK_COLS, mine && 'bg-primary/5',
+                                    CARD_ONLY, ROW_GRID, ROW_PAD, ROW_BOX, RANK_COLS, mine && 'bg-self/5',
                                 )}
                             >
                                 <span className={cn(STRONG, 'w-8 shrink-0 text-center @4xl:w-auto @4xl:text-left')}>{i + 1}</span>
@@ -75,7 +76,7 @@ export default async function RankingPage({ searchParams }: Props) {
                                 <span className={NUM}>{r.games}</span>
                                 <span className={NUM}>{r.wins}</span>
                                 <span className={NUM}>{rate}%</span>
-                                <span className={STRONG}>{r.rating == null ? '-' : Number(r.rating).toFixed(2)}</span>
+                                <span className={STRONG}>{r.rating == null ? '-' : formatNtrp(Number(r.rating), 2)}</span>
                             </Link>
                         )
                     })}

@@ -7,6 +7,7 @@ import { derivePublicNtrp } from '@/lib/personal-matches/ntrp'
 import { formatDominantHand } from '@/lib/profile/signup-fields'
 import { NTRP_BADGE, memberStatusChipClass } from '@/lib/dashboard/member-badges'
 import { actionButtonClass } from '@/components/common/action-button-class'
+import { formatNtrp } from '@/lib/rating/display'
 
 type Props = {
     candidate: OpponentCandidate
@@ -25,7 +26,7 @@ type Props = {
 }
 
 /**
- * 회원 검색 결과 1행 — 룸 명단 행(RoomMemberRow)과 같은 골격: 아바타 · 이름 · NTRP 배지 / 닉네임 · 주력손.
+ * 회원 검색 결과 1행 — 매칭 참가자 행(MatchMemberRow)과 같은 골격: 아바타 · 이름 · NTRP 배지 / 닉네임 · 주력손.
  * 행 전체가 토글 버튼이다(aria-pressed). 못 고르는 사람도 **감추지 않고** 비활성 + 라벨로 보인다 —
  * 찾은 사람이 목록에 없으면 "검색이 안 된다"로 읽힌다.
  */
@@ -41,14 +42,14 @@ export function MemberResultRow({ candidate, selected, selectable = true, label,
                 disabled={!selectable}
                 onClick={onToggle}
                 className={`flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors
-                    ${selected ? 'bg-primary/5' : 'hover:bg-muted/50'}
+                    ${selected ? 'bg-selected/5' : 'hover:bg-muted/50'}
                     disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-transparent`}
             >
                 <UserAvatar name={candidate.name} image={candidate.profileImage} userId={candidate.id} />
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5 min-w-0">
                         <span className="text-body2 font-medium text-foreground truncate">{candidate.name}</span>
-                        {ntrp != null && <span className={NTRP_BADGE}>NTRP {ntrp.toFixed(1)}</span>}
+                        {ntrp != null && <span className={NTRP_BADGE}>NTRP {formatNtrp(ntrp)}</span>}
                     </div>
                     {meta && <p className="text-caption text-foreground truncate">{meta}</p>}
                 </div>
@@ -59,7 +60,7 @@ export function MemberResultRow({ candidate, selected, selectable = true, label,
                     <span
                         aria-hidden
                         className={`flex size-6 shrink-0 items-center justify-center rounded-full border transition-colors
-                            ${selected ? 'border-primary bg-primary text-primary-foreground' : 'border-border text-transparent'}`}
+                            ${selected ? 'border-selected bg-selected text-primary-foreground' : 'border-border text-transparent'}`}
                     >
                         <Check className="size-3.5" />
                     </span>

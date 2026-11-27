@@ -1,7 +1,7 @@
+import { winRateOf } from '@/lib/stats'
 import type { CourtSurface } from '@/types'
 import {
-    type WinLoss, type BundleWithPersonal,
-    calcWinRate, emptyWL,
+    type WinLoss, type BundleWithPersonal, emptyWL,
 } from '@/lib/analytics/shared'
 
 export type { WinLoss }
@@ -28,7 +28,7 @@ export function aggregateBySurface(bundle: BundleWithPersonal): SurfaceStats {
 
     for (const key of Object.keys(result) as (CourtSurface | 'unknown')[]) {
         const wl = result[key]
-        wl.winRate = calcWinRate(wl.wins, wl.losses)
+        wl.winRate = winRateOf(wl.wins, wl.losses) ?? 0
     }
 
     return result

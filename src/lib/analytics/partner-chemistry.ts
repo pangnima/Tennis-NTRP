@@ -1,5 +1,6 @@
+import { winRateOf } from '@/lib/stats'
 import type { MatchType, User } from '@/types'
-import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
+import { type BundleWithPersonal } from '@/lib/analytics/shared'
 
 // ── 파트너 케미 (복식 파트너별 승률·연승·케미지수·추세) ───────────────────
 // aggregatePartnerRecommendations는 5경기 하드필터·연승 미지원이라
@@ -74,12 +75,12 @@ function toChemistry(grp: Group): PartnerChemistry {
     const losses = games.filter((g) => g.outcome === 'L').length
     const draws = games.filter((g) => g.outcome === 'D').length
     const total = games.length
-    const winRate = calcWinRate(wins, losses)
+    const winRate = winRateOf(wins, losses) ?? 0
 
     const recent = games.slice(0, RECENT_N)
     const recentWins = recent.filter((g) => g.outcome === 'W').length
     const recentLosses = recent.filter((g) => g.outcome === 'L').length
-    const recentWinRate = recentWins + recentLosses === 0 ? winRate : calcWinRate(recentWins, recentLosses)
+    const recentWinRate = recentWins + recentLosses === 0 ? winRate : winRateOf(recentWins, recentLosses) ?? 0
 
     // 현재 연속 (최신=index 0 기준)
     let currentStreak = 0

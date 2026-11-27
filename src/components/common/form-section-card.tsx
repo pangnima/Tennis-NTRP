@@ -16,7 +16,7 @@ type FormSectionCardProps = {
 
 /**
  * 단계형 폼 섹션 카드 — 제목 + 우측 단계 라벨 + 구분선 헤더를 가진 카드.
- * 클럽 만들기·개인 경기 기록 등 섹션 분리형 폼에서 공유한다.
+ * 매칭 만들기·경기 기록·스코어 수정 등 섹션 분리형 폼에서 공유한다.
  * (통계 화면의 SectionCard와는 별개 — 이쪽은 입력 폼 섹션 전용)
  */
 export function FormSectionCard({

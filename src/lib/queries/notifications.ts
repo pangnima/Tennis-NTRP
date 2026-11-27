@@ -20,7 +20,7 @@ export function mapNotificationRow(row: Row): Notification {
         matchId: row.match_id,
         gameId: row.game_id,
         actorUserId: row.actor_user_id,
-        // DB CHECK가 object임을 보장한다(0094) — 키는 room_snapshot·트리거가 넣은 것뿐
+        // DB CHECK가 object임을 보장한다(0094) — 키는 `send_notifications`가 넣은 것뿐(매칭 스냅샷 + actorName 등)
         payload: (row.payload ?? {}) as NotificationPayload,
         createdAt: row.created_at,
         readAt: row.read_at,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { effectiveNtrp } from './display'
+import { effectiveNtrp, formatNtrp } from './display'
 
 describe('effectiveNtrp', () => {
     it('진화 NTRP(personalNtrp>0)가 있으면 우선', () => {
@@ -13,5 +13,16 @@ describe('effectiveNtrp', () => {
     })
     it('게스트(ntrp 0)도 시드 그대로 반환', () => {
         expect(effectiveNtrp({ ntrp: 0 })).toBe(0)
+    })
+})
+
+describe('formatNtrp — 자리마다 자릿수를 정한다', () => {
+    it('기본 1자리', () => {
+        expect(formatNtrp(3.5)).toBe('3.5')
+        expect(formatNtrp(3)).toBe('3.0')
+    })
+    it('레이팅 2·3자리', () => {
+        expect(formatNtrp(3.4215, 2)).toBe('3.42')
+        expect(formatNtrp(3.4217, 3)).toBe('3.422')
     })
 })

@@ -27,7 +27,7 @@ type Props = {
  * 소셜 가입자의 `profile_image`에는 `https://lh3.googleusercontent.com/…` 같은 외부 URL이 들어오는데,
  * 그 호스트는 `next.config.ts`의 `remotePatterns`에 없다(있을 수도 없다 — provider 호스트는 열린
  * 집합이다). 등록되지 않은 호스트를 `<Image src>`에 넣으면 **렌더 중 throw**라 화면이 통째로 날아간다.
- * 헤더·프로필 상세·룸 명단 등 다른 아바타 자리가 전부 `Avatar`인 이유도 같다.
+ * 헤더·프로필 상세·매칭 명단 등 다른 아바타 자리가 전부 `Avatar`인 이유도 같다.
  *
  * 덤으로 URL이 죽어도 `AvatarFallback`이 이니셜로 받아 준다.
  */

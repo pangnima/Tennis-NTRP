@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils'
 
 /**
- * 브랜드 로고 — 라임 배지형 코트 아이콘 + 워드마크.
- * 아이콘은 자체 배경(라임)을 가져 라이트/다크 어디서나 동일하게 보이고,
+ * 브랜드 로고 — 포인트색(spot) 배지형 코트 아이콘 + 워드마크.
+ * 아이콘은 자체 배경(spot)을 가져 라이트/다크 어디서나 동일하게 보이고,
  * 워드마크 색은 currentColor(부모 text-*)로 상속. 워드마크 글꼴은 Geist Mono 고정.
  */
 type BrandLogoProps = {
@@ -24,7 +24,7 @@ export function BrandLogo({ wordmark = true, size = 'md', className }: BrandLogo
     const s = SIZE[size]
     return (
         <span className={cn('inline-flex items-center gap-2.5', className)}>
-            {/* 라임 배지 + 다크 잉크 코트 라인 (테마 무관 동일 표현) */}
+            {/* 포인트색 배지 + 다크 잉크 코트 라인 (테마 무관 동일 표현) */}
             <svg viewBox="0 0 48 48" className={s.ball} aria-hidden="true">
                 <rect width="48" height="48" rx="11.3" className="fill-spot-solid" />
                 <g transform="translate(7,7) scale(0.708)">

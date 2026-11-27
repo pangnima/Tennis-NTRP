@@ -1,8 +1,7 @@
 import type { MatchType } from '@/types'
-import type { PlayerStats } from '@/lib/stats'
+import { type PlayerStats, winRateOf } from '@/lib/stats'
 import {
-    type WinLoss, type BundleWithPersonal,
-    calcWinRate, emptyWL, addOutcome,
+    type WinLoss, type BundleWithPersonal, emptyWL, addOutcome,
 } from '@/lib/analytics/shared'
 
 export type { WinLoss }
@@ -17,7 +16,7 @@ export type QuadStats = {
     mixedDoubles: PlayerStats
 }
 
-/** WinLoss → PlayerStats. 본인 분석은 세트를 숨기므로(showSets={false}) setsWon/setsLost는 0. */
+/** WinLoss → PlayerStats. 전적 카드는 세트를 그리지 않으므로 setsWon/setsLost는 0. */
 export function toPlayerStats(wl: WinLoss): PlayerStats {
     return {
         wins: wl.wins,
@@ -57,7 +56,7 @@ export function aggregateByMatchType(bundle: BundleWithPersonal): MatchTypeSumma
 
     for (const key of Object.keys(result) as MatchType[]) {
         const wl = result[key]
-        wl.winRate = calcWinRate(wl.wins, wl.losses)
+        wl.winRate = winRateOf(wl.wins, wl.losses) ?? 0
     }
 
     return result

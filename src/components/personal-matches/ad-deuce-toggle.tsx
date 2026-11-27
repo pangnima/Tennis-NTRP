@@ -14,7 +14,7 @@ type Props<T extends string> = {
 /**
  * 복식 코트 사이드(애드/듀스) 선택 토글.
  * 선택한 선수 = 애드(백) 코트, 나머지 = 듀스(포). 미선택(undefined) = 둘 다 듀스 기본.
- * 이미 애드인 선수를 다시 누르면 해제(미지정)된다. 클럽 경기 토글 스타일을 차용.
+ * 이미 애드인 선수를 다시 누르면 해제(미지정)된다.
  */
 export function AdDeuceToggle<T extends string>({ label, options, value, onChange }: Props<T>) {
     return (
@@ -31,7 +31,7 @@ export function AdDeuceToggle<T extends string>({ label, options, value, onChang
                             onClick={() => onChange(isAd ? undefined : o.value)}
                             className={`${PRESS_HEIGHT.md} flex items-center justify-between gap-1 px-2.5 text-body2 rounded-md border transition-colors ${
                                 isAd
-                                    ? 'border-spot-solid bg-spot-solid text-spot-foreground font-semibold'
+                                    ? 'border-selected-solid bg-selected-solid text-selected-foreground font-semibold'
                                     : 'border-border text-muted-foreground hover:border-input hover:text-foreground'
                             }`}
                         >

@@ -1,4 +1,5 @@
-import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
+import { winRateOf } from '@/lib/stats'
+import { type BundleWithPersonal } from '@/lib/analytics/shared'
 import { effectiveNtrp } from '@/lib/rating/display'
 import { formatRecord } from '@/lib/dashboard/outcome'
 import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
@@ -203,7 +204,6 @@ export function aggregateHeadToHeadUnified(
         }
     }
 
-    const decisive = myWins + myLosses
     const key = opponentKey.userId ? opponentKey.userId : `name:${opponentKey.name}`
 
     return {
@@ -214,7 +214,7 @@ export function aggregateHeadToHeadUnified(
         myWins,
         myLosses,
         draws,
-        winRate: decisive === 0 ? 0 : Math.round((myWins / decisive) * 100),
+        winRate: winRateOf(myWins, myLosses) ?? 0,
         mySetsWon,
         mySetsLost,
         last5: entries.slice(0, 5).map((e) => e.outcome),
@@ -267,7 +267,7 @@ export function summarizeHeadToHead(detail: UnifiedHeadToHeadDetail, opponentNam
 
     // 3. 매치타입 강약 (decisive>=2 중 가장 강한/약한 하나)
     const typed = detail.byMatchType
-        .map((b) => ({ ...b, dec: b.wins + b.losses, wr: calcWinRate(b.wins, b.losses) }))
+        .map((b) => ({ ...b, dec: b.wins + b.losses, wr: winRateOf(b.wins, b.losses) ?? 0 }))
         .filter((b) => b.dec >= 2)
     const strongType = typed.filter((b) => b.wr >= 60).sort((a, b) => b.wr - a.wr)[0]
     const weakType = typed.filter((b) => b.wr <= 40).sort((a, b) => a.wr - b.wr)[0]
@@ -280,7 +280,7 @@ export function summarizeHeadToHead(detail: UnifiedHeadToHeadDetail, opponentNam
     // 4. 표면 강약 (unknown 제외, decisive>=2)
     const surfaced = detail.bySurface
         .filter((b) => b.surface !== 'unknown')
-        .map((b) => ({ ...b, dec: b.wins + b.losses, wr: calcWinRate(b.wins, b.losses) }))
+        .map((b) => ({ ...b, dec: b.wins + b.losses, wr: winRateOf(b.wins, b.losses) ?? 0 }))
         .filter((b) => b.dec >= 2)
     const strongSurface = surfaced.filter((b) => b.wr >= 60).sort((a, b) => b.wr - a.wr)[0]
     const weakSurface = surfaced.filter((b) => b.wr <= 40).sort((a, b) => a.wr - b.wr)[0]

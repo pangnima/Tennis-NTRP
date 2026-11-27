@@ -81,7 +81,6 @@ export default async function MemberProfilePage({ params, searchParams }: Props)
                     womenDoubles={EMPTY_PLAYER_STATS}
                     mixedDoubles={EMPTY_PLAYER_STATS}
                     privacy="locked"
-                    showSets={false}
                 />
             </PageContainer>
         )

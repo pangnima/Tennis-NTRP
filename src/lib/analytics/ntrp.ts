@@ -1,6 +1,6 @@
+import { winRateOf } from '@/lib/stats'
 import {
-    type WinLoss, type BundleWithPersonal, type BundleWithUserMap,
-    calcWinRate, emptyWL, addOutcome,
+    type WinLoss, type BundleWithPersonal, type BundleWithUserMap, emptyWL, addOutcome,
 } from '@/lib/analytics/shared'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 
@@ -59,7 +59,7 @@ export function aggregateByNtrpDiff(
 
     for (const key of ['stronger', 'peer', 'weaker', 'unknown'] as const) {
         const wl = result[key]
-        wl.winRate = calcWinRate(wl.wins, wl.losses)
+        wl.winRate = winRateOf(wl.wins, wl.losses) ?? 0
     }
 
     return result

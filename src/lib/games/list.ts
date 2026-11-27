@@ -9,6 +9,7 @@ import { formatDayWithWeekday } from '@/lib/format'
 import { findSeat, setsForSeat } from '@/lib/games/perspective'
 import { courtKey } from '@/lib/matches/court'
 import { formatMatchHours } from '@/lib/matches/when'
+import { resolveSetWinner } from '@/lib/personal-matches/winner'
 import type { CourtSurface, Game, MatchType, TennisMatch } from '@/types'
 
 export type GameTypeFilter = 'all' | 'singles' | 'doubles'
@@ -58,7 +59,8 @@ export function gameOutcome(game: Game, viewerId: string): 'win' | 'loss' | 'dra
     if (!seat) return null
     const s = setsForSeat(game, seat)[0]
     if (!s) return null
-    return s.me > s.opp ? 'win' : s.me < s.opp ? 'loss' : 'draw'
+    const w = resolveSetWinner(s)
+    return w === 'me' ? 'win' : w === 'opponent' ? 'loss' : 'draw'
 }
 
 /** 묶음의 정체 — 게임과 수정 기록이 같은 키를 쓴다(지워진 게임의 기록도 제 묶음에 붙는다) */

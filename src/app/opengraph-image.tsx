@@ -24,7 +24,7 @@ export default async function OpengraphImage() {
                     fontFamily: 'Pretendard',
                 }}
             >
-                {/* 라임 포인트 라벨 */}
+                {/* 포인트색(spot) 라벨 */}
                 <div
                     style={{
                         display: 'flex',

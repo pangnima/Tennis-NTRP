@@ -5,7 +5,7 @@ type Props = {
     after?: number
 }
 
-// 경기 전/후 클럽 레이팅 → 포인트 변동(▲Np / ▼Np) 또는 계급 변동(승급/강등) 인라인 표시.
+// 경기 전/후 개인 레이팅 → 포인트 변동(▲Np / ▼Np) 또는 계급 변동(승급/강등) 인라인 표시.
 // 변동이 없거나 값이 없으면 아무것도 렌더하지 않는다.
 export function TierDeltaBadge({ before, after }: Props) {
     if (before === undefined || after === undefined) return null

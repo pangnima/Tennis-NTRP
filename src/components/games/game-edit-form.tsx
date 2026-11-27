@@ -66,7 +66,6 @@ export function GameEditForm({ game, viewerId, recentCourtNames, returnTo }: Pro
                 <SetsSection
                     sets={scores.sets}
                     isDoubles={doubles}
-                    single
                     opponentLabel={[nameAt(game, other, 1, viewerId), nameAt(game, other, 2, viewerId)].filter(Boolean).join(' · ')}
                     onUpdateSet={scores.updateSet}
                     myAdLabels={{ me: nameAt(game, seat.team, seat.slot, viewerId), partner: nameAt(game, seat.team, seat.slot === 1 ? 2 : 1, viewerId) }}

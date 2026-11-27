@@ -10,7 +10,7 @@ type Props = {
     provisional?: boolean
 }
 
-// 개인 경기 레이팅 시간순 추세 (SVG 스파크라인, 무의존). ClubRatingTrendCard 패턴 재사용.
+// 개인 경기 레이팅 시간순 추세 (SVG 스파크라인, 무의존).
 // docs/rating.md §3.
 export function PersonalRatingTrendCard({ points, provisional }: Props) {
     const isEmpty = points.length === 0

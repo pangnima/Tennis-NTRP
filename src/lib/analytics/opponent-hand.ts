@@ -1,5 +1,6 @@
+import { winRateOf } from '@/lib/stats'
 import {
-    type WinLoss, type BundleWithPersonal, calcWinRate, emptyWL,
+    type WinLoss, type BundleWithPersonal, emptyWL,
 } from '@/lib/analytics/shared'
 
 export type { WinLoss }
@@ -49,8 +50,8 @@ export function aggregateByOpponentHand(
         if (hand2) tally(hand2, pm.winner)
     }
 
-    result.right.winRate = calcWinRate(result.right.wins, result.right.losses)
-    result.left.winRate = calcWinRate(result.left.wins, result.left.losses)
+    result.right.winRate = winRateOf(result.right.wins, result.right.losses) ?? 0
+    result.left.winRate = winRateOf(result.left.wins, result.left.losses) ?? 0
 
     return result
 }

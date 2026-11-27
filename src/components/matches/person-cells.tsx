@@ -9,6 +9,7 @@ import { GENDER_SHORT_LABEL } from '@/lib/profile/signup-fields'
 import { getTier, TIER_LABELS } from '@/lib/rating/tier'
 import type { OpponentCandidate } from '@/lib/queries/users'
 import { cn } from '@/lib/utils'
+import { formatNtrp } from '@/lib/rating/display'
 
 type Person = OpponentCandidate & { deleted: boolean }
 
@@ -51,7 +52,7 @@ export function NtrpTierCell({ person, label = false }: { person: Person; label?
     return (
         <span className={cn(TYPO.body2, 'inline-flex items-center gap-1.5 tabular-nums')}>
             {label && <span className="text-muted-foreground">NTRP</span>}
-            {ntrp == null ? '-' : ntrp.toFixed(1)}
+            {ntrp == null ? '-' : formatNtrp(ntrp)}
             {tier && (
                 <span className="inline-flex items-center gap-1 whitespace-nowrap">
                     <TierIcon tier={tier} size={16} />
