@@ -23,11 +23,11 @@
 ## P0 · 보안 + Week 72 릴리스
 
 - [x] 회원의 email·phone·login_id를 본인만 읽게 — 0110 컬럼 권한 + `get_my_account()` (11-27, `6f12b91`)
-- [ ] Vercel 환경변수 `SUPABASE_SERVICE_ROLE_KEY` — Production = prod 키, Preview·Development = dev 키 (**오너가 직접**)
-- [ ] prod 덤프(선택 — 지금 prod는 계정 1·경기 0)
-- [ ] prod 0096 → `main` 배포 → prod 0097 → prod 0098~0112 (`docs/history/week-72-rebuild.md` 「릴리스」)
+- [x] Vercel 환경변수 `SUPABASE_SERVICE_ROLE_KEY` — Production = prod 키, Preview·Development = dev 키 (11-27 오너)
+- [x] prod 덤프 — 생략(계정 1·옛 테이블 행 0건을 확인하고 진행)
+- [x] prod 0096 → `main` 배포(`7667afb`) → prod 0097~0112 — 11-27. prod의 함수 68개·컬럼·정책·권한·제약이 dev와 같음을 해시로 대조(`docs/history/week-72-rebuild.md` 「릴리스」)
 - [ ] 개인정보처리방침 개정 공지(성별 표시 + 비회원·초대 링크로 보이는 범위, 시행 12-04) — 문구는 오너 확인
-- [ ] 릴리스 뒤 prod에서 `users` 컬럼 권한 확인(남의 email·phone 조회가 거부되는지)
+- [x] 릴리스 뒤 prod `users` 컬럼 권한 확인 — authenticated에게 email·phone·login_id 권한 0, anon은 users·matches 조회 자체가 거부(11-27)
 
 ## P1 · 삭제 · 정리 (동작 불변)
 

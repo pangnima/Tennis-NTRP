@@ -150,7 +150,9 @@
 - 덤: 보드가 차분해지고 잘못 눌러 대진이 바뀌는 일이 줄었다. DB 변경 없음.
 - 이어진 다듬기: 선수 칸이 1fr이라 표가 넓을수록 이름이 벌어졌다 → 선수 칸 고정 폭 + 양끝 여백, 포 = 오른쪽·백 = 왼쪽 정렬로 같은 팀을 붙이고 스코어 양옆을 비웠다. 모바일 카드는 팀 2를 오른쪽 끝으로. 줄의 [취소]는 ghost(보조색 글자)라 꺼진 버튼처럼 읽혀 outline으로.
 
-## 릴리스 (아직 안 함)
+## 릴리스 (2026-11-27 완료)
+아래 순서대로 했다. prod 0096 → `main` 병합·push(`7667afb`) → **첫 Production 배포가 모든 요청에서 500**(`MIDDLEWARE_INVOCATION_FAILED`) — 서비스 키를 넣으면서 `NEXT_PUBLIC_SUPABASE_URL`·`_ANON_KEY`를 지웠기 때문. 두 값을 Production(prod)·Preview(dev)에 다시 넣고 Redeploy → 정상. 이어서 prod 0097~0112. 확인: prod 함수 68개(주석 제외 본문)·컬럼·정책·테이블/컬럼/함수 권한·제약의 해시가 dev와 같다, anon의 `users`·`matches` 조회 거부, 초대 화면이 prod RPC로 그려진다. 덤프는 계정 1·옛 테이블 0행이라 생략.
+
 1. (선택) prod 덤프 — 지금은 계정 1개뿐이라 `users`만 내려받아도 된다.
 2. Vercel Preview·Production에 `SUPABASE_SERVICE_ROLE_KEY`(각 프로젝트의 것) — **0103 이후 필수**(없으면 레이팅 캐시가 갱신되지 않는다).
 3. prod에 `0096_rebuild_matches_games` 적용(옛 테이블 옆에 생기므로 옛 앱에 무해).

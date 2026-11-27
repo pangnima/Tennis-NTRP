@@ -18,7 +18,7 @@
 
 **브랜치·릴리스**: 개발은 `dev`에서 커밋·push(Vercel 프리뷰 = dev DB). 릴리스는 ① 마이그레이션을 **prod DB에 먼저** 적용 → ② `git checkout main && git merge dev && git push` → ③ Vercel Production 배포 → ④ `git checkout dev`. `main`에 직접 커밋하지 않는다.
 **마이그레이션**: dev 롤백 스모크 → dev 적용 → prod 적용. 재현 정본은 `supabase/history/`(원격 `schema_migrations` 사본) — 적용 뒤 `scripts/db-history.ts export`로 갱신한다. 히스토리 밖에서 `execute_sql`로만 한 DDL·권한 변경은 prod에 재현되지 않는다. Auth 설정(Google provider·Site URL·Redirect URLs)은 두 대시보드에서 각각.
-**⚠ Week 72 릴리스 상태**: 0096~0112는 **dev에만** 적용됐다. prod는 아직 옛 구조다 — 릴리스 순서는 `prod 0096 → main 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110 → prod 0111 → prod 0112`(0097은 옛 테이블을 지우므로 반드시 앱 배포 뒤, 0098~0112는 새 앱이 부르는 RPC라 배포와 함께). **0103은 Vercel Production에 prod의 `SUPABASE_SERVICE_ROLE_KEY`를 넣은 뒤** — 0103부터 레이팅 캐시는 이 키로만 갱신된다(없으면 prod 랭킹이 멈춘다). `docs/history/week-72-rebuild.md` 「릴리스」.
+**Week 72 릴리스**: 11-27 완료 — prod에 0096~0112 적용, `main` = `7667afb`. 두 DB의 스키마가 같다. ⚠ Vercel 환경변수는 **Production(prod 값)·Preview(dev 값)를 따로** 둔다: `NEXT_PUBLIC_SUPABASE_URL`·`NEXT_PUBLIC_SUPABASE_ANON_KEY`(공개용 — 빌드 때 코드에 박히므로 바꾸면 재배포) + `SUPABASE_SERVICE_ROLE_KEY`(비밀 — `NEXT_PUBLIC_` 금지, 없으면 레이팅 캐시가 멈춘다). 앞의 둘이 빠지면 미들웨어가 모든 요청에서 죽는다(`MIDDLEWARE_INVOCATION_FAILED` — 11-27에 실제로 겪었다). `docs/history/week-72-rebuild.md` 「릴리스」.
 
 ## 기술 스택
 Next.js 16 (App Router) · React 19 · TypeScript strict · shadcn/ui(@base-ui/react) + Tailwind v4 · Supabase(Auth + PostgreSQL + Storage) · Vercel · vitest(순수 함수만)
@@ -190,6 +190,6 @@ npm run dev · npm run build · npm run lint · npx tsc --noEmit · npx vitest r
 
 ## 다음 할 일
 `ROADMAP.md`가 정본이다(단계 P0~P8 · 오너 결정 · 후보). 지금 맨 앞:
-1. **Week 72 릴리스** — Vercel `SUPABASE_SERVICE_ROLE_KEY`(오너) → prod 0096 → `main` 배포 → prod 0097~0112 → 개인정보처리방침 개정 공지(시행 12-04, 문구는 오너 확인). 릴리스 뒤 prod에서 남의 email·phone 조회가 거부되는지 확인
+1. **Week 72 릴리스 마무리** — 릴리스는 11-27 완료. 남은 것: 개인정보처리방침 개정 공지(시행 12-04, 문구는 오너 확인) · 구글 로그인 E2E(A8, 사람이 조작) · 빈 `club-logos` 버킷을 dev·prod 대시보드에서 삭제
 2. **P4 공통 토대** — 차단·신고, 약관·방침 개정 + 재동의(약관 2·4·5조의 「상대가 확인해야 확정」도 이때), 대화 모델(매칭·1:1·클럽 한 벌)
 3. **P5 매칭룸 대화**(대화 화면만 실시간) → P6 1:1 대화 → P7 커뮤니티 → P8 클럽(추후 오픈)
