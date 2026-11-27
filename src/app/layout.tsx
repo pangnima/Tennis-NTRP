@@ -54,7 +54,7 @@ export const viewport: Viewport = {
     initialScale: 1,
     // 노치/홈 인디케이터 영역까지 활용 + safe-area-inset env() 값 활성화
     viewportFit: 'cover',
-    // 모바일 브라우저 크롬 색 — globals.css의 --background와 같은 값 (docs/color-system.md)
+    // 모바일 브라우저 크롬 색 — globals.css의 --background와 같은 값 (docs/design-system.md §1)
     themeColor: [
         { media: '(prefers-color-scheme: light)', color: '#f4f7f9' },
         { media: '(prefers-color-scheme: dark)', color: '#0b1319' },

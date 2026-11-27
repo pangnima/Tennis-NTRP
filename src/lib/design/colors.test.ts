@@ -206,7 +206,7 @@ const TEXT_ON_SURFACE: [string, number][] = [
 
 /**
  * 채움 위에 글자를 얹는 실제 조합 — `bg-X text-X-foreground`.
- * 비비드 `--X-solid`는 글자를 얹지 않는 바·링 전용이라 여기에 없다(docs/color-system.md §2).
+ * 비비드 `--X-solid`는 글자를 얹지 않는 바·링 전용이라 여기에 없다(docs/design-system.md §1.2).
  */
 const SOLID_PAIRS: [string, string][] = [
     ['primary-foreground', 'primary'],

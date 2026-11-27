@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { MatchPasswordForm } from '@/components/matches/match-password-form'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { AppDialog } from '@/components/common/app-dialog'
 
 type Props = { matchId: string; hostName: string; title: string; className: string; children: ReactNode }
 
@@ -28,17 +28,12 @@ export function PrivateMatchLink({ matchId, hostName, title, className, children
     return (
         <>
             <Link href={href} className={className} onClick={intercept} aria-haspopup="dialog">{children}</Link>
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-sm" showCloseButton={false}>
-                    <DialogHeader>
-                        <DialogTitle className="text-h4 break-keep">{title}</DialogTitle>
-                        <DialogDescription className="text-body2 break-keep">
-                            비공개 매칭입니다. 비밀번호를 넣으면 바로 참가합니다. 비밀번호는 호스트({hostName}님)에게 받으세요.
-                        </DialogDescription>
-                    </DialogHeader>
-                    {open && <MatchPasswordForm matchId={matchId} onJoined={() => router.push(href)} onCancel={() => setOpen(false)} />}
-                </DialogContent>
-            </Dialog>
+            <AppDialog
+                open={open} onOpenChange={setOpen} title={title}
+                description={<>비공개 매칭입니다. 비밀번호를 넣으면 바로 참가합니다. 비밀번호는 호스트({hostName}님)에게 받으세요.</>}
+            >
+                {open && <MatchPasswordForm matchId={matchId} onJoined={() => router.push(href)} onCancel={() => setOpen(false)} />}
+            </AppDialog>
         </>
     )
 }

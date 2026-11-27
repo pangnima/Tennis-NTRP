@@ -7,7 +7,7 @@ import { PRESS_HEIGHT } from './action-button-class'
 import { FIELD_HEIGHT, fieldClass } from './field-class'
 
 /**
- * 칸의 회귀 가드 — 칸(입력·선택)은 `field-class.ts` 한 곳이 모양과 높이를 정한다(`docs/forms.md`).
+ * 칸의 회귀 가드 — 칸(입력·선택)은 `field-class.ts` 한 곳이 모양과 높이를 정한다(`docs/design-system.md §5`).
  * 화면마다 손으로 칸을 그리면 높이가 다시 44·48·50으로 흩어진다(11-26에 한 번 모았다).
  */
 const SRC = path.resolve(__dirname, '../..')

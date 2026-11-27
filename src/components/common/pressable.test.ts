@@ -41,7 +41,7 @@ const RAW_BUTTON_ALLOWED = new Set([
 
 /**
  * 아이콘 전용 버튼(`square`)을 쓸 수 있는 파일 — **아이콘이 곧 뜻인 자리**만. 행동(수정·삭제·저장·내보내기…)은 글자로 쓴다
- * (`docs/buttons.md` 「글자 버튼 · 아이콘 버튼」). 게임 보드만 [✕] 아이콘이고 나머지는 글자라 "섞여 보인다"는 피드백을 받았다.
+ * (`docs/design-system.md §4` 「글자 버튼 · 아이콘 버튼」). 게임 보드만 [✕] 아이콘이고 나머지는 글자라 "섞여 보인다"는 피드백을 받았다.
  */
 const SQUARE_ALLOWED = new Set([
     'components/common/action-button-class.ts',     // 정의(클래스 표)

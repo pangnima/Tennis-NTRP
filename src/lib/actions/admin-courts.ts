@@ -5,8 +5,8 @@ import { revalidatePath } from 'next/cache'
 import { gameErrorMessage } from '@/lib/games/errors'
 import { COURT_NAME_MAX } from '@/lib/matches/court'
 import { createClient } from '@/lib/supabase/server'
+import type { ActionResult } from '@/lib/actions/result'
 
-type ActionResult = { error: string | null }
 type Client = Awaited<ReturnType<typeof createClient>>
 
 /** 코트명 정리(0103) — 관리자 판정은 RPC가 한다(`not_admin`). 코트명은 목록·상세·찾기 어디에나 보이므로 전부 다시 그린다 */

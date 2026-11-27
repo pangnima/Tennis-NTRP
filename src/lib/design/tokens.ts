@@ -2,7 +2,7 @@ export const CARD_BASE = 'rounded-lg border border-border bg-card'
 export const CARD_HOVER = 'hover:bg-muted/50 transition-colors'
 
 /**
- * 시맨틱 타이포 스케일 — 8레벨 + 배지 예외 (docs/typography.md).
+ * 시맨틱 타이포 스케일 — 8레벨 + 배지 예외 (docs/design-system.md §3).
  * 사이즈·줄간격·자간은 globals.css @theme 토큰(text-display/h1~h4/body/body2/caption/micro)이 담당하고,
  * 여기서는 굵기·색상만 조합한다. 원칙: 태그는 문서 아웃라인, 클래스는 시각 레벨.
  *
@@ -86,7 +86,7 @@ export const TEXT_TONES: ReadonlyArray<{ tone: keyof typeof TEXT_TONE; name: str
     { tone: 'sub', name: '보조', use: '값이 아닌 것 — 열 제목·필드 이름표·도움말·구분 기호(· vs)·placeholder·선택 안 된 탭/칩', sample: '날짜 · 경기장 · 스코어 · 한 번만 입력할 수 있습니다' },
 ]
 
-// 폼의 칸·라벨·아래 한 줄은 `components/common/field-class.ts` 한 곳이 정한다(`docs/forms.md`).
+// 폼의 칸·라벨·아래 한 줄은 `components/common/field-class.ts` 한 곳이 정한다(`docs/design-system.md §5`).
 // 옛 칸·라벨 토큰(로그인 폼용 한 벌, 경기 폼용 한 벌)은 칸 모양 두 벌·높이 세 가지를 만들어 지웠다(11-26).
 
 /**

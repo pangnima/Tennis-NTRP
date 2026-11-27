@@ -1,5 +1,6 @@
 'use client'
 
+import { notify } from '@/lib/feedback/notify'
 import { useEffect, useActionState, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ActionButton } from '@/components/common/action-button'
@@ -47,7 +48,9 @@ export function ProfileSettingsForm({ initialProfile, userId, canSetLoginId }: P
 
     // 저장 성공 시 서버 컴포넌트(레이아웃 헤더 포함) 재렌더 → 닉네임·아바타 즉시 반영
     useEffect(() => {
-        if (state?.success) router.refresh()
+        if (!state?.success) return
+        notify.success('저장했습니다')
+        router.refresh()
     }, [state, router])
 
     return (
@@ -82,13 +85,6 @@ export function ProfileSettingsForm({ initialProfile, userId, canSetLoginId }: P
             {state?.error && (
                 <p className="text-body2 text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
                     {state.error}
-                </p>
-            )}
-
-            {/* 저장 성공 한 줄(U-pre-3·U-5) — 비밀번호 변경 폼과 같은 모양. refresh로 헤더·필드가 새 값을 보인다 */}
-            {state?.success && (
-                <p className="text-body2 text-win bg-win/10 border border-win/20 rounded-md px-3 py-2">
-                    저장했습니다.
                 </p>
             )}
 

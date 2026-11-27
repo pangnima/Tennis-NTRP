@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
 
 import { ActionButton } from '@/components/common/action-button'
+import { CHIP_ATTENTION, CHIP_NEUTRAL, CHIP_SCALE, chipClass } from '@/components/common/chip-class'
+import { ColorSwatches } from '@/components/styleguide/color-swatches'
+import { OverlayDemos } from '@/components/styleguide/overlay-demos'
+import { getMatchTypeBadgeClass } from '@/lib/design/match-type-style'
+import { TIER_STYLE } from '@/lib/rating/tier'
 import { ACTION_VARIANTS, PRESS_SCALE } from '@/components/common/action-button-class'
 import { DataList } from '@/components/common/data-list'
 import { Field } from '@/components/common/field'
@@ -39,6 +44,10 @@ export default function StyleguidePage() {
     return (
         <PageContainer>
             <PageHeader title="스타일 가이드" description="글자 크기·글자색·누르는 것의 크기는 여기 있는 단계에서만 고릅니다" />
+
+            <Section title="색" summary="색은 역할 이름으로만 씁니다. 실제 값(L1 팔레트)은 globals.css 한 곳에 있고, 역할(L2)·분류(L3)는 그 팔레트를 가리킵니다 — 브랜드색을 바꾸려면 팔레트만 고칩니다. 헤더의 테마 전환으로 다크도 확인하세요.">
+                <ColorSwatches />
+            </Section>
 
             <Section title="글자 단계" summary="크기는 아홉 단계입니다. 자리가 단계를 정하고, 한 줄(행) 안에서는 크기 하나만 씁니다 — 위계는 굵기와 색으로 만듭니다(필·칩 제외).">
                 <div className={cn(CARD_BASE, 'divide-y divide-border')}>
@@ -130,6 +139,29 @@ export default function StyleguidePage() {
                         <input id="sg-field-warn" readOnly defaultValue="2026-11-25 14시" className={fieldClass()} />
                     </Field>
                 </div>
+            </Section>
+
+            <Section title="칩" summary="칩은 chipClass 하나로 모양(높이·여백·글자·둥글기)을 정하고, 색은 뜻마다의 맵에서 붙입니다. 채움은 결과와 카운트에만 씁니다.">
+                <div className={cn(CARD_BASE, 'divide-y divide-border')}>
+                    {CHIP_SCALE.map((row) => (
+                        <div key={row.size} className="grid items-center gap-x-4 gap-y-2 px-4 py-3 sm:grid-cols-[8rem_4rem_minmax(0,1fr)_minmax(0,16rem)]">
+                            <code className={TYPO.label}>{row.size}</code>
+                            <span className={cn(TYPO.caption, 'tabular-nums')}>{row.px}px</span>
+                            <span className="flex flex-wrap gap-1.5">
+                                <span className={chipClass({ size: row.size, className: CHIP_NEUTRAL })}>확정됨</span>
+                                <span className={chipClass({ size: row.size, className: CHIP_ATTENTION })}>신청 중</span>
+                                <span className={chipClass({ size: row.size, className: getMatchTypeBadgeClass('mixed_doubles') })}>혼복</span>
+                                <span className={chipClass({ size: row.size, className: TIER_STYLE.gold })}>골드</span>
+                                <span className={chipClass({ size: row.size, className: 'border-transparent bg-win text-win-foreground font-bold' })}>승</span>
+                            </span>
+                            <span className={cn(TYPO.caption, 'break-keep')}>{row.use}</span>
+                        </div>
+                    ))}
+                </div>
+            </Section>
+
+            <Section title="팝업과 알림" summary="팝업은 셋 — 확인(되돌릴 수 없는 행동), 짧은 입력(칸 1~2개), 메뉴. 버튼 줄은 언제나 주 행동 왼쪽·취소 오른쪽입니다. 화면이 그대로인 성공은 토스트, 오류는 그 자리의 한 줄로 알립니다.">
+                <OverlayDemos />
             </Section>
 
             <Section title="목록" summary="목록은 한 줄에 하나입니다. 자리가 넓으면 열 제목이 있는 표, 좁으면 카드로 접힙니다(화면을 줄여 보세요). 표의 행은 높이 56px·글자 14px 하나이고, 값은 전부 기본색입니다.">

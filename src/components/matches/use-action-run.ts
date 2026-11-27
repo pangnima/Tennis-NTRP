@@ -1,8 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import type { ActionResult } from '@/lib/actions/result'
 
-type ActionResult = { error: string | null }
 
 /**
  * 매칭 화면의 버튼들이 같이 쓰는 실행기 — 액션이 실패하면 문구를 돌려주고, 성공하면 화면을 새로 그린다

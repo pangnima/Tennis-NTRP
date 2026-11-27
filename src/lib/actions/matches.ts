@@ -14,8 +14,8 @@ import { validateMatchTitle } from '@/lib/matches/title'
 import { createClient } from '@/lib/supabase/server'
 import type { CourtSurface, MatchType } from '@/types'
 import type { Json } from '@/types/supabase'
+import type { ActionResult } from '@/lib/actions/result'
 
-type ActionResult = { error: string | null }
 
 const LOGIN_REQUIRED = '로그인이 필요합니다.'
 

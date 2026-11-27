@@ -4,9 +4,12 @@ import { useState, useTransition, type ReactNode } from 'react'
 
 import { ActionButton } from '@/components/common/action-button'
 import type { ActionSize, ActionVariant } from '@/components/common/action-button-class'
+import { fieldMessageClass } from '@/components/common/field-class'
 import {
-    AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+    AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT, TYPO } from '@/lib/design/tokens'
+import { cn } from '@/lib/utils'
 
 type Props = {
     /** 트리거 버튼의 내용 */
@@ -59,16 +62,20 @@ export function ConfirmButton({
             <AlertDialog open={open} onOpenChange={setOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="text-h4">{title}</AlertDialogTitle>
-                        {description && <AlertDialogDescription className="text-body2 break-keep">{description}</AlertDialogDescription>}
+                        <AlertDialogTitle className={cn(TYPO.h4, 'break-keep')}>{title}</AlertDialogTitle>
+                        {description && <AlertDialogDescription className={cn(TYPO.body2Muted, 'break-keep')}>{description}</AlertDialogDescription>}
                     </AlertDialogHeader>
-                    {error && <p role="alert" className="text-body2 text-destructive break-keep">{error}</p>}
-                    <AlertDialogFooter>
-                        <ActionButton size="lg" disabled={isPending} onClick={() => setOpen(false)}>취소</ActionButton>
-                        <ActionButton size="lg" variant={tone === 'destructive' ? 'dangerFill' : 'solid'} disabled={isPending} onClick={confirm}>
+                    {error && <p role="alert" className={fieldMessageClass('destructive')}>{error}</p>}
+                    {/* 버튼 줄은 FormActions와 같은 순서 — 주 행동 왼쪽 · 취소 오른쪽(docs/design-system.md §7) */}
+                    <div className={FORM_ACTION_ROW}>
+                        <ActionButton
+                            size="lg" variant={tone === 'destructive' ? 'dangerFill' : 'solid'} className={FORM_SUBMIT}
+                            disabled={isPending} onClick={confirm}
+                        >
                             {isPending ? '처리 중...' : confirmLabel}
                         </ActionButton>
-                    </AlertDialogFooter>
+                        <ActionButton size="lg" className={FORM_CANCEL} disabled={isPending} onClick={() => setOpen(false)}>취소</ActionButton>
+                    </div>
                 </AlertDialogContent>
             </AlertDialog>
         </>

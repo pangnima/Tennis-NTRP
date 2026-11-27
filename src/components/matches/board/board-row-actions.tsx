@@ -6,7 +6,7 @@ import type { MatchBoard } from '@/components/matches/board/use-match-board'
 import { isRowDirty, rowMode, type BoardRow } from '@/lib/games/board'
 
 /**
- * 줄의 행동 — 한 줄에 **글자 버튼 둘**, 모두 sm(행동은 글자로 쓴다 — `docs/buttons.md`).
+ * 줄의 행동 — 한 줄에 **글자 버튼 둘**, 모두 sm(행동은 글자로 쓴다 — `docs/design-system.md §4`).
  *   보기(스코어 저장됨) = [수정] [삭제] · 편집 = [저장] [삭제] · [수정]을 누른 줄 = [저장] [취소]
  *   점수(저장된 예정 게임 — 선수는 글자, 점수 칸만) = 비어 있으면 [수정](선수 선택칸 열기) [삭제], 점수를 넣으면 [저장] [삭제]
  * [삭제]는 같은 말이되 **데이터가 있을 때만 묻는다**: 저장된 게임은 확인 팝업 뒤 바로 지우고, 저장 전 새 줄은 그냥 뺀다.

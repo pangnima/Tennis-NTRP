@@ -7,8 +7,8 @@ import { cleanSets, validateRecordInput, validateSets, type RecordInput } from '
 import { recomputePersonalNtrpFor } from '@/lib/games/recompute'
 import { createClient } from '@/lib/supabase/server'
 import type { CourtSurface, GameSet } from '@/types'
+import type { ActionResult } from '@/lib/actions/result'
 
-type ActionResult = { error: string | null }
 
 const LOGIN_REQUIRED = '로그인이 필요합니다.'
 

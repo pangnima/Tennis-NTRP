@@ -1,5 +1,6 @@
 'use client'
 
+import { notify } from '@/lib/feedback/notify'
 import { useActionState, useEffect, useRef, useState } from 'react'
 import { PasswordRulesHint } from '@/components/auth/password-rules-hint'
 import { ActionButton } from '@/components/common/action-button'
@@ -15,7 +16,9 @@ export function PasswordChangeForm() {
     const [newPassword, setNewPassword] = useState('')
 
     useEffect(() => {
-        if (state?.success) formRef.current?.reset()
+        if (!state?.success) return
+        formRef.current?.reset()
+        notify.success('비밀번호를 바꿨습니다')
     }, [state])
 
     return (
@@ -55,11 +58,6 @@ export function PasswordChangeForm() {
             {state?.error && (
                 <p className="text-body2 text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2">
                     {state.error}
-                </p>
-            )}
-            {state?.success && (
-                <p className="text-body2 text-win bg-win/10 border border-win/20 rounded-md px-3 py-2">
-                    비밀번호가 변경되었습니다.
                 </p>
             )}
 

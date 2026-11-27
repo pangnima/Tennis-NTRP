@@ -2,7 +2,7 @@ import { PRESS_HEIGHT } from '@/components/common/action-button-class'
 import { cn } from '@/lib/utils'
 
 /**
- * **칸(입력·선택)의 규칙 하나** — 버튼(`action-button-class.ts`)·글자(`TYPO`)처럼 칸도 한 곳에서 정한다(`docs/forms.md`).
+ * **칸(입력·선택)의 규칙 하나** — 버튼(`action-button-class.ts`)·글자(`TYPO`)처럼 칸도 한 곳에서 정한다(`docs/design-system.md §5`).
  * 로그인·가입·프로필·경기 기록·매칭이 칸 모양 두 벌(≈50px + 작은 대문자 라벨 / 48px + 본문 라벨)에 높이 세 가지(44·48·50)를
  * 섞어 쓰다가 "사이즈가 다르다"는 피드백을 받았다(11-26).
  *

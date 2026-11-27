@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/common/toaster'
 import { redirect } from 'next/navigation'
 
 import { Header } from '@/components/common/header'
@@ -48,6 +49,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
                 </div>
             </div>
             {user && <MobileTabBar userId={user.id} />}
+            <Toaster />
         </SidebarProvider>
     )
 }

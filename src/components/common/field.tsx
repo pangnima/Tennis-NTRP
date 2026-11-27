@@ -21,7 +21,7 @@ type Props = {
 }
 
 /**
- * 라벨 + 칸 + 아래 한 줄 — 모든 폼이 이 3단을 쓴다(`docs/forms.md`). 칸 자체는 호출부가 `fieldClass()`로 그린다
+ * 라벨 + 칸 + 아래 한 줄 — 모든 폼이 이 3단을 쓴다(`docs/design-system.md §5`). 칸 자체는 호출부가 `fieldClass()`로 그린다
  * (input·select·자동완성·textarea 등 종류가 많아 여기서 감싸지 않는다).
  */
 export function Field({ id, label, required, optional, aside, message, tone = 'muted', className, children }: Props) {
