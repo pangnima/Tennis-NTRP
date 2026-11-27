@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og'
 import { OG, loadOgFont } from '@/lib/og/brand'
 
 // 사이트 전역 기본 OG 이미지 (파일 컨벤션 — 모든 라우트에 자동 적용, 하위에서 재정의 가능).
-export const alt = 'BASELINE — 테니스 클럽 운영·경기 통계'
+export const alt = 'BASELINE — 테니스 매칭·경기 기록'
 export const size = OG.size
 export const contentType = 'image/png'
 
@@ -37,7 +37,7 @@ export default async function OpengraphImage() {
                         borderRadius: 9999,
                     }}
                 >
-                    TENNIS CLUB OS
+                    MATCH · RECORD · RANK
                 </div>
 
                 {/* 워드마크 */}

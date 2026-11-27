@@ -57,7 +57,7 @@ export function DeleteAccountButton() {
                     <DialogHeader>
                         <DialogTitle className="text-destructive">회원 탈퇴</DialogTitle>
                         <DialogDescription>
-                            정말 탈퇴하시겠습니까? 모든 클럽에서 탈퇴되고 계정 정보가 삭제됩니다.
+                            정말 탈퇴하시겠습니까? 계정 정보가 삭제됩니다.
                             과거 경기 기록은 &quot;탈퇴한 회원&quot;으로 남으며, 이 작업은 되돌릴 수 없습니다.
                         </DialogDescription>
                     </DialogHeader>

@@ -22,7 +22,7 @@ export function HeroSection() {
                     남기세요
                 </h1>
                 <p className={cn(TYPO.bodyMuted, 'mx-auto mt-6 max-w-md break-keep lg:mx-0')}>
-                    매칭을 열어 함께 칠 사람을 모으고, 게임을 올리고, 결과를 서로 확인하면 승률과 레이팅에
+                    매칭을 열어 함께 칠 사람을 모으고, 친 게임의 스코어를 적으면 승률과 레이팅에 바로
                     반영됩니다.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">

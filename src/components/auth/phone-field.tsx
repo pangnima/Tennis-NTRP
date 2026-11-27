@@ -44,7 +44,7 @@ export function PhoneField({ defaultValue = '', onInvalidChange }: Props) {
             onChange={(e) => setPhone(formatPhoneNumber(e.target.value))}
             onBlur={() => setTouched(true)}
             aria-invalid={invalid}
-            message={invalid ? PHONE_INVALID_MESSAGE : '선택 입력입니다. 클럽 운영자가 연락할 때 씁니다.'}
+            message={invalid ? PHONE_INVALID_MESSAGE : '선택 입력입니다. 다른 회원에게는 보이지 않습니다.'}
             messageTone={invalid ? 'destructive' : 'muted'}
         />
     )

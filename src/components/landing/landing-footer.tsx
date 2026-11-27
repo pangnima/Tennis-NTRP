@@ -15,7 +15,7 @@ export function LandingFooter() {
                     <Link href="/privacy" className={FOOTER_LINK}>개인정보처리방침</Link>
                     {/* 랜딩은 정적 프리렌더라 빌드 시각 기준 — 연 1회 이상 배포하므로 충분하다 */}
                     <p className="text-caption text-muted-foreground">
-                        © {new Date().getFullYear()} BASELINE · 테니스 클럽 플랫폼
+                        © {new Date().getFullYear()} BASELINE · 테니스 매칭·경기 기록
                     </p>
                 </div>
             </div>

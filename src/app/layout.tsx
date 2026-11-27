@@ -28,15 +28,15 @@ export const metadata: Metadata = {
     // (|| 사용: .env.local에 빈 문자열로 존재해도 안전하게 폴백)
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL),
     title: {
-        default: 'BASELINE — 테니스 클럽 운영·경기 통계',
+        default: 'BASELINE — 테니스 매칭·경기 기록',
         template: '%s · BASELINE',
     },
-    description: '테니스 클럽 운영자와 회원을 위한 클럽 관리 + 경기 통계 플랫폼',
+    description: '함께 칠 사람을 모으고, 친 게임을 한 장에 기록하면 승률·레이팅·랭킹이 쌓이는 테니스 서비스',
     openGraph: {
         // images는 src/app/opengraph-image.tsx(파일 컨벤션)가 자동 주입한다.
         siteName: 'BASELINE',
-        title: 'BASELINE — 테니스 클럽 운영·경기 통계',
-        description: '테니스 클럽 운영자와 회원을 위한 클럽 관리 + 경기 통계 플랫폼',
+        title: 'BASELINE — 테니스 매칭·경기 기록',
+        description: '함께 칠 사람을 모으고, 친 게임을 한 장에 기록하면 승률·레이팅·랭킹이 쌓이는 테니스 서비스',
         url: '/',
         locale: 'ko_KR',
         type: 'website',
@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     twitter: {
         // twitter:image는 og:image로 폴백된다. 카카오/슬랙/페북은 og:image 사용.
         card: 'summary_large_image',
-        title: 'BASELINE — 테니스 클럽 운영·경기 통계',
-        description: '테니스 클럽 운영자와 회원을 위한 클럽 관리 + 경기 통계 플랫폼',
+        title: 'BASELINE — 테니스 매칭·경기 기록',
+        description: '함께 칠 사람을 모으고, 친 게임을 한 장에 기록하면 승률·레이팅·랭킹이 쌓이는 테니스 서비스',
     },
 }
 

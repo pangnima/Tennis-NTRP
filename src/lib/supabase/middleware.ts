@@ -55,7 +55,6 @@ export async function updateSession(request: NextRequest) {
     // 보호 라우트: 비로그인 시 /login 리다이렉트.
     // /onboarding은 (main) 밖이지만 로그인한 사람만 쓰는 화면이라 같은 가드를 받는다
     // (그 레이아웃 안에 두면 게이트가 스스로를 리다이렉트해 루프가 된다 — lib/profile/onboarding-gate.ts)
-    // /clubs는 Week 69에 UI를 삭제해 라우트가 없다(next.config가 루트로 보낸다).
     // 초대 링크 착지(`/matches/join/<token>`)는 보호하지 않는다(0108) — 비로그인 방문자를 그 핸들러가 초대 화면(`/invite/<token>`)으로
     // 보낸다. 여기서 로그인으로 튕기면 회원이 아닌 사람은 무슨 링크인지도 모른 채 로그인 화면만 본다.
     const isInviteLanding = path.startsWith('/matches/join/')
@@ -78,7 +77,7 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
-    // 인증 라우트: 이미 로그인된 사용자는 next(있으면) 또는 내 전적 > 개인으로 리다이렉트.
+    // 인증 라우트: 이미 로그인된 사용자는 next(있으면) 또는 홈으로 리다이렉트.
     // 찾기 두 화면도 로그인 이전의 화면이다(U-4) — 헤더가 없어 로그인한 사람에게는 돌아갈 길이 로고뿐이었다
     const isAuthRoute = path === '/login' || path === '/signup' || path === '/find-id' || path === '/forgot-password'
     if (isAuthRoute && user) {
@@ -87,8 +86,8 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(new URL(dest, request.url))
     }
 
-    // 랜딩(/): 로그인 상태면 서비스 소개가 아니라 '개인' 메뉴로 보낸다.
-    // 착지 경로는 로그인 직후와 같아야 하므로 personalNavHref 하나만 본다.
+    // 랜딩(/): 로그인 상태면 서비스 소개가 아니라 홈으로 보낸다.
+    // 착지 경로는 로그인 직후와 같아야 하므로 HOME_PATH 하나만 본다.
     if (path === '/' && user) {
         return NextResponse.redirect(new URL(HOME_PATH, request.url))
     }
