@@ -3,20 +3,15 @@
 import { useState, useMemo } from 'react'
 import { aggregateHeadToHeadUnified, type UnifiedHeadToHeadDetail } from '@/lib/analytics/head-to-head'
 import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
-import type { CourtSurface, Match, User } from '@/types'
-import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
+import type { User } from '@/types'
+import type { BundleWithPersonal } from '@/lib/analytics/shared'
 import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
 import { H2HDetail } from '@/components/stats/head-to-head/h2h-detail'
 import { H2HOpponentSelect, h2hOpponentKey } from '@/components/stats/head-to-head/h2h-opponent-select'
 
 type Props = {
     h2hList: UnifiedHeadToHead[]
-    bundle: {
-        matches: Match[]
-        gameMetaById: Record<string, { date: string }>
-        personalMatches: SettledPersonalMatch[]  // 분해본(personalGames)
-        courtSurfaceByMatchId: Record<string, CourtSurface | null>
-    }
+    bundle: BundleWithPersonal  // 분해본(personalGames)
     userId: string
     userMap: Map<string, User>
 }
@@ -37,11 +32,10 @@ export function HeadToHeadCard({ h2hList, bundle, userId, userMap }: Props) {
         if (!selectedEntry) return null
         return aggregateHeadToHeadUnified(
             bundle,
-            userId,
             { userId: selectedEntry.opponentUserId, name: selectedEntry.opponentName },
             userMap,
         )
-    }, [bundle, userId, selectedEntry, userMap])
+    }, [bundle, selectedEntry, userMap])
 
     const myName = userMap.get(userId)?.name ?? '나'
 

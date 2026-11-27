@@ -1,7 +1,4 @@
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal, type BundleWithSurface,
-    calcWinRate,
-} from '@/lib/analytics/shared'
+import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
 import { aggregateHeadToHeadUnified } from '@/lib/analytics/head-to-head'
 import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { User } from '@/types'
@@ -29,8 +26,7 @@ export type RivalEntry = {
  * 최근 결과/일자/스코어는 aggregateHeadToHeadUnified 상세에서 추출한다.
  */
 export function selectRivals(
-    bundle: BundleWithMatches & BundleWithGameMeta & BundleWithPersonal & BundleWithSurface,
-    userId: string,
+    bundle: BundleWithPersonal,
     h2hList: UnifiedHeadToHead[],
     userMap: Map<string, User>,
     minGames = 3,
@@ -44,7 +40,7 @@ export function selectRivals(
         .slice(0, limit)
 
     return top.map((o) => {
-        const detail = aggregateHeadToHeadUnified(bundle, userId, {
+        const detail = aggregateHeadToHeadUnified(bundle, {
             userId: o.opponentUserId,
             name: o.opponentName,
         }, userMap)

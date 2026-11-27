@@ -72,7 +72,6 @@ export type OpponentCandidate = {
     dominantHand?: 'right' | 'left'  // 프로필 손잡이 — 선택 시 손잡이 자동 채움
     gender?: 'male' | 'female'  // 자동 대진표의 성별 밸런스용 (방 참가자 조회에서만 채움, Week 40)
     isGuest: boolean
-    clubNames: string[]
 }
 
 /** users.dominant_hand 원시값 → 유니온 (NULL·미지원 값은 undefined) */

@@ -1,7 +1,4 @@
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal,
-    type BundleWithSurface, type BundleWithUserMap,
-} from '@/lib/analytics/shared'
+import type { BundleWithPersonal, BundleWithUserMap } from '@/lib/analytics/shared'
 import { aggregateRecentForm } from '@/lib/analytics/form'
 import { aggregateComebackRate } from '@/lib/analytics/form'
 import { aggregateByNtrpDiff } from '@/lib/analytics/ntrp'
@@ -40,20 +37,17 @@ const TH = {
     surfaceWeak: 35,
 } as const
 
-type FullBundle = BundleWithMatches & BundleWithGameMeta & BundleWithPersonal & BundleWithSurface & BundleWithUserMap
-
 export function diagnoseStrengthsWeaknesses(
-    bundle: FullBundle,
-    userId: string,
+    bundle: BundleWithPersonal & BundleWithUserMap,
     userNtrp: number | null,
 ): DiagnosisResult {
     const strengths: DiagnosticItem[] = []
     const weaknesses: DiagnosticItem[] = []
 
-    const form = aggregateRecentForm(bundle, userId)
-    const comeback = aggregateComebackRate(bundle, userId)
-    const ntrp = aggregateByNtrpDiff(bundle, userId, userNtrp)
-    const surface = aggregateBySurface(bundle, userId)
+    const form = aggregateRecentForm(bundle)
+    const comeback = aggregateComebackRate(bundle)
+    const ntrp = aggregateByNtrpDiff(bundle, userNtrp)
+    const surface = aggregateBySurface(bundle)
 
     // 최근 폼 진단
     if (form.last10.length >= TH.formMinGames) {

@@ -23,39 +23,6 @@ export type MatchType = 'singles' | 'men_doubles' | 'women_doubles' | 'mixed_dou
 
 export type CourtSurface = 'hard' | 'clay' | 'grass' | 'other'
 
-export type MatchResult = {
-    sets: Array<{ team1: number; team2: number }>
-    // 외래키가 아닌 사이드 식별자 리터럴.
-    // 단식에서도 player1 = team1, player2 = team2 로 매핑되는 규약에 따름.
-    winnerId: 'team1' | 'team2' | 'draw'
-}
-
-export type Match = {
-    id: string
-    matchGameId: string
-    roundId: string
-    courtId: string
-    timeSlotId: string
-    matchType: MatchType
-    // 단식/복식 필드는 상호 배제:
-    //   matchType === 'singles'  → player1Id / player2Id 만 유효
-    //   matchType !== 'singles'  → team1 / team2 배열만 유효
-    player1Id?: string    // 단식
-    player2Id?: string    // 단식
-    team1?: string[]      // 복식 [userId, userId]
-    team2?: string[]      // 복식 [userId, userId]
-    // 복식 코트 배치: team 배열 중 애드코트(백핸드/레프트 사이드)를 맡은 선수 ID.
-    // null/undefined면 미지정 (기본: 듀스코트/포핸드 사이드).
-    // 단식 경기에서는 사용하지 않음.
-    team1AdPlayerId?: string
-    team2AdPlayerId?: string
-    status: 'scheduled' | 'finished'
-    result?: MatchResult
-    // 편집 저장 시에만 사용 — 이 match가 유래한 기존 match의 DB id.
-    // RPC가 구성 동일 여부를 확인해 점수를 이어붙이는 데 쓴다. 신규 경기/생성 시엔 undefined.
-    prevMatchId?: string
-}
-
 // ── 관점 경기 — 통계·레이팅이 읽는 모양(`toPersonalMatch`가 게임을 보는 사람 관점으로 바꾼다) ──
 
 export type PersonalMatchWinner = 'me' | 'opponent' | 'draw'

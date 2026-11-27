@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Match, User } from '@/types'
+import type { User } from '@/types'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 import {
     aggregateHeadToHeadUnified,
+    buildHeadToHeadList,
     summarizeHeadToHead,
     type UnifiedHeadToHeadDetail,
 } from './head-to-head'
@@ -28,40 +29,22 @@ const userMap = new Map<string, User>([
     [OPP2, user(OPP2, '상대짝')],
 ])
 
-function emptyBundle() {
+// 회원 OPP와의 단식 한 게임(분해본)
+function vsOpp(id: string, playedAt: string, winner: SettledPersonalMatch['winner'], extra: Partial<SettledPersonalMatch> = {}): SettledPersonalMatch {
     return {
-        matches: [] as Match[],
-        gameMetaById: {} as Record<string, { date: string }>,
-        personalMatches: [] as SettledPersonalMatch[],
-        courtSurfaceByMatchId: {} as Record<string, never>,
-    }
-}
-
-function clubSingles(id: string, winnerId: 'team1' | 'team2' | 'draw'): Match {
-    return {
-        id, matchGameId: id, roundId: 'r', courtId: 'c', timeSlotId: 't',
-        matchType: 'singles', player1Id: ME, player2Id: OPP,
-        status: 'finished', result: { sets: [{ team1: 6, team2: 4 }], winnerId },
-    }
-}
-
-function clubDoubles(id: string, winnerId: 'team1' | 'team2' | 'draw'): Match {
-    return {
-        id, matchGameId: id, roundId: 'r', courtId: 'c', timeSlotId: 't',
-        matchType: 'men_doubles', team1: [ME, MATE], team2: [OPP, OPP2],
-        status: 'finished', result: { sets: [{ team1: 6, team2: 3 }], winnerId },
+        id, userId: ME, opponentUserId: OPP, opponentName: '상대',
+        playedAt, matchType: 'singles',
+        setScores: [{ me: winner === 'me' ? 6 : 4, opp: winner === 'me' ? 4 : 6 }], winner, createdAt: playedAt,
+        ...extra,
     }
 }
 
 describe('aggregateHeadToHeadUnified — 확장 필드', () => {
-    it('클럽 단식: 매치타입·표면·승패 집계', () => {
-        const bundle = {
-            ...emptyBundle(),
-            matches: [clubSingles('m1', 'team1')],
-            gameMetaById: { m1: { date: '2026-06-01' } },
-            courtSurfaceByMatchId: { m1: 'hard' as const },
-        }
-        const d = aggregateHeadToHeadUnified(bundle, ME, { userId: OPP, name: null }, userMap)
+    it('단식: 매치타입·표면·승패 집계', () => {
+        const d = aggregateHeadToHeadUnified(
+            { personalMatches: [vsOpp('p1', '2026-06-01', 'me', { surface: 'hard' })] },
+            { userId: OPP, name: null }, userMap,
+        )
         expect(d.myWins).toBe(1)
         expect(d.matches[0].matchType).toBe('singles')
         expect(d.matches[0].surface).toBe('hard')
@@ -70,14 +53,11 @@ describe('aggregateHeadToHeadUnified — 확장 필드', () => {
         expect(d.bySurface).toEqual([{ surface: 'hard', wins: 1, losses: 0, draws: 0 }])
     })
 
-    it('클럽 복식: 내 파트너·상대 파트너 이름 해석', () => {
-        const bundle = {
-            ...emptyBundle(),
-            matches: [clubDoubles('m1', 'team2')],
-            gameMetaById: { m1: { date: '2026-06-01' } },
-            courtSurfaceByMatchId: {} as Record<string, never>,
-        }
-        const d = aggregateHeadToHeadUnified(bundle, ME, { userId: OPP, name: null }, userMap)
+    it('복식: 이름 스냅샷이 없으면 userMap으로 내 파트너·상대 파트너 이름을 해석', () => {
+        const pm = vsOpp('p1', '2026-06-01', 'opponent', {
+            matchType: 'men_doubles', partnerUserId: MATE, opponent2UserId: OPP2,
+        })
+        const d = aggregateHeadToHeadUnified({ personalMatches: [pm] }, { userId: OPP, name: null }, userMap)
         expect(d.myLosses).toBe(1)
         expect(d.matches[0].myPartnerName).toBe('내짝')
         expect(d.matches[0].opponentPartnerName).toBe('상대짝')
@@ -85,13 +65,11 @@ describe('aggregateHeadToHeadUnified — 확장 필드', () => {
         expect(d.bySurface).toEqual([{ surface: 'unknown', wins: 0, losses: 1, draws: 0 }])
     })
 
-    it('회원 상대 NTRP는 유효 NTRP(personalNtrp 우선)로 보강', () => {
-        const bundle = {
-            ...emptyBundle(),
-            matches: [clubSingles('m1', 'team1')],
-            gameMetaById: { m1: { date: '2026-06-01' } },
-        }
-        const d = aggregateHeadToHeadUnified(bundle, ME, { userId: OPP, name: null }, userMap)
+    it('회원 상대 NTRP는 스냅샷이 없으면 유효 NTRP(personalNtrp 우선)로 보강', () => {
+        const d = aggregateHeadToHeadUnified(
+            { personalMatches: [vsOpp('p1', '2026-06-01', 'me')] },
+            { userId: OPP, name: null }, userMap,
+        )
         expect(d.opponentNtrp).toBe(4.0)
     })
 
@@ -103,8 +81,7 @@ describe('aggregateHeadToHeadUnified — 확장 필드', () => {
             surface: 'clay', setScores: [{ me: 6, opp: 2 }], winner: 'me',
             notes: '비 오는 날', createdAt: '2026-06-02',
         }
-        const bundle = { ...emptyBundle(), personalMatches: [pm] }
-        const d = aggregateHeadToHeadUnified(bundle, ME, { userId: null, name: '상대B' }, userMap)
+        const d = aggregateHeadToHeadUnified({ personalMatches: [pm] }, { userId: null, name: '상대B' }, userMap)
         expect(d.totalMatches).toBe(1)
         expect(d.matches[0].matchType).toBe('mixed_doubles')
         expect(d.matches[0].surface).toBe('clay')
@@ -116,26 +93,37 @@ describe('aggregateHeadToHeadUnified — 확장 필드', () => {
         expect(d.opponentNtrp).toBe(3.0)
     })
 
-    it('클럽+개인 통합 요약 분해 (매치타입별 경기수 내림차순)', () => {
-        const pm: SettledPersonalMatch = {
-            id: 'p1', userId: ME, opponentUserId: OPP, opponentName: '상대',
-            playedAt: '2026-06-03', matchType: 'singles',
-            setScores: [{ me: 6, opp: 4 }], winner: 'opponent', createdAt: '2026-06-03',
-        }
-        const bundle = {
-            ...emptyBundle(),
-            matches: [clubDoubles('m1', 'team1'), clubSingles('m2', 'team1')],
-            gameMetaById: { m1: { date: '2026-06-01' }, m2: { date: '2026-06-02' } },
-            personalMatches: [pm],
-        }
-        const d = aggregateHeadToHeadUnified(bundle, ME, { userId: OPP, name: null }, userMap)
-        // singles 2건(클럽1 + 개인1), men_doubles 1건 → 경기수 내림차순
+    it('요약 분해 (매치타입별 경기수 내림차순)', () => {
+        const d = aggregateHeadToHeadUnified({
+            personalMatches: [
+                vsOpp('p1', '2026-06-01', 'me', { matchType: 'men_doubles' }),
+                vsOpp('p2', '2026-06-02', 'me'),
+                vsOpp('p3', '2026-06-03', 'opponent'),
+            ],
+        }, { userId: OPP, name: null }, userMap)
+        // singles 2건, men_doubles 1건 → 경기수 내림차순
         expect(d.totalMatches).toBe(3)
         expect(d.byMatchType[0].matchType).toBe('singles')
         expect(d.byMatchType[0]).toEqual({ matchType: 'singles', wins: 1, losses: 1, draws: 0 })
         expect(d.byMatchType[1]).toEqual({ matchType: 'men_doubles', wins: 1, losses: 0, draws: 0 })
     })
 })
+
+describe('buildHeadToHeadList', () => {
+    it('회원은 id, 비회원은 이름으로 묶고 복식은 상대 둘 각각 1경기 — 경기수 내림차순', () => {
+        const list = buildHeadToHeadList({
+            personalMatches: [
+                vsOpp('p1', '2026-06-01', 'me'),
+                vsOpp('p2', '2026-06-02', 'opponent', { matchType: 'men_doubles', opponent2Name: '김비회원' }),
+            ],
+        })
+        expect(list).toEqual([
+            { opponentUserId: OPP, opponentName: '상대', matches: 2, wins: 1, losses: 1, draws: 0, setsWon: 10, setsLost: 10 },
+            { opponentUserId: null, opponentName: '김비회원', matches: 1, wins: 0, losses: 1, draws: 0, setsWon: 4, setsLost: 6 },
+        ])
+    })
+})
+
 
 // summarizeHeadToHead 픽스처 — 필요한 필드만 채우고 나머지는 기본값
 function detail(over: Partial<UnifiedHeadToHeadDetail>): UnifiedHeadToHeadDetail {
@@ -180,9 +168,9 @@ describe('summarizeHeadToHead', () => {
 
     it('연승 감지 (최신부터 W 연속, 무는 끊음)', () => {
         const matches = [
-            { id: '1', date: '2026-06-05', outcome: 'W' as const, score: '', source: 'club' as const, matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
-            { id: '2', date: '2026-06-04', outcome: 'W' as const, score: '', source: 'club' as const, matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
-            { id: '3', date: '2026-06-03', outcome: 'L' as const, score: '', source: 'club' as const, matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
+            { id: '1', date: '2026-06-05', outcome: 'W' as const, score: '', matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
+            { id: '2', date: '2026-06-04', outcome: 'W' as const, score: '', matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
+            { id: '3', date: '2026-06-03', outcome: 'L' as const, score: '', matchType: 'singles' as const, surface: null, myPartnerName: null, opponentPartnerName: null, playedTime: null, notes: null },
         ]
         const lines = summarizeHeadToHead(
             detail({ totalMatches: 3, myWins: 2, myLosses: 1, winRate: 67, matches }),

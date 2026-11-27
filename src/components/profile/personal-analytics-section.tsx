@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import type { AnalyticsBundle, AnalyticsScope } from '@/lib/queries/analytics'
+import type { AnalyticsBundle } from '@/lib/queries/analytics'
 import type { User } from '@/types'
 import { StatsQuadGrid } from '@/components/stats/stats-quad-grid'
 import { StatsPrivacyToggle } from '@/components/stats/stats-privacy-toggle'
@@ -30,6 +30,7 @@ import { selectRivals } from '@/lib/analytics/rival'
 import { aggregatePartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import { replayPersonalRatings } from '@/lib/rating/personal-rating'
 import { effectiveNtrp } from '@/lib/rating/display'
+import { todayIsoKst } from '@/lib/format'
 import { TYPO } from '@/lib/dashboard/tokens'
 import { EmptyState } from '@/components/common/empty-state'
 import { ActionButton } from '@/components/common/action-button'
@@ -38,7 +39,6 @@ import { NAV_LABEL, RECORD_PATH } from '@/lib/nav-items'
 type Props = {
     bundle: AnalyticsBundle
     me: User
-    scope: AnalyticsScope
     /**
      * `self`는 본인 프로필(공개 토글·빈 상태 CTA·[+ 직접 기록]), `public`은 타인이 보는 공개 전적(F-24) —
      * 카드는 같은 한 벌이고 손댈 수 있는 것만 뺀다. 통계 비공개는 페이지가 이 섹션 대신 잠긴 4카드를 그린다.
@@ -46,24 +46,10 @@ type Props = {
     viewer?: 'self' | 'public'
 }
 
-type EmptyCta = { recordHref?: string; recordLabel?: string; browseHref?: string; browseLabel?: string }
-
-// 0경기 빈 상태 CTA — scope별 행동 유도. 클럽 통계는 개인 경기 기록으로 채울 수 없어
-// 기록 버튼 대신 해당 클럽 대진표 링크만 노출한다.
-//
-// 개인·통합 scope의 [클럽 찾아보기](browseHref: '/clubs')는 1차 오픈에서 내렸다(Week 54) —
-// 클럽이 동결 상태라 유도해 봐야 갈 곳이 없다. StatsEmpty의 browse 슬롯은 그대로이니
-// 되살리려면 아래 return에 `browseHref: '/clubs'`를 다시 넣으면 된다.
-// 기록 CTA는 매칭 리스트로 간다(Week 57) — 회원이 끼는 경기는 매칭을 거치고 직접 기록은 비회원 전용이라,
-// 신규 회원을 `/me/personal-matches/new`로 보내면 첫 행동이 어긋난다(헤더 빈 상태·체크리스트와 같은 목적지).
-function getEmptyCta(scope: AnalyticsScope): EmptyCta {
-    return scope.kind === 'personal' ? { recordHref: RECORD_PATH, recordLabel: NAV_LABEL.record } : {}
-}
-
 /**
  * 개인 분석 풀버전 섹션 — 본인 프로필과 타인의 공개 전적(F-24)이 같은 카드 한 벌을 쓴다.
  */
-export async function PersonalAnalyticsSection({ bundle, me, scope, viewer = 'self' }: Props) {
+export async function PersonalAnalyticsSection({ bundle, me, viewer = 'self' }: Props) {
     const isSelf = viewer === 'self'
 
     // 기록이 없으면 빈 카드 열두 장을 늘어놓지 않는다 — 무엇을 하면 채워지는지 한 장으로 말한다
@@ -78,100 +64,40 @@ export async function PersonalAnalyticsSection({ bundle, me, scope, viewer = 'se
             />
         )
     }
-    // 시간순/날짜 집계가 공유하는 번들 부분(클럽 매치 날짜는 gameMetaById에서 해석).
-    // 개인 경기는 통계용 분해본(세트 1개 = 게임 1개)을 사용한다.
-    const timeBundle = {
-        matches: bundle.matches,
-        gameMetaById: bundle.gameMetaById,
-        personalMatches: bundle.personalGames,
-    }
+    // 집계는 전부 통계용 분해본(세트 1개 = 게임 1개)을 읽는다
+    const games = { personalMatches: bundle.personalGames }
 
-    const surfaceStats = aggregateBySurface(
-        {
-            matches: bundle.matches,
-            courtSurfaceByMatchId: bundle.courtSurfaceByMatchId,
-            personalMatches: bundle.personalGames,
-        },
-        me.id,
-    )
+    const surfaceStats = aggregateBySurface(games)
     // NTRP 차이 분석은 진화 NTRP(personalNtrp 우선) 기준 — 실제 실력 대비 성적.
     const ntrpUserMap = new Map([...bundle.userMap.entries()].map(([id, u]) => [id, { ntrp: effectiveNtrp(u) }]))
     const myEffectiveNtrp = effectiveNtrp(me) || null
-    const ntrpStats = aggregateByNtrpDiff(
-        { matches: bundle.matches, personalMatches: bundle.personalGames, userMap: ntrpUserMap },
-        me.id,
-        myEffectiveNtrp,
-    )
-    const diagnosis = diagnoseStrengthsWeaknesses(
-        {
-            matches: bundle.matches,
-            gameMetaById: bundle.gameMetaById,
-            personalMatches: bundle.personalGames,
-            courtSurfaceByMatchId: bundle.courtSurfaceByMatchId,
-            userMap: ntrpUserMap,
-        },
-        me.id,
-        myEffectiveNtrp,
-    )
-
-    const opponentHandStats = aggregateByOpponentHand(
-        { matches: bundle.matches, personalMatches: bundle.personalGames, userMap: bundle.userMap },
-        me.id,
-    )
-
-    const doublesCourtStats = aggregateByDoublesCourtSide(
-        { matches: bundle.matches, personalMatches: bundle.personalGames },
-        me.id,
-    )
+    const ntrpStats = aggregateByNtrpDiff({ ...games, userMap: ntrpUserMap }, myEffectiveNtrp)
+    const diagnosis = diagnoseStrengthsWeaknesses({ ...games, userMap: ntrpUserMap }, myEffectiveNtrp)
+    const opponentHandStats = aggregateByOpponentHand({ ...games, userMap: bundle.userMap })
+    const doublesCourtStats = aggregateByDoublesCourtSide(games)
 
     // ── 고도화 집계 ───────────────────────────────────────────
-    const today = new Date().toISOString().slice(0, 10)
-    const trendYears = listMatchYears(timeBundle, me.id).map((year) => ({
+    const today = todayIsoKst()
+    const trendYears = listMatchYears(games).map((year) => ({
         year,
-        daily: aggregateWeekdayStats(timeBundle, me.id, year),
-        weekly: aggregateWeekOfYearStats(timeBundle, me.id, year),
-        monthly: aggregateMonthOfYearStats(timeBundle, me.id, year),
+        daily: aggregateWeekdayStats(games, year),
+        weekly: aggregateWeekOfYearStats(games, year),
+        monthly: aggregateMonthOfYearStats(games, year),
     }))
-    const hourBundle = { ...timeBundle, matchTimeById: bundle.matchTimeById }
-    const weeklyHeatmap = aggregateHourHeatmap(hourBundle, today, 28)   // 최근 4주
-    const monthlyHeatmap = aggregateHourHeatmap(hourBundle, today, 182) // 최근 약 6개월
-    const rivals = selectRivals(
-        { ...timeBundle, courtSurfaceByMatchId: bundle.courtSurfaceByMatchId },
-        me.id,
-        bundle.h2hList,
-        bundle.userMap,
-    )
-    const chemistry = aggregatePartnerChemistry(timeBundle, me.id, me.gender)
+    const weeklyHeatmap = aggregateHourHeatmap(games, today, 28)   // 최근 4주
+    const monthlyHeatmap = aggregateHourHeatmap(games, today, 182) // 최근 약 6개월
+    const rivals = selectRivals(games, bundle.h2hList, bundle.userMap)
+    const chemistry = aggregatePartnerChemistry(games, me.gender)
 
-    // 개인 경기 승패 기반 개인 레이팅 (온더플라이). 개인 scope 전용 지표 —
-    // 통합 scope는 승무패가 클럽+개인 합산이라 모집단이 어긋나므로 계산/노출하지 않는다.
-    const personalRating = scope.kind === 'personal'
-        ? replayPersonalRatings(bundle.personalGames, me.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
-        : null
+    // 경기 승패 기반 개인 레이팅 (온더플라이)
+    const personalRating = replayPersonalRatings(bundle.personalGames, me.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
 
-    // 타인에게는 행동 유도가 없다 — 남의 프로필에서 「매칭 참여하기」를 눌러도 내 일이 아니다
-    const emptyCta = isSelf ? getEmptyCta(scope) : {}
-
-    // 1:1 맞대결 카드 — 개인 경기 기록과 50/50 배치 또는 단독(클럽 scope) 렌더에 재사용
-    const headToHead = (
-        <Suspense>
-            <HeadToHeadCard
-                h2hList={bundle.h2hList}
-                bundle={{
-                    matches: bundle.matches,
-                    gameMetaById: bundle.gameMetaById,
-                    personalMatches: bundle.personalGames,
-                    courtSurfaceByMatchId: bundle.courtSurfaceByMatchId,
-                }}
-                userId={me.id}
-                userMap={bundle.userMap}
-            />
-        </Suspense>
-    )
+    // 타인에게는 행동 유도가 없다 — 남의 프로필에서 [경기 기록]을 눌러도 내 일이 아니다
+    const emptyRecordHref = isSelf ? RECORD_PATH : undefined
 
     return (
         <div className="space-y-8">
-            {/* 전적 통계 (4칸) — 세트 표기 숨김(심플). scope 범위는 상단 ProfileScopeTabs가 표시 */}
+            {/* 전적 통계 (4칸) — 세트 표기 숨김(심플) */}
             <section className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
                     <h2 className={`${TYPO.h3} shrink-0`}>전적 통계</h2>
@@ -189,9 +115,7 @@ export async function PersonalAnalyticsSection({ bundle, me, scope, viewer = 'se
                     mixedDoubles={bundle.stats.mixedDoubles}
                     privacy={isSelf && me.statsHidden ? 'self' : 'public'}
                     showSets={false}
-                    emptyRecordHref={emptyCta.recordHref}
-                    emptyBrowseHref={emptyCta.browseHref}
-                    emptyBrowseLabel={emptyCta.browseLabel}
+                    emptyRecordHref={emptyRecordHref}
                 />
             </section>
 
@@ -216,11 +140,18 @@ export async function PersonalAnalyticsSection({ bundle, me, scope, viewer = 'se
                 <DoublesCourtStatsCard court={doublesCourtStats} />
             </div>
 
-            {/* 개인 경기 기록 + 1:1 맞대결 비교 — 1행 50/50 (클럽 scope는 개인 기록 숨김 → 맞대결만 풀폭) */}
-            {headToHead}
+            {/* 1:1 맞대결 비교 */}
+            <Suspense>
+                <HeadToHeadCard
+                    h2hList={bundle.h2hList}
+                    bundle={games}
+                    userId={me.id}
+                    userMap={bundle.userMap}
+                />
+            </Suspense>
 
-            {/* 개인 레이팅 추세 (개인 scope — 개인 경기가 있을 때) */}
-            {personalRating && personalRating.history.length > 0 && (
+            {/* 개인 레이팅 추세 (경기가 있을 때) */}
+            {personalRating.history.length > 0 && (
                 <PersonalRatingTrendCard
                     points={personalRating.history}
                     provisional={personalRating.provisional}

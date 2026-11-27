@@ -1,10 +1,8 @@
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal,
-} from '@/lib/analytics/shared'
+import type { BundleWithPersonal } from '@/lib/analytics/shared'
 import { isValidDate, isoWeekday, diffDays } from '@/lib/analytics/date-utils'
 
 // ── 요일×시간 경기활동 히트맵 ────────────────────────────────────────────
-// 클럽 경기 시간(timeSlot start)·개인 경기 시각(playedTime)으로 요일×시간 빈도 집계.
+// 경기 시각(playedTime)으로 요일×시간 빈도 집계.
 // 시간 정보가 없는 경기는 그리드에서 제외하고 untimed로만 카운트한다.
 
 export type HourHeatmap = {
@@ -13,10 +11,6 @@ export type HourHeatmap = {
     totalGames: number   // 그리드에 배치된 경기 수(시간 있는 경기)
     untimed: number      // 기간 내 시간 미입력 경기 수
     mostActive: { weekday: number; hour: number } | null
-}
-
-type HourBundle = BundleWithMatches & BundleWithGameMeta & BundleWithPersonal & {
-    matchTimeById: Record<string, string | null>
 }
 
 function emptyGrid(): number[][] {
@@ -34,7 +28,7 @@ function parseHour(time: string | null | undefined): number | null {
  * today 기준 최근 sinceDays일의 경기를 요일×시간으로 집계한다.
  * today는 'YYYY-MM-DD'(서버에서 주입). 순수 함수로 테스트 가능.
  */
-export function aggregateHourHeatmap(bundle: HourBundle, today: string, sinceDays: number): HourHeatmap {
+export function aggregateHourHeatmap(bundle: BundleWithPersonal, today: string, sinceDays: number): HourHeatmap {
     const grid = emptyGrid()
     let untimed = 0
     let totalGames = 0
@@ -49,9 +43,6 @@ export function aggregateHourHeatmap(bundle: HourBundle, today: string, sinceDay
         totalGames++
     }
 
-    for (const m of bundle.matches) {
-        place(bundle.gameMetaById[m.matchGameId]?.date ?? '0000-00-00', bundle.matchTimeById[m.id])
-    }
     for (const pm of bundle.personalMatches) {
         place(pm.playedAt, pm.playedTime)
     }

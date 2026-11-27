@@ -11,7 +11,7 @@ import { aggregateRecentForm, type RecentFormResult } from '@/lib/analytics/form
 import { WEAK_PASSWORD_NOTICE } from '@/lib/auth/password-policy'
 import { TYPO } from '@/lib/dashboard/tokens'
 import { NAV_LABEL, statsHref } from '@/lib/nav-items'
-import { fetchAnalyticsBundle, type AnalyticsScope } from '@/lib/queries/analytics'
+import { fetchAnalyticsBundle } from '@/lib/queries/analytics'
 import { fetchUserById } from '@/lib/queries/users'
 import { replayPersonalRatings } from '@/lib/rating/personal-rating'
 import { combinePlayerStats, EMPTY_PLAYER_STATS, type PlayerStats } from '@/lib/stats'
@@ -94,13 +94,9 @@ export default async function MemberProfilePage({ params, searchParams }: Props)
         )
     }
 
-    const scope: AnalyticsScope = { kind: 'personal' }
-    const bundle = await fetchAnalyticsBundle(userId, { scope })
+    const bundle = await fetchAnalyticsBundle(userId)
     // 최근 폼은 통계 분해본(personalGames)으로 — 세트 하나가 게임 하나다
-    const form = aggregateRecentForm(
-        { matches: bundle.matches, gameMetaById: bundle.gameMetaById, personalMatches: bundle.personalGames },
-        userId,
-    )
+    const form = aggregateRecentForm({ personalMatches: bundle.personalGames })
     const snapshot = replayPersonalRatings(bundle.personalGames, target.ntrp ?? null, (id) => bundle.userMap.get(id)?.ntrp)
     const personalRating = snapshot.matchesPlayed > 0
         ? { rating: snapshot.rating, provisional: snapshot.provisional, matchesPlayed: snapshot.matchesPlayed }
@@ -129,7 +125,7 @@ export default async function MemberProfilePage({ params, searchParams }: Props)
                 />
             </div>
             {isSelf && notice === WEAK_PASSWORD_NOTICE && <WeakPasswordNotice />}
-            <PersonalAnalyticsSection bundle={bundle} me={target} scope={scope} viewer={isSelf ? undefined : 'public'} />
+            <PersonalAnalyticsSection bundle={bundle} me={target} viewer={isSelf ? undefined : 'public'} />
         </PageContainer>
     )
 }

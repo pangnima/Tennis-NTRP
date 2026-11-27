@@ -1,6 +1,6 @@
 import {
-    type WinLoss, type BundleWithMatches, type BundleWithPersonal, type BundleWithUserMap,
-    calcWinRate, emptyWL, getMatchOutcome, getOpponentIds, addOutcome,
+    type WinLoss, type BundleWithPersonal, type BundleWithUserMap,
+    calcWinRate, emptyWL, addOutcome,
 } from '@/lib/analytics/shared'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 
@@ -38,8 +38,7 @@ function bucketOf(result: NtrpDiffStats, oppNtrp: number, userNtrp: number): Win
 const PERSONAL_OUTCOME = { me: 'win', opponent: 'loss', draw: 'draw' } as const
 
 export function aggregateByNtrpDiff(
-    bundle: BundleWithMatches & BundleWithUserMap & Partial<BundleWithPersonal>,
-    userId: string,
+    bundle: BundleWithPersonal & BundleWithUserMap,
     userNtrp: number | null,
 ): NtrpDiffStats {
     const result: NtrpDiffStats = {
@@ -51,26 +50,7 @@ export function aggregateByNtrpDiff(
 
     if (!userNtrp) return result
 
-    for (const m of bundle.matches) {
-        if (!m.result) continue
-        const opponentIds = getOpponentIds(m, userId)
-        if (!opponentIds.length) continue
-
-        const oppNtrps = opponentIds
-            .map((id) => bundle.userMap.get(id)?.ntrp)
-            .filter((n): n is number => typeof n === 'number' && n > 0)
-
-        if (!oppNtrps.length) {
-            addOutcome(result.unknown, getMatchOutcome(m, userId))
-            continue
-        }
-
-        const avgOppNtrp = oppNtrps.reduce((s, n) => s + n, 0) / oppNtrps.length
-        addOutcome(bucketOf(result, avgOppNtrp, userNtrp), getMatchOutcome(m, userId))
-    }
-
-    // 개인 경기(분해본) — 개인 탭은 클럽 매치가 없어 이 루프가 카드의 전부다(F-23)
-    for (const pm of bundle.personalMatches ?? []) {
+    for (const pm of bundle.personalMatches) {
         if (!pm.winner) continue
         const oppNtrp = personalOpponentNtrp(pm, bundle.userMap)
         const bucket = oppNtrp === null ? result.unknown : bucketOf(result, oppNtrp, userNtrp)

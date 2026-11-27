@@ -1,4 +1,4 @@
-// 클럽 동적 레이팅(NTRP 스케일 ELO) 상수.
+// 레이팅(NTRP 스케일 ELO) 상수 — 개인 레이팅(personal-rating.ts)이 쓴다.
 // 공식·근거는 docs/rating-system.md §2 를 단일 진실로 삼는다.
 
 /** 스케일 계수 D. NTRP 1.0 차이 = 승산 10배. */
@@ -16,7 +16,7 @@ export const PROVISIONAL_THRESHOLD = 10
 /** 마진(세트·게임 차) 가중치. marginFactor 범위 [1.0, 1 + MARGIN_WEIGHT]. */
 export const MARGIN_WEIGHT = 0.5
 
-/** 클럽 가입 기본 레이팅. */
+/** 기본 레이팅 — NTRP를 모를 때의 시작값·상대 폴백. */
 export const DEFAULT_RATING = 2.5
 
 /** 레이팅 하한/상한. */

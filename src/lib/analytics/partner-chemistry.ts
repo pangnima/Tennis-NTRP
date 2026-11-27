@@ -1,8 +1,5 @@
 import type { MatchType, User } from '@/types'
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal,
-    getMatchOutcome, calcWinRate,
-} from '@/lib/analytics/shared'
+import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
 
 // ── 파트너 케미 (복식 파트너별 승률·연승·케미지수·추세) ───────────────────
 // aggregatePartnerRecommendations는 5경기 하드필터·연승 미지원이라
@@ -34,8 +31,7 @@ const RECENT_N = 5
 const TREND_THRESHOLD = 8
 
 export function aggregatePartnerChemistry(
-    bundle: BundleWithMatches & BundleWithGameMeta & BundleWithPersonal,
-    userId: string,
+    bundle: BundleWithPersonal,
     gender: User['gender'],
     minGames = 3,
 ): PartnerChemistry[] {
@@ -49,22 +45,7 @@ export function aggregatePartnerChemistry(
         groups.set(key, grp)
     }
 
-    // 클럽 복식
-    for (const m of bundle.matches) {
-        if (!m.result) continue
-        if (!DOUBLES_TYPES.includes(m.matchType as DoubleMatchType)) continue
-        const myTeam = (m.team1 ?? []).includes(userId) ? (m.team1 ?? []) : (m.team2 ?? [])
-        if (!myTeam.includes(userId)) continue
-        const outcome = getMatchOutcome(m, userId)
-        const o: 'W' | 'L' | 'D' = outcome === 'win' ? 'W' : outcome === 'loss' ? 'L' : 'D'
-        const date = bundle.gameMetaById[m.matchGameId]?.date ?? '0000-00-00'
-        for (const partnerId of myTeam) {
-            if (partnerId === userId) continue
-            push(partnerId, m.matchType as DoubleMatchType, { date, id: m.id, outcome: o })
-        }
-    }
-
-    // 개인 복식
+    // 복식만 — 파트너는 회원이면 id, 비회원이면 이름이 정체성
     for (const pm of bundle.personalMatches) {
         if (!DOUBLES_TYPES.includes(pm.matchType as DoubleMatchType)) continue
         const partnerKey = pm.partnerUserId ?? (pm.partnerName ? `name:${pm.partnerName}` : null)

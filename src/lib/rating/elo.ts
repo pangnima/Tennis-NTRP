@@ -1,4 +1,5 @@
-import type { Match } from '@/types'
+// 레이팅 공용 primitive(NTRP 스케일 ELO) — 개인 레이팅(personal-rating.ts)이 경기마다 쓴다. docs/rating-system.md §2
+
 import {
     DEFAULT_RATING,
     K_BASE,
@@ -9,28 +10,6 @@ import {
     PROVISIONAL_THRESHOLD,
     RATING_SCALE_D,
 } from './constants'
-
-// ── 타입 ────────────────────────────────────────────────
-
-export type RatingState = {
-    rating: number
-    matchesPlayed: number
-}
-
-export type RatingHistoryEntry = {
-    matchId: string
-    userId: string
-    ratingBefore: number
-    ratingAfter: number
-    delta: number
-}
-
-export type ClubRatingSnapshot = {
-    /** userId → 최종 레이팅/경기 수 (게스트 포함) */
-    ratings: Map<string, RatingState>
-    /** 경기 적용 순서대로 누적된 변동 이력 */
-    history: RatingHistoryEntry[]
-}
 
 type WinnerSide = 'team1' | 'team2' | 'draw'
 type SetScore = { team1: number; team2: number }
@@ -78,92 +57,6 @@ export function computeMatchDelta(params: {
 }): number {
     const e = expectedScore(params.selfRating, params.oppRating)
     return params.k * params.margin * (params.selfScore - e)
-}
-
-function clampRating(r: number): number {
-    return Math.min(Math.max(r, MIN_RATING), MAX_RATING)
-}
-
-function getTeams(m: Match): { team1: string[]; team2: string[] } {
-    if (m.matchType === 'singles') {
-        return {
-            team1: m.player1Id ? [m.player1Id] : [],
-            team2: m.player2Id ? [m.player2Id] : [],
-        }
-    }
-    return { team1: m.team1 ?? [], team2: m.team2 ?? [] }
-}
-
-function sideScore(side: 'team1' | 'team2', winnerId: WinnerSide): number {
-    if (winnerId === 'draw') return 0.5
-    return winnerId === side ? 1 : 0
-}
-
-// ── 전체 재계산 (Full Recompute) ────────────────────────
-
-/**
- * 정렬된 확정 경기 배열을 순차 재생(replay)해 클럽 전체 레이팅을 산출한다.
- * 결정적·멱등: 동일 입력 → 동일 스냅샷. DB 접근 없음.
- *
- * @param matches docs/rating-system.md §2.7 정렬키로 미리 정렬된 확정 경기들.
- *                각 경기에 result(sets, winnerId)가 있어야 반영된다.
- */
-export function replayClubRatings(matches: Match[]): ClubRatingSnapshot {
-    const ratings = new Map<string, RatingState>()
-    const history: RatingHistoryEntry[] = []
-
-    const ensure = (id: string): RatingState => {
-        let state = ratings.get(id)
-        if (!state) {
-            state = { rating: DEFAULT_RATING, matchesPlayed: 0 }
-            ratings.set(id, state)
-        }
-        return state
-    }
-
-    const teamAverage = (ids: string[]): number => {
-        const sum = ids.reduce((acc, id) => acc + ensure(id).rating, 0)
-        return sum / ids.length
-    }
-
-    for (const m of matches) {
-        if (!m.result) continue
-        const { team1, team2 } = getTeams(m)
-        if (team1.length === 0 || team2.length === 0) continue
-
-        // 변동량은 모두 '경기 전' 상태로 계산한다.
-        const r1 = teamAverage(team1)
-        const r2 = teamAverage(team2)
-        const e1 = expectedScore(r1, r2)
-        const e2 = 1 - e1
-        const s1 = sideScore('team1', m.result.winnerId)
-        const s2 = sideScore('team2', m.result.winnerId)
-        const mf = marginFactor(m.result.sets, m.result.winnerId)
-
-        // team1·team2는 서로소이므로 한쪽 갱신이 다른 쪽 계산에 영향 없음.
-        const applyTeam = (ids: string[], e: number, s: number) => {
-            for (const id of ids) {
-                const state = ensure(id)
-                const k = pickK(state.matchesPlayed)
-                const before = state.rating
-                const after = clampRating(before + k * mf * (s - e))
-                state.rating = after
-                state.matchesPlayed += 1
-                history.push({
-                    matchId: m.id,
-                    userId: id,
-                    ratingBefore: before,
-                    ratingAfter: after,
-                    delta: after - before,
-                })
-            }
-        }
-
-        applyTeam(team1, e1, s1)
-        applyTeam(team2, e2, s2)
-    }
-
-    return { ratings, history }
 }
 
 /** 표시용 반올림 (소수점 3자리). */

@@ -30,7 +30,6 @@ function toPerson(u: PersonRow): OpponentCandidate & { deleted: boolean } {
         dominantHand: toDominantHand(u.dominant_hand),
         gender: u.gender === 'male' || u.gender === 'female' ? u.gender : undefined,
         isGuest: false,
-        clubNames: [],
         deleted: u.deleted_at != null,
     }
 }

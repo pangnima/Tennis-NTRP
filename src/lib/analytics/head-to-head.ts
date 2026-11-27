@@ -1,11 +1,10 @@
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal, type BundleWithSurface,
-    getMatchOutcome, getOpponentIds, isUserTeam1, calcWinRate,
-} from '@/lib/analytics/shared'
+import { type BundleWithPersonal, calcWinRate } from '@/lib/analytics/shared'
 import { effectiveNtrp } from '@/lib/rating/display'
 import { formatRecord } from '@/lib/dashboard/outcome'
 import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
 import { SURFACE_LABELS } from '@/lib/dashboard/surface'
+import type { CourtSurface, MatchType, User } from '@/types'
+
 /** 상대별 맞대결 요약 한 줄 — 회원이면 id, 비회원이면 이름이 정체성 */
 export type UnifiedHeadToHead = {
     opponentUserId: string | null
@@ -17,53 +16,14 @@ export type UnifiedHeadToHead = {
     setsWon: number
     setsLost: number
 }
-import type { CourtSurface, MatchType, User } from '@/types'
 
-// ── 클라이언트 H2H 목록 빌더 (scope-aware 번들용) ─────────────────────────
+// ── H2H 목록 빌더 ─────────────────────────────────────────────────────────
 
-/**
- * 필터된 matches/personalMatches에서 상대별 H2H 목록을 순수함수로 산출.
- * analytics 번들이 scope(전체/클럽/개인)로 자른 데이터를 받아 사용한다.
- */
-export function buildHeadToHeadList(
-    bundle: BundleWithMatches & BundleWithGameMeta & BundleWithPersonal,
-    userId: string,
-): UnifiedHeadToHead[] {
+/** 경기(분해본)에서 상대별 H2H 목록을 순수함수로 산출한다. */
+export function buildHeadToHeadList(bundle: BundleWithPersonal): UnifiedHeadToHead[] {
     const map = new Map<string, UnifiedHeadToHead>()
 
-    // 클럽 매치
-    for (const m of bundle.matches) {
-        if (!m.result) continue
-        const allIds = m.matchType === 'singles'
-            ? [m.player1Id, m.player2Id].filter(Boolean) as string[]
-            : [...(m.team1 ?? []), ...(m.team2 ?? [])]
-        if (!allIds.includes(userId)) continue
-
-        const oppIds = getOpponentIds(m, userId)
-        if (oppIds.length === 0) continue
-
-        const outcome = getMatchOutcome(m, userId)
-        const isTeam1 = isUserTeam1(m, userId)
-
-        for (const oppId of oppIds) {
-            const existing: UnifiedHeadToHead = map.get(oppId) ?? {
-                opponentUserId: oppId,
-                opponentName: null,
-                matches: 0, wins: 0, losses: 0, draws: 0, setsWon: 0, setsLost: 0,
-            }
-            existing.matches++
-            if (outcome === 'win') existing.wins++
-            else if (outcome === 'loss') existing.losses++
-            else existing.draws++
-            for (const s of m.result.sets) {
-                existing.setsWon += isTeam1 ? s.team1 : s.team2
-                existing.setsLost += isTeam1 ? s.team2 : s.team1
-            }
-            map.set(oppId, existing)
-        }
-    }
-
-    // 개인 매치 (복식이면 상대 #1·#2 각각 1경기로 누적 — 클럽 복식과 동일 규칙)
+    // 복식이면 상대 #1·#2 각각 1경기로 누적
     const addPersonalOpponent = (
         opponentUserId: string | undefined,
         opponentName: string | undefined,
@@ -107,20 +67,19 @@ export function buildHeadToHeadList(
     return [...map.values()].sort((a, b) => b.matches - a.matches)
 }
 
-// ── 통합 1:1 맞대결 상세 (클럽+개인 매치) ─────────────────────────────────
+// ── 1:1 맞대결 상세 ───────────────────────────────────────────────────────
 
 export type HeadToHeadMatchEntry = {
     id: string
     date: string
     outcome: 'W' | 'L' | 'D'
     score: string
-    source: 'club' | 'personal'
     matchType: MatchType
     surface: CourtSurface | null
     myPartnerName: string | null         // 복식 전용 (단식은 null)
     opponentPartnerName: string | null   // 복식 전용 (단식은 null)
-    playedTime: string | null            // 개인 경기 전용
-    notes: string | null                 // 개인 경기 전용
+    playedTime: string | null
+    notes: string | null
 }
 
 export type HeadToHeadTypeBreakdown = { matchType: MatchType; wins: number; losses: number; draws: number }
@@ -148,8 +107,7 @@ export type UnifiedHeadToHeadDetail = {
 }
 
 export function aggregateHeadToHeadUnified(
-    bundle: BundleWithMatches & BundleWithGameMeta & BundleWithPersonal & BundleWithSurface,
-    userId: string,
+    bundle: BundleWithPersonal,
     opponentKey: { userId: string | null; name: string | null },
     userMap: Map<string, User>,
 ): UnifiedHeadToHeadDetail {
@@ -160,59 +118,11 @@ export function aggregateHeadToHeadUnified(
 
     let mySetsWon = 0; let mySetsLost = 0
 
-    // 헤더용 상대 손잡이/NTRP — 개인 경기에서 최신(날짜 큰) 값을 채택
+    // 헤더용 상대 손잡이/NTRP — 최신(날짜 큰) 경기의 값을 채택
     let handCand: { date: string; hand: 'right' | 'left' } | null = null
     let ntrpCand: { date: string; ntrp: number } | null = null
 
-    // 클럽 매치 (단식+복식 모두): 세트 합산을 엔트리 루프 안에서 처리
-    for (const m of bundle.matches) {
-        if (!m.result) continue
-        const allIds = m.matchType === 'singles'
-            ? [m.player1Id, m.player2Id].filter(Boolean) as string[]
-            : [...(m.team1 ?? []), ...(m.team2 ?? [])]
-        if (!allIds.includes(userId)) continue
-
-        const oppIds = getOpponentIds(m, userId)
-        // 이름만 있는 외부 상대(opponentKey.userId === null)는 클럽 매치에 등록 불가
-        // → 클럽 매치는 userId 기반 매칭만 수행, 외부 상대는 개인 매치 루프에서만 집계
-        const matched = opponentKey.userId
-            ? oppIds.includes(opponentKey.userId)
-            : false
-        if (!matched) continue
-
-        const outcome = getMatchOutcome(m, userId)
-        const o: 'W' | 'L' | 'D' = outcome === 'win' ? 'W' : outcome === 'loss' ? 'L' : 'D'
-        const sets = m.result.sets
-        const isTeam1 = isUserTeam1(m, userId)
-        const scoreStr = sets.map((s) => `${isTeam1 ? s.team1 : s.team2}-${isTeam1 ? s.team2 : s.team1}`).join(', ')
-        const date = bundle.gameMetaById[m.matchGameId]?.date ?? '0000-00-00'
-
-        // 세트 합산 (엔트리 매칭된 경기만)
-        for (const s of sets) {
-            mySetsWon += isTeam1 ? s.team1 : s.team2
-            mySetsLost += isTeam1 ? s.team2 : s.team1
-        }
-
-        // 복식 파트너: 내 팀 − 나 / 상대 팀 − 선택 상대
-        let myPartnerName: string | null = null
-        let opponentPartnerName: string | null = null
-        if (m.matchType !== 'singles') {
-            const myTeam = isTeam1 ? (m.team1 ?? []) : (m.team2 ?? [])
-            const oppTeam = isTeam1 ? (m.team2 ?? []) : (m.team1 ?? [])
-            myPartnerName = nameOf(myTeam.find((id) => id !== userId))
-            opponentPartnerName = nameOf(oppTeam.find((id) => id !== opponentKey.userId))
-        }
-
-        entries.push({
-            id: m.id, date, outcome: o, score: scoreStr, source: 'club',
-            matchType: m.matchType,
-            surface: bundle.courtSurfaceByMatchId[m.id] ?? null,
-            myPartnerName, opponentPartnerName,
-            playedTime: null, notes: null,
-        })
-    }
-
-    // 개인 매치 (복식이면 상대 #1·#2 중 하나라도 일치하면 집계)
+    // 복식이면 상대 #1·#2 중 하나라도 일치하면 집계
     for (const pm of bundle.personalMatches) {
         const matchedSlot1 = opponentKey.userId
             ? pm.opponentUserId === opponentKey.userId
@@ -248,7 +158,7 @@ export function aggregateHeadToHeadUnified(
         if (ntrp != null && (!ntrpCand || pm.playedAt > ntrpCand.date)) ntrpCand = { date: pm.playedAt, ntrp }
 
         entries.push({
-            id: pm.id, date: pm.playedAt, outcome: o, score: scoreStr, source: 'personal',
+            id: pm.id, date: pm.playedAt, outcome: o, score: scoreStr,
             matchType: pm.matchType,
             surface: pm.surface ?? null,
             myPartnerName, opponentPartnerName,

@@ -1,8 +1,4 @@
-import {
-    type BundleWithMatches, type BundleWithGameMeta, type BundleWithPersonal,
-    getMatchOutcome,
-    isUserTeam1,
-} from '@/lib/analytics/shared'
+import type { BundleWithPersonal } from '@/lib/analytics/shared'
 
 // ── 최근 폼 ──────────────────────────────────────────────
 
@@ -14,21 +10,9 @@ export type RecentFormResult = {
     recentDraws: number
 }
 
-export function aggregateRecentForm(
-    bundle: BundleWithMatches & BundleWithGameMeta & BundleWithPersonal,
-    userId: string,
-    n = 10,
-): RecentFormResult {
-    // id: 날짜 동률 시 결정적 정렬을 위한 2차 키 (매치 UUID)
+export function aggregateRecentForm(bundle: BundleWithPersonal, n = 10): RecentFormResult {
+    // id: 날짜 동률 시 결정적 정렬을 위한 2차 키
     const outcomes: { date: string; id: string; outcome: 'W' | 'L' | 'D' }[] = []
-
-    for (const m of bundle.matches) {
-        if (!m.result) continue
-        const meta = bundle.gameMetaById[m.matchGameId]
-        const date = meta?.date ?? '0000-00-00'
-        const o = getMatchOutcome(m, userId)
-        outcomes.push({ date, id: m.id, outcome: o === 'win' ? 'W' : o === 'loss' ? 'L' : 'D' })
-    }
 
     for (const pm of bundle.personalMatches) {
         const o = pm.winner === 'me' ? 'W' : pm.winner === 'opponent' ? 'L' : 'D'
@@ -77,26 +61,10 @@ export type ComebackStats = {
     comebackRate: number     // comebackWins / (comebackWins + comebackLosses) × 100
 }
 
-export function aggregateComebackRate(
-    bundle: BundleWithMatches & BundleWithPersonal,
-    userId: string,
-): ComebackStats {
+export function aggregateComebackRate(bundle: BundleWithPersonal): ComebackStats {
     let comebackWins = 0
     let comebackLosses = 0
     let total = 0
-
-    for (const m of bundle.matches) {
-        if (!m.result?.sets || m.result.sets.length < 2) continue
-        const sets = m.result.sets
-        const isTeam1 = isUserTeam1(m, userId)
-        const firstSetWon = isTeam1 ? sets[0].team1 > sets[0].team2 : sets[0].team2 > sets[0].team1
-        const finalOutcome = getMatchOutcome(m, userId)
-        if (finalOutcome === 'draw') continue
-
-        total++
-        if (!firstSetWon && finalOutcome === 'win') comebackWins++
-        if (firstSetWon && finalOutcome === 'loss') comebackLosses++
-    }
 
     for (const pm of bundle.personalMatches) {
         if (!pm.setScores || pm.setScores.length < 2) continue

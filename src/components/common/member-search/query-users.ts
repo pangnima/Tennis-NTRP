@@ -47,7 +47,6 @@ export async function queryUsers(supabase: BrowserClient, rawQuery: string, self
         statsHidden: u.stats_hidden ?? false,
         dominantHand: u.dominant_hand === 'right' || u.dominant_hand === 'left' ? u.dominant_hand : undefined,
         isGuest: false,
-        clubNames: [],
     }))
     const { items, hasMore } = splitOverflow(rows, USER_SEARCH_LIMIT)
     return { results: rankUserSearchResults(items, rawQuery), hasMore, error: null }

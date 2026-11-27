@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import type { Match } from '@/types'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
 import { aggregateHourHeatmap } from './hour-heatmap'
 
@@ -9,15 +8,7 @@ function personal(id: string, playedAt: string, playedTime?: string): SettledPer
     return { id, userId: 'me', opponentName: 'X', playedAt, playedTime, matchType: 'singles', setScores: [{ me: 6, opp: 4 }], winner: 'me', createdAt: playedAt }
 }
 
-function clubMatch(id: string): Match {
-    return {
-        id, matchGameId: id, roundId: 'r', courtId: 'c', timeSlotId: 't',
-        matchType: 'singles', player1Id: 'me', player2Id: 'opp',
-        status: 'finished', result: { sets: [{ team1: 6, team2: 4 }], winnerId: 'team1' },
-    }
-}
-
-const EMPTY = { matches: [] as Match[], gameMetaById: {} as Record<string, { date: string }>, matchTimeById: {} as Record<string, string | null>, personalMatches: [] as SettledPersonalMatch[] }
+const EMPTY = { personalMatches: [] as SettledPersonalMatch[] }
 
 describe('aggregateHourHeatmap', () => {
     it('개인 경기 시각을 요일×시간에 배치', () => {
@@ -48,19 +39,5 @@ describe('aggregateHourHeatmap', () => {
         )
         expect(r.totalGames).toBe(0)
         expect(r.untimed).toBe(0)
-    })
-
-    it('클럽 경기 시간(matchTimeById) 사용', () => {
-        const r = aggregateHourHeatmap(
-            {
-                ...EMPTY,
-                matches: [clubMatch('m1')],
-                gameMetaById: { m1: { date: '2026-06-17' } }, // 수요일(2)
-                matchTimeById: { m1: '08:05' },
-            },
-            TODAY, 90,
-        )
-        expect(r.grid[2][8]).toBe(1)
-        expect(r.totalGames).toBe(1)
     })
 })
