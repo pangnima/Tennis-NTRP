@@ -39,11 +39,6 @@ export function hasPasswordIdentity(signals: ProviderSignals): boolean {
     return providers.length === 0 || providers.includes(PASSWORD_PROVIDER)
 }
 
-/** 소셜로만 로그인하는 계정인가 — `hasPasswordIdentity`의 여집합 */
-export function isSocialOnlyAccount(signals: ProviderSignals): boolean {
-    return !hasPasswordIdentity(signals)
-}
-
 /**
  * 문장 속에 넣을 provider 이름('구글'). 모르는 provider면 null.
  * 버튼 문안(`social-login-buttons.tsx`의 'Google로 계속하기')과 합치지 않는다 — 쓰임이 다르다.

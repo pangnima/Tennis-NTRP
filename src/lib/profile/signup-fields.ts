@@ -103,12 +103,6 @@ export function normalizeRacketModel(text: string | null | undefined): string | 
     return trimmed.length > 0 ? trimmed : null
 }
 
-/** 표시용: '윌슨 · 프로스태프 97' / '윌슨' / '미입력' */
-export function formatRacket(brand: string | null | undefined, model: string | null | undefined): string {
-    if (!brand && !model) return '미입력'
-    return [brand, model].filter(Boolean).join(' · ')
-}
-
 /**
  * 표시용 손잡이 라벨 — 값이 없거나 모르는 값이면 undefined(항목을 통째로 빼라는 뜻).
  * HAND_OPTIONS가 정본이므로 라벨을 여기서 파생한다.
@@ -117,8 +111,6 @@ export function formatDominantHand(v: string | null | undefined): string | undef
     return HAND_OPTIONS.find((o) => o.value === v)?.label
 }
 
-/** 값 → 라벨 조회표. 옵션 배열에서 파생하므로 출처는 하나다(Week 69 — 네 파일이 같은 리터럴을 갖고 있었다). */
-export const GENDER_LABEL = Object.fromEntries(GENDER_OPTIONS.map((o) => [o.value, o.label])) as Record<GenderValue, string>
 export const HAND_LABEL = Object.fromEntries(HAND_OPTIONS.map((o) => [o.value, o.label])) as Record<HandValue, string>
 /** 좁은 자리용 한 글자 표기 — 프로필 헤더 '남 · 오른손잡이' */
 export const GENDER_SHORT_LABEL: Record<GenderValue, string> = { male: '남', female: '여' }

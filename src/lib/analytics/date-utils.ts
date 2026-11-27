@@ -11,11 +11,6 @@ export function isValidDate(dateStr: string): boolean {
     return dateStr !== '0000-00-00'
 }
 
-/** 'YYYY-MM-DD' → 'YYYY-MM'. */
-export function monthKey(dateStr: string): string {
-    return dateStr.slice(0, 7)
-}
-
 /** 'YYYY-MM-DD' → UTC 자정 Date. */
 export function parseUTC(dateStr: string): Date {
     const [y, m, d] = dateStr.split('-').map(Number)
@@ -32,15 +27,6 @@ export function addDaysStr(dateStr: string, n: number): string {
     const d = parseUTC(dateStr)
     d.setUTCDate(d.getUTCDate() + n)
     return formatUTC(d)
-}
-
-/** 'YYYY-MM'에 n개월 더한 'YYYY-MM' (음수 가능). */
-export function addMonthsKey(ym: string, n: number): string {
-    const [y, m] = ym.split('-').map(Number)
-    const total = (y * 12 + (m - 1)) + n
-    const ny = Math.floor(total / 12)
-    const nm = total % 12
-    return `${String(ny).padStart(4, '0')}-${String(nm + 1).padStart(2, '0')}`
 }
 
 /** 요일 인덱스 (0=월 … 6=일). */
@@ -64,11 +50,6 @@ export function dayOfYear(dateStr: string): number {
  */
 export function weekOfYear(dateStr: string): number {
     return Math.ceil(dayOfYear(dateStr) / 7)
-}
-
-/** 해당 날짜가 속한 주의 월요일 'YYYY-MM-DD'. */
-export function mondayOf(dateStr: string): string {
-    return addDaysStr(dateStr, -isoWeekday(dateStr))
 }
 
 /** a - b 일수 차 (양수면 a가 미래). */

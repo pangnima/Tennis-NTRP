@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-    isValidDate, monthKey, addDaysStr, addMonthsKey,
-    isoWeekday, mondayOf, diffDays, relativeDayLabel,
+    isValidDate, addDaysStr,
+    isoWeekday, diffDays, relativeDayLabel,
     yearOf, dayOfYear, weekOfYear,
 } from './date-utils'
 
@@ -14,12 +14,6 @@ describe('isValidDate', () => {
     })
 })
 
-describe('monthKey', () => {
-    it("'YYYY-MM-DD' → 'YYYY-MM'", () => {
-        expect(monthKey('2026-06-15')).toBe('2026-06')
-    })
-})
-
 describe('addDaysStr / 월·연 경계', () => {
     it('월 경계를 넘는다', () => {
         expect(addDaysStr('2026-01-31', 1)).toBe('2026-02-01')
@@ -29,27 +23,12 @@ describe('addDaysStr / 월·연 경계', () => {
     })
 })
 
-describe('addMonthsKey', () => {
-    it('연 경계를 넘는다', () => {
-        expect(addMonthsKey('2026-01', -1)).toBe('2025-12')
-        expect(addMonthsKey('2026-11', 2)).toBe('2027-01')
-    })
-})
-
 describe('isoWeekday (0=월..6=일)', () => {
     it('2026-06-15는 월요일(0)', () => {
         expect(isoWeekday('2026-06-15')).toBe(0)
     })
     it('2026-06-21은 일요일(6)', () => {
         expect(isoWeekday('2026-06-21')).toBe(6)
-    })
-})
-
-describe('mondayOf', () => {
-    it('주중/주말 모두 같은 주 월요일 반환', () => {
-        expect(mondayOf('2026-06-17')).toBe('2026-06-15') // 수 → 월
-        expect(mondayOf('2026-06-21')).toBe('2026-06-15') // 일 → 월
-        expect(mondayOf('2026-06-15')).toBe('2026-06-15') // 월 → 자기자신
     })
 })
 

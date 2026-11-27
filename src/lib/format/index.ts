@@ -19,17 +19,6 @@ export function formatShortDate(dateStr: string): string {
     return new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric' }).format(new Date(dateStr))
 }
 
-/** 'YYYY-MM-DD' → 'YYYY.MM.DD' — 로테이션 팝업 머리말 등 점 표기 자리 */
-export function formatDotDate(dateStr: string): string {
-    return dateStr.replaceAll('-', '.')
-}
-
-/** 'YYYY-MM-DD' → 'MM.DD' — 목록 그룹 헤더의 짧은 날짜 */
-export function formatMonthDay(dateStr: string): string {
-    const [, mm, dd] = dateStr.split('-')
-    return `${mm}.${dd}`
-}
-
 /** 오늘 날짜 'YYYY-MM-DD' (Asia/Seoul). sv-SE 로케일이 ISO 형식을 그대로 낸다. */
 export function todayIsoKst(now: Date = new Date()): string {
     return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(now)
@@ -43,23 +32,6 @@ export const HOUR_OPTIONS: { value: string; label: string }[] = Array.from({ len
     value: `${String(h).padStart(2, '0')}:00`,
     label: `${h}시`,
 }))
-
-/**
- * 'HH:MM' → 'HH:00' (분 절삭). 시 단위 도입 이전에 저장된 'HH:30' 값을 편집 폼 select에 맞추기 위한 정규화.
- * 빈 문자열·형식 불일치는 그대로 반환.
- */
-export function toHourValue(value: string): string {
-    const m = /^(\d{2}):\d{2}$/.exec(value)
-    if (!m || Number(m[1]) > 23) return value
-    return `${m[1]}:00`
-}
-
-/** 'HH:MM' → 'N시' 표시 라벨 (예: '18:00' → '18시', '06:30' → '6시'). 형식 불일치는 그대로 반환. */
-export function formatHourLabel(value: string): string {
-    const m = /^(\d{2}):\d{2}$/.exec(value)
-    if (!m || Number(m[1]) > 23) return value
-    return `${Number(m[1])}시`
-}
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'] as const
 

@@ -5,7 +5,6 @@ import {
     resolveRacketBrand,
     splitRacketBrand,
     normalizeRacketModel,
-    formatRacket,
     RACKET_MODEL_MAX_LEN,
     isSignupNtrp,
     isGenderValue,
@@ -89,12 +88,6 @@ describe('splitRacketBrand / normalizeRacketModel / formatRacket', () => {
         expect(normalizeRacketModel('x'.repeat(RACKET_MODEL_MAX_LEN + 5))).toHaveLength(RACKET_MODEL_MAX_LEN)
     })
 
-    it('표시 문자열', () => {
-        expect(formatRacket('윌슨', '프로스태프 97')).toBe('윌슨 · 프로스태프 97')
-        expect(formatRacket('윌슨', null)).toBe('윌슨')
-        expect(formatRacket(null, '퓨어 에어로')).toBe('퓨어 에어로')
-        expect(formatRacket(null, null)).toBe('미입력')
-    })
 })
 
 describe('validateName', () => {

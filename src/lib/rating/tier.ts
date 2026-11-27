@@ -93,11 +93,6 @@ export function getTier(rating: number): RatingTier {
     return TIER_BANDS[tierIndex(rating)].tier
 }
 
-/** 계급의 rating 구간 [low, high). 챌린저 high = MAX_RATING. 검증 페이지 표시용. */
-export function getTierRange(tier: RatingTier): { low: number; high: number } {
-    return bandRange(TIER_ORDER.indexOf(tier))
-}
-
 /** 계급 아이콘 정적 경로. 교체 시 public/tiers/{tier}.svg 만 갈아끼우면 됨. */
 export function tierIconSrc(tier: RatingTier): string {
     return `/tiers/${tier}.svg`

@@ -1,12 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
-    authProviders, hasPasswordIdentity, isSocialOnlyAccount, socialProviderLabel,
+    authProviders, hasPasswordIdentity, socialProviderLabel,
 } from './account-providers'
 
 describe('hasPasswordIdentity — 비밀번호 변경 폼을 내보일지 가르는 술어', () => {
     it('구글 전용 계정은 비밀번호가 없다 (app_metadata 실측 모양)', () => {
         expect(hasPasswordIdentity({ providers: ['google'] })).toBe(false)
-        expect(isSocialOnlyAccount({ providers: ['google'] })).toBe(true)
     })
 
     it('identities 쪽만 와도 같은 판정이다 — 두 신호 중 하나에만 걸지 않는다', () => {

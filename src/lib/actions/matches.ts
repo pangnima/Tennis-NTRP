@@ -150,17 +150,6 @@ export async function joinMatchByPasswordAction(matchId: string, password: strin
     return { error: null }
 }
 
-/** 초대 링크로 참가 — 비공개 매칭도 토큰이 맞으면 들어간다. 성공하면 매칭 id를 돌려준다. */
-export async function joinMatchByTokenAction(token: string): Promise<ActionResult & { matchId?: string }> {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: LOGIN_REQUIRED }
-    const { data, error } = await supabase.rpc('join_match', { p_token: token })
-    if (error) return { error: gameErrorMessage(error.message, '참가하지 못했습니다.') }
-    revalidateAll()
-    return { error: null, matchId: (data as JoinResult)?.matchId }
-}
-
 /** 비회원 한 명의 입력 — 참가자 표·보드·초대 화면이 같은 모양으로 보낸다 */
 export type GuestInput = { name: string; ntrp: number; gender?: 'male' | 'female'; hand?: 'right' | 'left' }
 

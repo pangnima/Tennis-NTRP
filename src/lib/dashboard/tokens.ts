@@ -63,9 +63,6 @@ export const TYPO_SCALE: ReadonlyArray<{ token: keyof typeof TYPO; size: string;
 
 // 칩 radius 4px(rounded-sm)
 export const PILL_BASE = 'inline-flex items-center text-caption px-2 py-0.5 rounded-sm border'
-// '승인 필요' 같은 주의 필 — 대기·주의는 spot(docs/color-system.md §4). 테두리형 필이라 클릭 대상에는 쓰지 않는다
-// (채움 버튼은 ActionButton `solid` — 같은 옐로우지만 형태(테두리 vs 채움)로 갈린다)
-export const ATTENTION_PILL = `${PILL_BASE} border-spot/50 text-spot`
 // 중립 필 — 색으로 뜻을 싣지 않는 칩(확정됨·비공개·진행 중·손잡이). 담긴 글자는 값이므로 기본색이다(테두리가 중립을 말한다)
 export const NEUTRAL_PILL = `${PILL_BASE} border-border text-foreground`
 // 목록 컨테이너 — 카드 안에서 행을 구분선으로 가른다(목록 화면·명단·라운드 묶음)

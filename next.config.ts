@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
         ]
     },
     /**
-     * ⚠ 여기 등록하는 것은 **우리가 URL을 쥔 이미지**뿐이다(Supabase 스토리지 두 버킷).
+     * ⚠ 여기 등록하는 것은 **우리가 URL을 쥔 이미지**뿐이다(Supabase 스토리지 `avatars` 버킷).
      *
      * **사용자 아바타는 `next/image`로 그리지 않는다.** 소셜 가입자의 `users.profile_image`에는
      * provider가 준 외부 URL이 들어온다(구글: `https://lh3.googleusercontent.com/a/…=s96-c`).
@@ -43,13 +43,13 @@ const nextConfig: NextConfig = {
      * 호스트를 하나씩 더해 막는 것은 틀린 수다: 구글만 해도 lh3~lh6이고 카카오를 켜면
      * k.kakaocdn.net이 따라오며 provider는 언제든 호스트를 바꾼다. **열린 집합에 허용목록을 쓰면
      * 안 된다.** 대신 아바타는 shadcn `Avatar`/`AvatarImage`(네이티브 <img>)로 그린다 —
-     * 헤더·프로필 상세·룸 명단·클럽 랭킹이 이미 전부 그렇다.
+     * 헤더·프로필·참가자 표가 이미 전부 그렇다.
      *
      * 최적화가 정말 필요해지면 호스트를 늘리지 말고 가입 시 provider 사진을 우리 `avatars`
      * 버킷으로 복사해 URL을 우리 것으로 닫는다(백로그).
      *
      * 호스트가 `*.supabase.co`인 이유(Week 68): dev·prod 프로젝트가 둘이라 ref를 박으면 환경마다
-     * 설정이 갈린다. 위 원칙("열린 집합에 허용목록 금지")과 어긋나지 않는다 — 경로가 **우리 버킷 두 개**로
+     * 설정이 갈린다. 위 원칙("열린 집합에 허용목록 금지")과 어긋나지 않는다 — 경로가 **우리 버킷**으로
      * 닫혀 있고, 호스트는 우리 프로젝트 둘 중 하나다(사용자 데이터가 고르는 값이 아니다).
      */
     images: {
@@ -58,11 +58,6 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: '*.supabase.co',
                 pathname: '/storage/v1/object/public/avatars/**',
-            },
-            {
-                protocol: 'https',
-                hostname: '*.supabase.co',
-                pathname: '/storage/v1/object/public/club-logos/**',
             },
         ],
     },

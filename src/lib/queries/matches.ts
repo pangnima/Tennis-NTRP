@@ -169,16 +169,6 @@ export async function fetchMatchList(viewerId: string, filter: 'all' | 'mine'): 
     }))
 }
 
-/**
- * 내가 호스트인 매칭의 id들 — 경기 결과의 「구분」(호스트/게스트)을 가르는 재료.
- * 게임은 매칭의 호스트를 모른다. 호스트는 자기 매칭을 언제나 볼 수 있어(RLS) 이 한 번의 조회로 충분하다.
- */
-export async function fetchHostedMatchIds(viewerId: string): Promise<Set<string>> {
-    const supabase = await createClient()
-    const { data } = await supabase.from('matches').select('id').eq('host_id', viewerId)
-    return new Set((data ?? []).map((row) => row.id))
-}
-
 /** 호스트가 보는 참가 신청 목록(신청 순). 호스트가 아니면 RLS가 본인 신청만 준다 */
 export async function fetchMatchApplicants(matchId: string): Promise<MatchApplicant[]> {
     const supabase = await createClient()

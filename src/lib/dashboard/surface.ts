@@ -25,15 +25,6 @@ export const SURFACE_BAR_CLASS: Record<string, string> = {
     unknown: 'bg-muted-foreground/40',
 }
 
-/** 코트 표면별 텍스트 색상 (SURFACE_BAR_CLASS와 동일 슬롯 — 카테고리 토큰은 텍스트·채움 겸용). */
-export const SURFACE_TEXT_CLASS: Record<string, string> = {
-    hard: 'text-cat-1',
-    clay: 'text-cat-3',
-    grass: 'text-cat-2',
-    other: 'text-cat-6',
-    unknown: 'text-muted-foreground',
-}
-
 /** 폼 Select에서 사용하는 입력용 옵션 배열 (SURFACE_LABELS과 라벨 일치). */
 export const SURFACE_OPTIONS: { value: CourtSurface; label: string }[] = [
     { value: 'hard', label: '하드' },
