@@ -113,7 +113,7 @@ function selfScoreOf(winner: PersonalMatchWinner): number {
  * 개인 경기들을 시간순으로 재생해 '나'의 레이팅 시계열을 산출한다.
  * 결정적: 동일 입력 → 동일 스냅샷. fetch는 played_at desc이므로 내부에서 asc 재정렬한다.
  *
- * @param matches 본인의 개인 경기 분해본(explodePersonalMatchSets 산출 — 게임 1건 = 세트 1개 + winner). 정렬 무관 — 내부에서 (playedAt, playedTime, groupSeq, id) asc 재정렬
+ * @param matches 본인의 개인 경기 분해본(explodePersonalMatchSets 산출 — 게임 1건 = 세트 1개 + winner). 정렬 무관 — 내부에서 (playedAt, playedTime, createdAt, id) asc 재정렬
  * @param selfNtrp 본인 자가선언 ntrp (시작 레이팅 + fallback③). 0/null이면 기본 2.5에서 시작.
  * @param oppNtrpById 회원 ntrp 조회기 (fallback②)
  */
@@ -124,15 +124,15 @@ export function replayPersonalRatings(
 ): PersonalRatingSnapshot {
     const start = usableNtrp(selfNtrp) ?? DEFAULT_RATING
 
-    // 시간순(과거→최신) 정렬. 같은 일시의 로테이션 게임은 세션 내 순번(groupSeq, 실제 입력 순)으로,
-    // 그래도 같으면 id로 안정 정렬해 결정성을 보장한다.
+    // 시간순(과거→최신) 정렬. 같은 일시의 게임(한 번에 저장한 여러 게임)은 저장 순서(createdAt — 0106의
+    // clock_timestamp라 한 트랜잭션 안에서도 줄 순서대로 다르다)로, 그래도 같으면 id로 안정 정렬해 결정성을 보장한다.
     const sorted = [...matches].sort((a, b) => {
         const d = a.playedAt.localeCompare(b.playedAt)
         if (d !== 0) return d
         const t = (a.playedTime ?? '').localeCompare(b.playedTime ?? '')
         if (t !== 0) return t
-        const s = (a.groupSeq ?? 0) - (b.groupSeq ?? 0)
-        if (s !== 0) return s
+        const c = (a.createdAt ?? '').localeCompare(b.createdAt ?? '')
+        if (c !== 0) return c
         return a.id.localeCompare(b.id)
     })
 

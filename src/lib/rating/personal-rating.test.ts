@@ -110,9 +110,9 @@ describe('replayPersonalRatings — 정렬 결정성', () => {
         expect(desc.history.map((h) => h.matchId)).toEqual(asc.history.map((h) => h.matchId))
     })
 
-    it('같은 일시의 로테이션 게임은 groupSeq(입력 순)로 재생한다', () => {
-        const g1 = pm({ id: 'z-late-id', playedAt: '2025-01-01', playedTime: '10:00', winner: 'me', opponentNtrp: 3.0, groupSeq: 1 })
-        const g2 = pm({ id: 'a-early-id', playedAt: '2025-01-01', playedTime: '10:00', winner: 'opponent', opponentNtrp: 3.0, groupSeq: 2 })
+    it('같은 일시의 게임은 저장 순서(createdAt)로 재생한다 — id 순이 아니다', () => {
+        const g1 = pm({ id: 'z-late-id', playedAt: '2025-01-01', playedTime: '10:00', winner: 'me', opponentNtrp: 3.0, createdAt: '2025-01-01T10:00:00.000001Z' })
+        const g2 = pm({ id: 'a-early-id', playedAt: '2025-01-01', playedTime: '10:00', winner: 'opponent', opponentNtrp: 3.0, createdAt: '2025-01-01T10:00:00.000002Z' })
         const snap = replayPersonalRatings([g2, g1], null, noResolver)
         expect(snap.history.map((h) => h.matchId)).toEqual(['z-late-id', 'a-early-id'])
     })

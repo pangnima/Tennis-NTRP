@@ -98,7 +98,6 @@ export function toPersonalMatch(game: Game, viewerId: string): PersonalMatch | n
         setScores: setsForSeat(game, me),
         notes: game.notes,
         courtName: game.courtName,
-        sourceType: 'direct',
         createdAt: game.createdAt,
     }
 }
