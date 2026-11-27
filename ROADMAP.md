@@ -25,7 +25,7 @@
 - [x] 회원의 email·phone·login_id를 본인만 읽게 — 0110 컬럼 권한 + `get_my_account()` (11-27, `6f12b91`)
 - [ ] Vercel 환경변수 `SUPABASE_SERVICE_ROLE_KEY` — Production = prod 키, Preview·Development = dev 키 (**오너가 직접**)
 - [ ] prod 덤프(선택 — 지금 prod는 계정 1·경기 0)
-- [ ] prod 0096 → `main` 배포 → prod 0097 → prod 0098~0111 (`docs/history/week-72-rebuild.md` 「릴리스」)
+- [ ] prod 0096 → `main` 배포 → prod 0097 → prod 0098~0112 (`docs/history/week-72-rebuild.md` 「릴리스」)
 - [ ] 개인정보처리방침 개정 공지(성별 표시 + 비회원·초대 링크로 보이는 범위, 시행 12-04) — 문구는 오너 확인
 - [ ] 릴리스 뒤 prod에서 `users` 컬럼 권한 확인(남의 email·phone 조회가 거부되는지)
 
@@ -43,6 +43,8 @@
 - [ ] 랭킹 승률만 무승부를 분모에 넣는 정의 차이 — RPC `get_member_rankings`가 패(또는 무) 수를 함께 돌려줘야 한다(다음 DB 변경 때)
 - [x] DB 잔여 — `users.is_guest` 칸 제거·`club-logos` 정책 삭제(0111, `d9d6f39`) · [ ] 빈 `club-logos` 버킷은 대시보드에서 삭제(SQL로 못 지운다, dev·prod)
 - [x] 낡은 주석 (`0987025`)
+- [x] 전 구간 E2E(A·R·M·G·H, 1280·390) — 11-27, 결함 5건 중 3건 고침(0112 포함), `docs/e2e/runs.md`
+- [ ] 인증 화면에 `<main>` 랜드마크(F-72-4) · 404의 HTTP 상태(F-72-5)
 - [ ] `types/supabase.ts` 재생성(지금은 손으로 맞춘 상태) · `db-history.ts export`로 history 재확인(`DATABASE_URL` 필요)
 - [ ] 폴더 이름 정리는 보류 — `personal-matches`는 import가 많아 이름만 바꾸는 이득보다 소음이 크다. 그 폴더를 크게 고칠 때 함께
 
@@ -127,4 +129,4 @@
 | 목록 페이지네이션(`/matches` 100건) · 초대 링크 재발급 | 기존 잔여 | P1~P3 사이 |
 | 비회원 기록을 가입 계정과 잇기 | 오너 보류 | — |
 | Supabase 플랜 점검 | Realtime 동시 접속·Storage 1GB·DB 500MB — 대화·이미지가 걸린다 | P4 전 |
-| 전 구간 E2E(PC 1280 + 모바일 390) | 오픈 전 | 오픈 전 |
+| 구글 로그인 E2E(A8 — 사람이 조작) | 자동으로 못 돌린다 | 릴리스 전 |
