@@ -44,10 +44,15 @@ export function AutoLineupPanel({ pool, matchType, durationMinutes, hasScored, o
     const [perPlayer, setPerPlayer] = useState<number | null>(null)
     const per = perPlayer ?? recommended ?? 4
     const total = gamesForPerPlayer(picked.length, per, matchType)
+    // 한 게임에 필요한 인원보다 적으면 버튼을 잠그고 이유를 말한다 — 눌러도 아무 일이 없으면 고장으로 보인다(E2E 11-27)
+    const need = matchType === 'singles' ? 2 : 4
+    const tooFew = picked.length < need
 
     function build(nextSeed: number) {
         const result = buildLineup(toLineupPlayers(picked.map((p) => ({ ...p, isMember: p.isMember }))), { matchType, games: total, seed: nextSeed, courts })
-        setWarnings(result.warnings)
+        setWarnings(result.games.length === 0 && result.warnings.length === 0
+            ? ['이 조건으로는 대진을 만들 수 없습니다. 참가자나 1인당 게임 수를 바꿔 보세요.']
+            : result.warnings)
         if (result.games.length > 0) {
             onApply(result.games)
             setBuilt(true)
@@ -88,10 +93,11 @@ export function AutoLineupPanel({ pool, matchType, durationMinutes, hasScored, o
                 <span className={TYPO.body2}>참가 {picked.length}명 · 총 {total}게임</span>
             </div>
             {hasScored && <p className={TYPO.body2Muted}>스코어가 들어간 게임은 그대로 두고, 예정 게임만 새 대진으로 바꿉니다.</p>}
+            {tooFew && <p className={cn(TYPO.body2, 'text-spot break-keep')}>{need}명 이상 골라야 대진을 만들 수 있습니다(지금 {picked.length}명).</p>}
             {warnings.length > 0 && <ul className={cn(TYPO.body2, 'list-disc space-y-0.5 pl-5 text-spot')}>{warnings.map((w) => <li key={w}>{w}</li>)}</ul>}
             <div className="flex justify-end gap-2">
                 {built && <ActionButton size="md" onClick={() => build(seed + 1)}>다시 뽑기</ActionButton>}
-                <ActionButton size="md" variant="solid" onClick={() => build(seed)} disabled={total < 1}>대진표 만들기</ActionButton>
+                <ActionButton size="md" variant="solid" onClick={() => build(seed)} disabled={total < 1 || tooFew}>대진표 만들기</ActionButton>
             </div>
         </section>
     )

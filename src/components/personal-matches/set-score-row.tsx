@@ -41,6 +41,7 @@ export function SetScoreRow({
                     min={0} max={99}
                     value={Number.isNaN(set.me) ? '' : set.me}
                     onChange={(e) => onChange('me', e.target.value)}
+                    aria-label="내 점수"
                     className={scoreInputClass}
                 />
                 <span className="w-3 text-center text-muted-foreground">-</span>
@@ -49,6 +50,7 @@ export function SetScoreRow({
                     min={0} max={99}
                     value={Number.isNaN(set.opp) ? '' : set.opp}
                     onChange={(e) => onChange('opp', e.target.value)}
+                    aria-label="상대 점수"
                     className={scoreInputClass}
                 />
             </div>
