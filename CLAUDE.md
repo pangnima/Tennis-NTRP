@@ -1,6 +1,6 @@
 # 테니스 매칭·경기 기록 플랫폼 — CLAUDE.md
 
-> 이 문서는 **현재 규칙과 구조**만 담는다. Week 72 재구축의 배경·달라진 점·남은 일은 `docs/history/week-72-rebuild.md`, 그 이전(Week 1~71)의 규칙과 서사는 `docs/history/claude-md-2026-11-25.md`(재구축 직전 CLAUDE.md 전문)·`…09-16.md`·`…09-08.md`에 있다. 사람용 진입 문서는 `README.md`, 설계 문서는 `docs/`(rating-system·color-system·typography·social-login), **브라우저 E2E는 `docs/e2e/`**(README = 계정·도구 규약 / `rebuild-scenarios.md` = 현행 절차서 / `runs.md` 실행 기록).
+> 이 문서는 **현재 규칙과 구조**만 담는다. Week 72 재구축의 배경·달라진 점·남은 일은 `docs/history/week-72-rebuild.md`, 그 이전(Week 1~71)의 규칙과 서사는 `docs/history/claude-md-2026-11-25.md`(재구축 직전 CLAUDE.md 전문)·`…09-16.md`·`…09-08.md`에 있다. 사람용 진입 문서는 `README.md`, **할 일은 `ROADMAP.md`**, 설계 문서는 `docs/`(**design-system** = 화면 규칙 하나 · rating · social-login), **브라우저 E2E는 `docs/e2e/`**(README = 계정·도구 규약 / `rebuild-scenarios.md` = 현행 절차서 / `runs.md` 실행 기록).
 
 ## 프로젝트 정의
 개인 회원 중심의 테니스 **매칭 + 경기 기록** 서비스. 공개/비공개 매칭이나 매칭 없는 기록으로 회원·비회원 경기를 쌓고, 그 누적으로 통계·강약점·랭킹을 돌려준다. 핵심 기능은 **매칭 · 경기 기록 · 내 정보** 셋. 클럽은 이후(지금은 코드도 DB도 없다).
@@ -18,7 +18,7 @@
 
 **브랜치·릴리스**: 개발은 `dev`에서 커밋·push(Vercel 프리뷰 = dev DB). 릴리스는 ① 마이그레이션을 **prod DB에 먼저** 적용 → ② `git checkout main && git merge dev && git push` → ③ Vercel Production 배포 → ④ `git checkout dev`. `main`에 직접 커밋하지 않는다.
 **마이그레이션**: dev 롤백 스모크 → dev 적용 → prod 적용. 재현 정본은 `supabase/history/`(원격 `schema_migrations` 사본) — 적용 뒤 `scripts/db-history.ts export`로 갱신한다. 히스토리 밖에서 `execute_sql`로만 한 DDL·권한 변경은 prod에 재현되지 않는다. Auth 설정(Google provider·Site URL·Redirect URLs)은 두 대시보드에서 각각.
-**⚠ Week 72 릴리스 상태**: 0096~0110은 **dev에만** 적용됐다. prod는 아직 옛 구조다 — 릴리스 순서는 `prod 0096 → main 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110`(0097은 옛 테이블을 지우므로 반드시 앱 배포 뒤, 0098~0110은 새 앱이 부르는 RPC라 배포와 함께). **0103은 Vercel Production에 prod의 `SUPABASE_SERVICE_ROLE_KEY`를 넣은 뒤** — 0103부터 레이팅 캐시는 이 키로만 갱신된다(없으면 prod 랭킹이 멈춘다). `docs/history/week-72-rebuild.md` 「릴리스」.
+**⚠ Week 72 릴리스 상태**: 0096~0111은 **dev에만** 적용됐다. prod는 아직 옛 구조다 — 릴리스 순서는 `prod 0096 → main 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110 → prod 0111`(0097은 옛 테이블을 지우므로 반드시 앱 배포 뒤, 0098~0111은 새 앱이 부르는 RPC라 배포와 함께). **0103은 Vercel Production에 prod의 `SUPABASE_SERVICE_ROLE_KEY`를 넣은 뒤** — 0103부터 레이팅 캐시는 이 키로만 갱신된다(없으면 prod 랭킹이 멈춘다). `docs/history/week-72-rebuild.md` 「릴리스」.
 
 ## 기술 스택
 Next.js 16 (App Router) · React 19 · TypeScript strict · shadcn/ui(@base-ui/react) + Tailwind v4 · Supabase(Auth + PostgreSQL + Storage) · Vercel · vitest(순수 함수만)
@@ -46,11 +46,12 @@ src/
 │   └── page.tsx                 랜딩(정적, 다크)
 ├── components/
 │   ├── ui/                      shadcn 생성물 — 직접 수정 금지
-│   ├── common/                  셸(Header·Sidebar·MobileTabBar·MobileNav)·PageHeader·FormActions·**ActionButton**(+`action-button-class.ts` 단계표)·ConfirmButton·**DataList**(표/카드 그릇)·LinkTabs(화면을 가르는 축, 오른쪽 `trailing`)·**LinkSegments**(거르는 축 — 링크 세그먼트 토글)·member-search/
+│   ├── common/                  셸(Header·Sidebar·MobileTabBar·MobileNav)·PageHeader·FormActions·**ActionButton**(+`action-button-class.ts` 단계표)·ConfirmButton·**AppDialog**(짧은 입력 팝업)·**chip-class**(칩 모양)·Toaster·**DataList**(표/카드 그릇)·LinkTabs(화면을 가르는 축, 오른쪽 `trailing`)·**LinkSegments**(거르는 축 — 링크 세그먼트 토글)·member-search/
 │   ├── record/                  GameForm(직접 기록 폼)·use-game-form(참가자 풀 + 게임 줄)·RecordPoolField(참가자 목록 하나 + 검색 결과 [추가]·[+ 비회원])·RecordGameRows(보드의 `BoardRow`를 그대로, `plain`)
 │   ├── games/                   **GameSessionBlock**(묶음: 머리 줄 + 메모 줄 `GameSessionMemo` + 게임 줄 + 수정 기록)·GameRow(게임 한 줄)·GameHistory(아코디언)·GameCardActions·GameEditForm
 │   ├── matches/                 MatchCard·MatchForm(+MatchAccessField 공개/비공개·비밀번호)·match-actions(헤더·나가기·내보내기)·MatchApplyButton·MatchApplicationList(호스트의 신청 목록)·MatchPasswordGate·MatchHostTools(초대·링크·비밀번호 변경)·**MatchHeadline**(머리 한 덩어리 — 상세·초대 화면 공용)·MatchMembersSection/MatchMemberRow·**MatchGuestRow**(명단의 비회원 줄)·match-guest-actions([+ 비회원 추가]·[빼기])·**invite/**(초대 화면 — InviteJoinPanel·InviteRoster)·person-cells(이름·성별·NTRP·티어)·**board/**(게임 보드 — 대진표 + 스코어, 포/백, 자동 대진표 패널. `BoardRow` = 표 한 줄 + `BoardRowCard`(좁은 자리의 좌우 배치), 자리·[⇄]는 `BoardSeat`·`BoardSwapButton`)
-│   ├── personal-matches/        폼 조각(스코어 줄·애드 토글·선수 자동완성·경기 정보) — record/·games/·matches/가 쓴다
+│   ├── personal-matches/        폼 조각(스코어 줄·애드 토글·경기 정보·코트명 자동완성) — record/·games/·matches/가 쓴다
+│   ├── styleguide/              /styleguide의 색 견본·팝업 견본
 │   ├── stats/ profile/          통계 카드 한 벌·프로필 헤더·설정 폼
 │   ├── admin/                   코트명 정리 — CourtMergeBox(이름 칩 + 공식 명칭 + 합치기)·CourtOfficialRow(이름 바꾸기·별칭 빼기)
 │   └── notifications/ auth/ onboarding/ landing/ theme/ legal/
@@ -60,11 +61,12 @@ src/
 │   ├── actions/                 Server Actions — 쓰기는 전부 여기(games·matches·auth·profile·onboarding·notifications·admin-courts)
 │   ├── queries/                 read-only(games·matches·invite·analytics·notifications·users·courts)
 │   ├── analytics/ rating/       통계 집계·레이팅 엔진(순수) — 입력은 `PersonalMatch` 관점 모양
-│   ├── personal-matches/        analytics가 읽는 관점 타입의 도우미(explode·winner·result-badge·player-suggestions)
+│   ├── personal-matches/        analytics가 읽는 관점 타입의 도우미(explode·winner·result-badge·ntrp)
+│   ├── design/                  **화면 토큰** — tokens.ts(TYPO·TYPO_SCALE·TEXT_TONES·CARD)·도메인 스타일 맵(match-type-style·surface·outcome·member-badges)·강제 테스트(colors·typography) · feedback/notify.ts(토스트 하나)
 │   ├── guide/                   content.ts = 안내 문구 단일 출처 · fixtures.ts = 랜딩 콜라주 더미
-│   ├── notifications/           labels.ts = 알림 9종 문구·링크 단일 출처
+│   ├── notifications/           labels.ts = 알림 13종 문구·링크 단일 출처
 │   ├── supabase/                env · client · server · middleware · **admin(service_role, server-only)**
-│   └── nav-items.ts(메뉴 단일 출처) · dashboard/tokens.ts(TYPO·CARD·PILL·CTA) · auth/ profile/ format/ legal/ image/ og/
+│   └── nav-items.ts(메뉴 단일 출처) · stats.ts(승률 winRateOf·PlayerStats) · auth/ profile/ format/ legal/ image/ og/
 ├── middleware.ts                세션 갱신 + 보호 라우트(POST는 통과)
 └── types/                       index.ts(도메인 타입) · supabase.ts(DB 타입)
 scripts/                         db-history.ts · backfill-personal-ntrp.ts · e2e-cleanup.sql · **seed-dev.sql**(dev 시드 — 비우고 통째로 실행, RPC로 넣는다)
@@ -103,7 +105,7 @@ Client Component (read)  → lib/supabase/client.ts — RLS로 보호된 read-on
 ## DB 스키마 (0096~0097 재구축 — 테이블 8개 + 코트 2개 + 수정 기록 1개 + 명단 비회원 1개)
 | 테이블 | 핵심 규칙 |
 |---|---|
-| `users` | **email·phone·login_id는 컬럼 권한으로 본인만**(0110 — 남의 것은 API로도 못 읽는다, 본인 것은 `get_my_account()`. 공개 컬럼 목록은 `PUBLIC_USER_COLUMNS`, `select('*')` 금지 — 새 컬럼은 공개라면 `grant select (…)`를 따로). 본인만 UPDATE — **단, 보호 칸은 트리거 `guard_user_protected_columns`가 막는다(0103)**: `role` 변경 불가 · `personal_ntrp`는 서버의 service_role만(탈퇴 익명화로 비우는 것만 허용) · `ntrp`·`login_id`는 비어 있을 때 1회 · `email`은 탈퇴 익명화 때만 · `deleted_at`은 되돌릴 수 없고 · `is_guest` 불변(0110)(어기면 `protected_column`). 화면(PostgREST)에서 온 UPDATE만 본다. `users_select`는 `authenticated` 전용. 행 생성은 `handle_new_user` 트리거. `login_id`(가입 시 1회 후 불변)·`ntrp`(자가선언, 가입 1회)·`personal_ntrp`(개인 경기 레이팅 **캐시**)·`deleted_at`(soft delete)·`stats_hidden`. 닉네임·아이디 부분 유니크(탈퇴 행 제외) |
+| `users` | **email·phone·login_id는 컬럼 권한으로 본인만**(0110 — 남의 것은 API로도 못 읽는다, 본인 것은 `get_my_account()`. 공개 컬럼 목록은 `PUBLIC_USER_COLUMNS`, `select('*')` 금지 — 새 컬럼은 공개라면 `grant select (…)`를 따로). 본인만 UPDATE — **단, 보호 칸은 트리거 `guard_user_protected_columns`가 막는다(0103)**: `role` 변경 불가 · `personal_ntrp`는 서버의 service_role만(탈퇴 익명화로 비우는 것만 허용) · `ntrp`·`login_id`는 비어 있을 때 1회 · `email`은 탈퇴 익명화 때만 · `deleted_at`은 되돌릴 수 없다(0110)(어기면 `protected_column`). 화면(PostgREST)에서 온 UPDATE만 본다. `users_select`는 `authenticated` 전용. 행 생성은 `handle_new_user` 트리거. `login_id`(가입 시 1회 후 불변)·`ntrp`(자가선언, 가입 1회)·`personal_ntrp`(개인 경기 레이팅 **캐시**)·`deleted_at`(soft delete)·`stats_hidden`. 닉네임·아이디 부분 유니크(탈퇴 행 제외) |
 | `matches` | 매칭. `host_id`·**`title`**(방 제목 1~40자, 0101 이전 행은 null)·종목·`played_at`·`played_time`·`duration_minutes`(기본 120)·표면·코트명(새 매칭은 필수, 저장할 때 같은 코트의 대표 철자로)·**`court_no`**(코트 번호, 선택 10자, 0102)·**`court_fee`**(코트 비용 총액, 선택, 0104)·**`capacity`**(정원, 호스트 포함 2~50, 0104)·메모·**`is_listed`**(공개)·**`confirmed_at`**(호스트 최종 확정 = 잠금)·**`closed_at`**(모집 마감, 0101). SELECT: **로그인 회원 전원**(0099 — 비공개도 목록에 자물쇠로). 명단·게임은 `can_see_match`(공개 ∨ 참가자) |
 | `match_secrets` | `invite_token` · **`password_hash`**(비공개 매칭 비밀번호, bcrypt, null = 없음) — 정책 0개(RPC 전용) |
 | `match_applications` | 공개 매칭 **참가 신청**(0099). `(match_id, user_id)` — 행이 있으면 신청 중, 승인하면 `match_members`로 옮겨지고 거절·취소·확정·경기 시작이면 지워진다. SELECT = 본인 ∨ 그 매칭 호스트 |
@@ -153,16 +155,17 @@ Client Component (read)  → lib/supabase/client.ts — RLS로 보호된 read-on
 ## 코딩 규칙
 - TypeScript strict, `any` 금지. named export만(Next 규약 파일 제외). 파일 kebab-case, 컴포넌트 PascalCase
 - 컴포넌트 100줄 이내(길면 분리), shadcn/ui 우선
-- 폰트는 시맨틱 토큰만(`text-display`·`text-h1~h4`·`text-body`·`text-body2`·`text-caption`·`text-micro`), 색도 시맨틱 토큰만(base/상태/cat-1~8). Tailwind 팔레트·`bg-[#hex]`·새 `dark:` 분기 금지. 채움 버튼 = spot-solid 옐로우(`ActionButton` `solid`)
-- **글자색은 두 단계다**(`TEXT_TONES`, `docs/color-system.md` §5): **기본(`text-foreground`) = 읽어야 하는 값**(이름·날짜·시간·장소·숫자·메모), **보조(`text-muted-foreground`) = 값이 아닌 것**(열 제목·필드 이름표·도움말·구분 기호 `·` `vs`·placeholder·선택 안 된 탭). 판정: 그 글자를 지우면 정보가 사라지면 값이다. 위계는 색이 아니라 **굵기**로 만든다. 알파 글자색(`text-foreground/70`)과 `opacity-NN`으로 내용을 흐리게 하지 않는다(비활성 컨트롤의 `disabled:opacity-50`만 예외) — `colors.test.ts`가 막고, 보조색 대비도 강제한다(카드·배경 7:1, 회색 바탕 5.5:1). 회색 바탕(`bg-muted`) 위의 값도 기본색
+- **화면 규칙은 `docs/design-system.md` 하나**(색·크기·글자·버튼·칸·칩·팝업·피드백·목록). 요약:
+  - **색은 역할 이름만** — hex는 `globals.css`의 L1 팔레트(`--palette-*`)에만, 컴포넌트는 L2 역할(`primary`·`spot-solid`·`self`·`selected`·`win`…)·L3 도메인(`match-*`·`surface-*`·`tier-*`)만 쓴다. Tailwind 팔레트·`bg-[#hex]`·`dark:` 분기·`cat-N` 금지(`colors.test.ts`). 「내 것」은 `self`, 「고른 것」은 `selected`/`selected-solid` — 지금 값이 `primary`·`spot`과 같아도 바꿔 쓰지 않는다
+  - **글자색 두 단계** — 기본(`text-foreground`) = 값, 보조(`text-muted-foreground`) = 값이 아닌 것. 위계는 굵기로, 알파·`opacity`로 흐리지 않는다
+  - **크기는 한 표**(`PRESS_HEIGHT`) — 버튼 xs 28 · sm 32(행·카드) · md 36(페이지 헤더) · lg 44(폼·팝업) · xl 56, 칸 lg 44 · md 36, 칩 micro 18 · chip 24 · sm 32(`chipClass`). 한 줄에 버튼 높이 하나
+  - **글자는 자리가 단계를 정한다**(`TYPO`·`TYPO_SCALE`) — 페이지 h1 · 섹션 h3 · 카드·팝업 h4 · 표의 행 body2. 한 줄에 크기 하나
+  - **팝업은 셋** — 확인 `ConfirmButton` · 짧은 입력 `AppDialog` · 메뉴. 버튼 줄은 주 행동 왼쪽 · 취소 오른쪽(`FormActions`와 같다). 네이티브 `confirm()` 금지
+  - **피드백** — 화면이 그대로인 성공은 `notify.success`(토스트), 오류는 그 자리의 한 줄·`Notice`(토스트 금지), 페이지 이동이 따르면 알리지 않는다. 서버 액션은 `ActionResult`
 - **회원을 넣는 두 모양**(`components/common/member-search`): **고르기**(체크 토글 + 고른 칩 — 초대처럼 보내기 전에 고르는 일, `MemberMultiPicker`) / **넣기**(줄 끝 [추가] → 「추가됨」, `MemberResultRow`의 `actionLabel` — 명단에 올리는 일, 경기 기록의 참가자). 넣은 사람은 **한 목록**에 같은 모양으로 보인다(넣는 방법이 여럿이어도 들어가는 곳은 하나)
-- **성별 표시**: 이름 옆 '남'/'여' 글자 칩(`GenderChip`, 색 없음 — `cat-*`는 이미 남복·여복·팀·코트 사이드의 뜻이 있다). 개인정보처리방침 2조가 다른 회원에게 보이는 항목으로 적는다. **포/백**: 보드의 복식 팀 칸은 첫 자리 = 포(듀스)·둘째 자리 = 백(애드), [⇄]로 바꾸고 저장하면 세트마다 `t1Ad = t2Ad = 2`
+- **성별 표시**: 이름 옆 '남'/'여' 글자 칩(`GenderChip` — micro 칩, 색 없음: 색에는 이미 종목·코트 자리의 뜻이 있다). 개인정보처리방침 2조가 다른 회원에게 보이는 항목으로 적는다. **포/백**: 보드의 복식 팀 칸은 첫 자리 = 포(듀스)·둘째 자리 = 백(애드), [⇄]로 바꾸고 저장하면 세트마다 `t1Ad = t2Ad = 2`
 - **모바일 기준**: 입력 화면은 모달이 아니라 **전체 화면 페이지**로, 의미를 `title` 툴팁에 싣지 않는다. input은 16px(iOS 줌 방지). PC는 같은 화면을 넓게 — 본문은 `PageContainer`의 `max-w-7xl`(1280px)로 묶는다
-- **타이포는 자리가 단계를 정한다**(`TYPO`·`TYPO_SCALE`, `docs/typography.md`): 페이지 제목 h1(`PageHeader`만) · 섹션(h2 태그) h3 · 카드/빈 상태 제목 h4 · 본문/모바일 카드의 주 정보 body·bodyStrong · **목록(표) 행 body2Strong·body2·body2Muted** · 열 제목 label · 메타 caption · 카운트 micro. **한 줄(행) 안에서는 크기 단계 하나**만 쓰고 위계는 굵기와 색으로(필·칩 제외). 단계 밖 크기는 `typography.test.ts`가 잡는다
-- **버튼은 `ActionButton` 하나**(`docs/buttons.md`). 높이를 손으로 적지 않고 단계를 고른다: `xs` 28 칩 안 · **`sm` 32 섹션 제목 옆·카드·행 안의 행동** · **`md` 36 페이지 헤더의 행동(주 행동 포함)** · `lg` 44 폼 제출·팝업 · `xl` 56 홈 진입 버튼. **한 줄에 놓인 버튼은 높이 단계 하나**이고 위계는 모양으로 만든다 — 한 줄에 버튼이 넷을 넘으면 높이를 키우지 말고 **자리를 나눈다**(다루는 것 옆으로: 매칭 상세). 모양은 `solid`(옐로우)·`outline`·`ghost`·`danger`(표·카드 행 안 전용, 글자만)·`dangerFill`(행 밖의 위험 버튼 — 헤더·팝업·설정). **행동은 글자**(수정·삭제·저장·취소·내보내기…), 아이콘 전용 `square`는 아이콘이 곧 뜻인 자리만(사이드바 접기·포/백 ⇄·비밀번호 보기 — `pressable.test.ts`의 허용 목록). **카드 모드의 행동**은 1~2개면 머리 줄 오른쪽(`CARD_HEAD_ACTION`), 3개 이상이면 맨 아래 행동 줄. 링크에 버튼 모양만 입힐 땐 `actionButtonClass()`. **칩·탭·토글은 자기 컴포넌트를 쓰되 높이는 같은 표(`PRESS_HEIGHT`)에서** 읽는다. `ui/button` import·옛 토큰(`CTA_LINK`)·허용 목록 밖의 `<button>`은 `pressable.test.ts`가 막는다
-- **칸(입력·선택)은 `field-class` 하나**(`docs/forms.md`) — 높이 두 단계(`lg` 44 폼 · `md` 36 표·패널 안, `PRESS_HEIGHT`에서 읽는다), 한 모양 `fieldClass()`, 라벨 `FIELD_LABEL`(16px 굵게, 보조색), 아래 한 줄 `fieldMessageClass(tone)`, 라벨·칸·메시지 3단은 `Field`/`TextField`, 선택은 `EnumSelect`. 손으로 칸 높이(`h-12`·`py-3`)를 적지 않는다 — `field.test.ts`가 막는다
 - **목록은 `DataList` 안에 한 줄에 하나**(다단 카드 그리드 금지). 놓인 자리가 넓으면(컨테이너 896px 이상, `@4xl:` container query) **열 제목이 있는 표**, 좁으면 카드로 접힌다 — 화면 폭이 아니라 자리의 폭을 본다. **표의 밀도는 `data-list.tsx` 한 곳**(`ROW_BOX` 행 56px · `ROW_PAD` 좌우 20px · `ROW_GRID` 칸 사이 16px)에서 읽고 행마다 손으로 적지 않는다. 행(`MatchCard`·`GameRow`·`MatchMemberRow`·랭킹 행)은 행마다 독립 grid라 **열 폭은 전부 고정값 또는 fr**(`auto`를 쓰면 행마다 칸이 어긋난다)이고, 열 제목 줄과 같은 열 상수(`MATCH_COLS`·`GAME_COLS`…)를 읽는다. 좁은 표에서 숨는 열은 칸과 열 제목에 **같은 범위 변형**을 건다. 같은 값이 줄마다 반복되면 열이 아니라 **묶음 머리 줄**로 올린다(경기 결과 — 일시·경기장·종목·구분은 `GameSessionBlock`의 머리가 한 번만 말한다). 카드 전용 장식(테두리·행동 줄 위 구분선)은 **`@max-4xl:`로만** 건다("걸었다가 지우는" 쌍 금지). 표의 행은 한 줄(메모는 칸 안에서 말줄임), 행동 칸은 세 칸 grid(확정 │ 수정 │ 삭제)라 버튼 수가 달라도 세로로 맞는다. 긴 목록의 구분은 큰 제목이 아니라 `DataListDivider`(표 안의 얇은 줄 — 「지난 매칭」). **자식이 줄이 아니라 묶음이면 `DataList grouped`**(경기 결과·홈의 최근 경기) — 넓은 자리에서도 한 테두리로 붙이지 않고 묶음마다 카드로 띄우며, 열 제목 줄을 두지 않고(값이 스스로 뜻을 말한다), 묶음들을 가르는 이름표는 카드 밖의 `DataListGroupLabel`(월). 거르기는 주소가 상태인 **밑줄 탭 + 세그먼트 토글**(`LinkTabs`의 `trailing`에 `LinkSegments` — 화면을 가르는 한 축은 탭, 같은 목록을 거르는 축은 토글, 토글의 첫 칸이 축 이름 「종목 전체」)
-- 폼 하단은 `FormActions`(저장 옐로우 왼쪽 · 취소 오른쪽). 확인을 묻는 행동은 **`ConfirmButton`**(AlertDialog) — 네이티브 `confirm()` 금지
 - 순수 규칙은 `lib/`의 순수 함수 + vitest. 앱 술어는 DB RPC 가드의 거울
 - ⚠ 한 이벤트에서 같은 state를 두 번 고칠 수 있는 자리는 **함수형 갱신**(`prev => …`)으로 — 선수 선택 직후 NTRP 채움이 회원 연결을 덮어 지운 버그가 있었다(`game-form-players.tsx`)
 - ⚠ **서버 액션의 `redirect()`를 라우트 핸들러 주소로 보내지 않는다** — 클라이언트 내비게이션이라 핸들러의 307을 따라가 화면은 바뀌는데 주소창에는 핸들러 주소가 남는다(새로 그리면 핸들러가 다시 돈다). 로그인·가입 뒤의 초대 링크 착지는 액션이 직접 참가시키고 매칭 주소로 보낸다(`lib/matches/invite-landing.ts`)
@@ -186,8 +189,7 @@ npm run dev · npm run build · npm run lint · npx tsc --noEmit · npx vitest r
 - [ ] git commit (conventional commits) — **`dev` 브랜치에서**
 
 ## 다음 할 일
-1. **Week 72 릴리스** — prod 덤프 → prod 0096 → `main` 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110. **먼저** Vercel에 `SUPABASE_SERVICE_ROLE_KEY`(Production = prod 키, Preview·Development = dev 키 — 0103 이후 필수). 개인정보처리방침 개정(성별 표시 + 비회원 참가자·초대 링크로 보이는 범위, 시행 12-04) 공지 — 문구는 오너 확인
-2. `types/supabase.ts` 전체 재생성(지금은 손으로 맞춘 상태)·`db-history.ts export`로 history 재확인(`DATABASE_URL` 필요)
-3. 잔여 정리 — `lib/analytics`의 클럽 입력 모양(`matches`·`gameMetaById` 등 언제나 빈 값), `types/index.ts`의 옛 타입(`Match`·`MatchGame`·`PersonalMatchConfirmation` 등), storage `club-logos` 버킷
-4. 화면 — 목록 페이지네이션(`/matches` 60건 — `/games`는 「이전 경기 더 보기」로 그리는 양만 줄였다, 한 사람의 게임이 수천 건이 되면 RPC를 쪼갠다) · 초대 링크 재발급(지금은 되돌릴 수 없어 종료 7일 뒤 자동으로 닫는다) · 비회원 기록을 가입 계정과 잇기(오너 보류)
-5. 오픈 전 — 비밀번호 복구 메일(도메인·Resend), 카카오 로그인, 전 구간 E2E(PC 1280 + 모바일 390)
+`ROADMAP.md`가 정본이다(단계 P0~P8 · 오너 결정 · 후보). 지금 맨 앞:
+1. **Week 72 릴리스** — Vercel `SUPABASE_SERVICE_ROLE_KEY`(오너) → prod 0096 → `main` 배포 → prod 0097~0111 → 개인정보처리방침 개정 공지(시행 12-04, 문구는 오너 확인). 릴리스 뒤 prod에서 남의 email·phone 조회가 거부되는지 확인
+2. **P4 공통 토대** — 차단·신고, 약관·방침 개정 + 재동의(약관 2·4·5조의 「상대가 확인해야 확정」도 이때), 대화 모델(매칭·1:1·클럽 한 벌)
+3. **P5 매칭룸 대화**(대화 화면만 실시간) → P6 1:1 대화 → P7 커뮤니티 → P8 클럽(추후 오픈)

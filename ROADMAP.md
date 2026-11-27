@@ -25,7 +25,7 @@
 - [x] 회원의 email·phone·login_id를 본인만 읽게 — 0110 컬럼 권한 + `get_my_account()` (11-27, `6f12b91`)
 - [ ] Vercel 환경변수 `SUPABASE_SERVICE_ROLE_KEY` — Production = prod 키, Preview·Development = dev 키 (**오너가 직접**)
 - [ ] prod 덤프(선택 — 지금 prod는 계정 1·경기 0)
-- [ ] prod 0096 → `main` 배포 → prod 0097 → prod 0098~0110 (`docs/history/week-72-rebuild.md` 「릴리스」)
+- [ ] prod 0096 → `main` 배포 → prod 0097 → prod 0098~0111 (`docs/history/week-72-rebuild.md` 「릴리스」)
 - [ ] 개인정보처리방침 개정 공지(성별 표시 + 비회원·초대 링크로 보이는 범위, 시행 12-04) — 문구는 오너 확인
 - [ ] 릴리스 뒤 prod에서 `users` 컬럼 권한 확인(남의 email·phone 조회가 거부되는지)
 
@@ -36,33 +36,35 @@
 - [x] 레이팅 재생 순서 버그 — 같은 일시 게임이 uuid 순 → 저장 순서 (`fefa255`)
 - [x] 사용자에게 보이던 옛 문구(메타·OG·랜딩·가입·탈퇴·가이드) (`6b44658`)
 - [x] 옛 마이그레이션 0016~0095 → `migrations/archive/` · `server-only` 의존성 명시 (`0184876`)
-- [ ] analytics·elo의 클럽 입력 걷어내기(언제나 빈 `matches`·`gameMetaById`… 인자)
-- [ ] 도달 불가 분기 — 프로필 헤더의 클럽 prop, `stats-quad-grid`의 죽은 prop, 여러 세트 분기(한 게임 = 스코어 하나)
-- [ ] 폴더 이름 — `components/personal-matches` → `components/score`, `lib/personal-matches` → `lib/games`
-- [ ] 중복 하나로 — 승률(2벌+인라인), 세트 승자 판정(4벌), 승패 문구(3벌), W/L/D 칸(3벌), NTRP 표시, 스코어 구분자
-- [ ] 랭킹 승률만 무승부를 분모에 넣는 정의 차이
-- [ ] DB 잔여 — `users.is_guest` 칸 제거(행 0건, RPC 3개가 읽음), storage `club-logos` 버킷·정책 삭제
-- [ ] 낡은 주석 약 45곳
-- [ ] `types/supabase.ts` 재생성(지금은 손으로 맞춘 상태)
+- [x] analytics·elo의 클럽 입력 걷어내기 (`0fe9937`)
+- [x] 도달 불가 분기 — 프로필 헤더의 클럽 prop, `stats-quad-grid`의 죽은 prop, 여러 세트 분기 (`d9d6f39`·`0987025`)
+- [x] 중복 하나로 — 승률 `winRateOf`, 게임 승자 판정 두 벌(절대·관점), NTRP 표시 `formatNtrp` (`0987025`)
+- [ ] 남은 중복 — 승패 문구 3벌(`formatGameSummary`·`formatTally` — 문구를 먼저 하나로 정해야 한다), W/L/D 칸 3벌, 스코어 구분자(`6-4`·`6 : 4`)
+- [ ] 랭킹 승률만 무승부를 분모에 넣는 정의 차이 — RPC `get_member_rankings`가 패(또는 무) 수를 함께 돌려줘야 한다(다음 DB 변경 때)
+- [x] DB 잔여 — `users.is_guest` 칸 제거·`club-logos` 정책 삭제(0111, `d9d6f39`) · [ ] 빈 `club-logos` 버킷은 대시보드에서 삭제(SQL로 못 지운다, dev·prod)
+- [x] 낡은 주석 (`0987025`)
+- [ ] `types/supabase.ts` 재생성(지금은 손으로 맞춘 상태) · `db-history.ts export`로 history 재확인(`DATABASE_URL` 필요)
+- [ ] 폴더 이름 정리는 보류 — `personal-matches`는 import가 많아 이름만 바꾸는 이득보다 소음이 크다. 그 폴더를 크게 고칠 때 함께
 
 ## P2 · 디자인 시스템 통합 → `docs/design-system.md`
 
-- [ ] **컬러 3계층을 실제로** — L1 팔레트(hex는 여기만) → L2 역할 → L3 도메인. 브랜드색 교체 = L1만 고치면 끝
-- [ ] 역할 토큰 신설 — `self`(내 것 강조, 지금 「민트」라 부르는 `primary`), `selected`(고른 칩·켜진 토글), `data-*`(순차 데이터), `border-subtle`
-- [ ] 색 충돌 해소 — 혼복 = 주의색(다크에서 같은 hex), 단식 = 정보색. `cat-N` 번호 대신 뜻 이름(`match-mixed` 등)
-- [ ] 티어 색을 Tailwind 팔레트 → 토큰, `dark:` 분기 0
-- [ ] 크기 표 하나 — 버튼·칸·칩·아이콘의 단계를 `lib/design/size.ts`에서
-- [ ] 칩/뱃지 컴포넌트 하나(`Chip`) — 지금 바탕 5벌·크기 단계 없음
-- [ ] 레이어 팝업 세 가지(확인·짧은 입력·메뉴)와 버튼 순서·제목·폭 규칙, 탈퇴를 `ConfirmButton`으로
-- [ ] 피드백 — 토스트 도입(화면이 그대로인 성공), 인라인 배너 `Notice` 하나, 액션 결과 타입 하나
-- [ ] radius·그림자·z·카드 패딩 토큰, 토큰 폴더 `lib/dashboard` → `lib/design`
-- [ ] 강제 테스트 확장 + `/styleguide`에 컬러 견본·칩·팝업·피드백
+- [x] P2 전체 (`fd819ba`·`72c8217`·`d0c55e3`) — 아래 항목 모두. 남은 것: W/L/D 칸 컴포넌트 하나로, 아이콘 크기 표기(`w-N h-N` → `size-N`), 진행 중 문구 통일, `public/empty/*.svg`의 하드코딩 옐로우
+- [x] **컬러 3계층을 실제로** — L1 팔레트(hex는 여기만) → L2 역할 → L3 도메인. 브랜드색 교체 = L1만 고치면 끝
+- [x] 역할 토큰 신설 — `self`(내 것 강조, 지금 「민트」라 부르는 `primary`), `selected`(고른 칩·켜진 토글), `data-*`(순차 데이터), `border-subtle`
+- [x] 색 충돌 해소 — 혼복 = 주의색(다크에서 같은 hex), 단식 = 정보색. `cat-N` 번호 대신 뜻 이름(`match-mixed` 등)
+- [x] 티어 색을 Tailwind 팔레트 → 토큰, `dark:` 분기 0
+- [x] 크기 표 하나 — 버튼·칸·칩·아이콘의 단계를 `lib/design/size.ts`에서
+- [x] 칩/뱃지 모양 하나(`Chip`) — 지금 바탕 5벌·크기 단계 없음
+- [x] 레이어 팝업 세 가지(확인·짧은 입력·메뉴)와 버튼 순서·제목·폭 규칙, 탈퇴를 `ConfirmButton`으로
+- [x] 피드백 — 토스트 도입(화면이 그대로인 성공), 인라인 배너 `Notice` 하나, 액션 결과 타입 하나
+- [x] radius 단계·토큰 폴더 `lib/dashboard` → `lib/design`
+- [x] 강제 테스트 확장 + `/styleguide`에 컬러 견본·칩·팝업·피드백
 
 ## P3 · 문서
 
 - [x] 보관본 → `docs/history/`, 현행 레이팅 명세 `docs/rating.md`, E2E 규약 현행화 (`9782e2f`)
 - [x] 이 로드맵
-- [ ] `CLAUDE.md` 폴더 구조·코딩 규칙을 P1·P2 결과로, 「다음 할 일」은 이 문서 링크로
+- [x] `CLAUDE.md` 폴더 구조·코딩 규칙을 P1·P2 결과로, 「다음 할 일」은 이 문서 링크로
 - [ ] `docs/social-login.md`의 옛 구조 문장, `runs.md` 상단 매트릭스
 
 ## P4 · 공통 토대 (P5~P8이 함께 쓴다)
