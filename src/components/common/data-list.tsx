@@ -11,6 +11,11 @@ type Props = {
     head?: { cols: string; labels: ReadonlyArray<HeadCell> }
     children: ReactNode
     className?: string
+    /**
+     * **묶음 목록** — 자식이 줄이 아니라 묶음(카드 한 장씩)일 때. 넓은 자리에서도 한 테두리로 묶지 않고 간격을 두고 쌓는다
+     * (경기 결과: 묶음 하나가 카드 한 장). 묶음이 떨어져 있어 맨 위 한 줄의 열 제목은 두지 않는다 — `head`는 무시한다.
+     */
+    grouped?: boolean
 }
 
 /**
@@ -40,11 +45,13 @@ export const CARD_HEAD_ACTION = '@max-4xl:col-start-2 @max-4xl:row-start-1'
  * 한다(`auto`를 쓰면 내용 길이에 따라 행마다 칸이 어긋난다 — 한 번 겪은 정렬 문제의 원인).
  * 카드 전용 장식은 행이 `@max-4xl:`로만 건다: 표 모드에서 "걸었다가 지우는" 클래스 쌍을 두지 않는다.
  */
-export function DataList({ head, children, className }: Props) {
+const LIST_TABLE = '@4xl:gap-0 @4xl:divide-y @4xl:divide-border @4xl:overflow-hidden @4xl:rounded-lg @4xl:border @4xl:border-border @4xl:bg-card'
+
+export function DataList({ head, children, className, grouped = false }: Props) {
     return (
         <div className={cn('@container', className)}>
-            <div className="flex flex-col gap-3 @4xl:gap-0 @4xl:divide-y @4xl:divide-border @4xl:overflow-hidden @4xl:rounded-lg @4xl:border @4xl:border-border @4xl:bg-card">
-                {head && (
+            <div className={cn('flex flex-col gap-3', !grouped && LIST_TABLE)}>
+                {head && !grouped && (
                     <div aria-hidden className={cn('hidden @4xl:py-3 @4xl:bg-muted/40', ROW_GRID, ROW_PAD, head.cols, TYPO.label)}>
                         {head.labels.map((cell, i) => (
                             <span key={i} className={cn('truncate', typeof cell === 'string' ? undefined : cell.className)}>
@@ -68,6 +75,19 @@ export function DataListDivider({ children, count }: { children: ReactNode; coun
         <h2 className={cn(TYPO.body2Strong, 'flex items-baseline gap-2 pt-2 @4xl:py-2.5 @4xl:bg-muted/40', ROW_PAD)}>
             {children}
             {count && <span className={TYPO.caption}>{count}</span>}
+        </h2>
+    )
+}
+
+/**
+ * 묶음 목록(`grouped`)의 **이름표**(예: 「2026년 11월 · 14게임 9승 5패」) — 카드 밖에 서서 그 아래 묶음들을 한 덩어리로 가른다.
+ * 바탕·테두리가 없고, 위쪽 여백이 묶음 사이 간격보다 넓어(12 + 16px) 달이 바뀌는 자리가 공간으로 보인다.
+ */
+export function DataListGroupLabel({ children, count }: { children: ReactNode; count?: string }) {
+    return (
+        <h2 className={cn(TYPO.body2Strong, 'flex items-baseline gap-2 px-1 pt-4 first:pt-0')}>
+            {children}
+            {count && <span className={cn(TYPO.caption, 'tabular-nums')}>{count}</span>}
         </h2>
     )
 }

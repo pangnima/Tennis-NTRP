@@ -124,14 +124,16 @@ export function filterSessions(sessions: GameSession[], viewerId: string, filter
     })
 }
 
+export type Tally = { games: number; wins: number; losses: number; draws: number }
+
 /** 묶음의 내 전적 — 「4게임 3승 1패」 */
-export function sessionTally(session: GameSession, viewerId: string): { games: number; wins: number; losses: number; draws: number } {
+export function sessionTally(session: GameSession, viewerId: string): Tally {
     const outcomes = session.games.map((g) => gameOutcome(g, viewerId))
     const count = (o: string) => outcomes.filter((x) => x === o).length
     return { games: session.games.length, wins: count('win'), losses: count('loss'), draws: count('draw') }
 }
 
-export function formatTally(t: { games: number; wins: number; losses: number; draws: number }): string {
+export function formatTally(t: Tally): string {
     const parts = [t.wins > 0 && `${t.wins}승`, t.losses > 0 && `${t.losses}패`, t.draws > 0 && `${t.draws}무`].filter(Boolean)
     return [`${t.games}게임`, ...parts].join(' ')
 }
@@ -144,20 +146,51 @@ export function sessionWhen(s: Pick<GameSession, 'playedAt' | 'playedTime' | 'du
     return `${day} ${hours}`
 }
 
-export type SessionMonthGroup = { key: string; label: string; sessions: GameSession[]; games: number }
+/** `tally` = 그 달 **전체**의 내 전적 — 「더 보기」로 묶음이 잘려도 숫자는 그 달의 것이다 */
+export type SessionMonthGroup = { key: string; label: string; sessions: GameSession[]; tally: Tally }
+
+const addTally = (a: Tally, b: Tally): Tally => ({ games: a.games + b.games, wins: a.wins + b.wins, losses: a.losses + b.losses, draws: a.draws + b.draws })
 
 /** 경기일의 연·월로 묶는다. 입력 순서(최신순)를 그대로 지킨다 */
-export function groupSessionsByMonth(sessions: GameSession[]): SessionMonthGroup[] {
+export function groupSessionsByMonth(sessions: GameSession[], viewerId: string): SessionMonthGroup[] {
     const groups: SessionMonthGroup[] = []
     for (const s of sessions) {
         const key = s.playedAt.slice(0, 7)
+        const tally = sessionTally(s, viewerId)
         const last = groups[groups.length - 1]
         if (last?.key === key) {
             last.sessions.push(s)
-            last.games += s.games.length
+            last.tally = addTally(last.tally, tally)
         } else {
-            groups.push({ key, label: `${Number(key.slice(0, 4))}년 ${Number(key.slice(5, 7))}월`, sessions: [s], games: s.games.length })
+            groups.push({ key, label: `${Number(key.slice(0, 4))}년 ${Number(key.slice(5, 7))}월`, sessions: [s], tally })
         }
     }
     return groups
+}
+
+/** 한 번에 그리는 묶음 수 — 처음 10개(대략 한 달치), 「이전 경기 더 보기」마다 10개씩 */
+export const GAMES_PAGE = 10
+const SHOWN_MAX = 5000
+
+/** 주소의 `?n=` — 그릴 묶음 수. 모르는 값·기본보다 작은 값은 기본 */
+export function parseShown(n?: string): number {
+    const v = n && /^\d{1,6}$/.test(n) ? Number(n) : GAMES_PAGE
+    return Math.min(Math.max(v, GAMES_PAGE), SHOWN_MAX)
+}
+
+/**
+ * 월 묶음에서 **앞의 묶음 `shown`개까지만** 남긴다(최신 것부터). 달 중간에서 잘릴 수 있고, 그때도 그 달의 `tally`는 전체 값이다.
+ * `restGames` = 아직 안 그린 게임 수(「남은 N게임」), 0이면 다 그린 것.
+ */
+export function takeSessions(groups: SessionMonthGroup[], shown: number): { groups: SessionMonthGroup[]; restGames: number } {
+    const out: SessionMonthGroup[] = []
+    let left = Math.max(shown, 0)
+    let restGames = 0
+    for (const g of groups) {
+        const kept = g.sessions.slice(0, left)
+        left -= kept.length
+        if (kept.length > 0) out.push({ ...g, sessions: kept })
+        restGames += g.sessions.slice(kept.length).reduce((n, s) => n + s.games.length, 0)
+    }
+    return { groups: out, restGames }
 }

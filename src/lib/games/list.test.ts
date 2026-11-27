@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest'
 import type { Game, TennisMatch } from '@/types'
 
 import {
-    filterSessions, formatTally, gameOutcome, gameRole, groupGamesIntoSessions, groupSessionsByMonth, parseGameFilter, sessionKey, sessionTally,
-    sessionWhen,
+    filterSessions, formatTally, gameOutcome, gameRole, groupGamesIntoSessions, groupSessionsByMonth, parseGameFilter, parseShown, sessionKey, sessionTally,
+    sessionWhen, takeSessions,
 } from './list'
 
 type Opts = { doubles?: boolean; meTeam?: 1 | 2; matchId?: string; time?: string; court?: string; no?: string; duration?: number; createdAt?: string }
@@ -79,8 +79,25 @@ describe('묶음 — 매칭 게임은 같은 매칭, 직접 기록은 같은 날
         expect(ids({ result: 'loss' })).toEqual(['m3', 'd2'])
         expect(ids({ role: 'guest', result: 'loss' })).toEqual([])
     })
-    it('월로 묶고 게임 수를 센다', () => {
-        expect(groupSessionsByMonth(sessions).map((g) => [g.label, g.sessions.length, g.games])).toEqual([['2026년 11월', 3, 7], ['2026년 10월', 1, 1]])
+    it('월로 묶고 그 달의 내 전적을 센다', () => {
+        expect(groupSessionsByMonth(sessions, 'me').map((g) => [g.label, g.sessions.length, formatTally(g.tally)])).toEqual([
+            ['2026년 11월', 3, '7게임 5승 2패'], ['2026년 10월', 1, '1게임 1승'],
+        ])
+    })
+    it('더 보기 — 앞의 묶음 n개만 그리고, 잘린 달의 전적은 그 달 전체, 남은 게임 수를 센다', () => {
+        const months = groupSessionsByMonth(sessions, 'me')
+        const cut = takeSessions(months, 2)
+        expect(cut.groups.map((g) => [g.label, g.sessions.map((s) => s.key.slice(0, 4)), g.tally.games])).toEqual([['2026년 11월', ['m:m1', 'd|20'], 7]])
+        expect(cut.restGames).toBe(2)
+        expect(takeSessions(months, 3)).toMatchObject({ restGames: 1, groups: [{ key: '2026-11' }] })
+        expect(takeSessions(months, 10)).toMatchObject({ restGames: 0, groups: [{ key: '2026-11' }, { key: '2026-10' }] })
+        expect(takeSessions(months, 0)).toEqual({ groups: [], restGames: 8 })
+    })
+    it('parseShown — 주소의 값은 믿지 않는다', () => {
+        expect(parseShown(undefined)).toBe(10)
+        expect(parseShown('30')).toBe(30)
+        expect([parseShown('3'), parseShown('-20'), parseShown('abc'), parseShown('1e3'), parseShown('')]).toEqual([10, 10, 10, 10, 10])
+        expect(parseShown('999999')).toBe(5000)
     })
     it('매칭을 못 읽으면 게임의 값으로', () => {
         const [s] = groupGamesIntoSessions([games[0]], new Map(), new Set())

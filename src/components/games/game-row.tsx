@@ -12,9 +12,9 @@ import type { Game, GamePlayer } from '@/types'
 /**
  * 표 모드의 열 — 게임 │ 대진 │ 결과 │ 스코어 │ 행동. 전부 고정 폭 또는 fr(행마다 독립 grid라 auto는 어긋난다).
  * 종목·구분·일시·경기장은 **묶음 머리**(`GameSessionBlock`)가 한 번만 말한다 — 같은 값이 줄마다 반복되지 않는다.
+ * 열 제목 줄은 없다 — 묶음마다 카드라 맨 위 한 줄이 아래와 이어지지 않고, 값(「1게임」·「승」·「6-3」)이 스스로 뜻을 말한다.
  */
-export const GAME_COLS = '@4xl:grid-cols-[3.5rem_minmax(0,1fr)_4.5rem_5rem_9.5rem]'
-export const GAME_HEAD = { cols: GAME_COLS, labels: ['게임', '대진', '결과', '스코어', ''] } as const
+const GAME_COLS = '@4xl:grid-cols-[3.5rem_minmax(0,1fr)_4.5rem_5rem_9.5rem]'
 
 function TeamNames({ players, viewerId }: { players: GamePlayer[]; viewerId: string }) {
     return (

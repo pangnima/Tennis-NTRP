@@ -9,7 +9,6 @@ import { LinkSegments } from '@/components/common/link-segments'
 import { LinkTabs } from '@/components/common/link-tabs'
 import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
-import { GAME_HEAD } from '@/components/games/game-row'
 import { GameSessionBlock } from '@/components/games/game-session'
 import { MATCH_HEAD, MatchCard } from '@/components/matches/match-card'
 import { CARD_BASE, TEXT_TONE, TEXT_TONES, TYPO, TYPO_SCALE } from '@/lib/dashboard/tokens'
@@ -137,7 +136,7 @@ export default function StyleguidePage() {
                 <DataList head={MATCH_HEAD}>
                     {FIXTURE_MATCHES.map((m) => <MatchCard key={m.id} match={m} />)}
                 </DataList>
-                <DataList head={GAME_HEAD}>
+                <DataList grouped>
                     <GameSessionBlock session={FIXTURE_SESSION} viewerId={FIXTURE_VIEWER_ID} />
                 </DataList>
             </Section>

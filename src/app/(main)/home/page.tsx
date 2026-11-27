@@ -6,7 +6,6 @@ import { ActionButton } from '@/components/common/action-button'
 import { DataList } from '@/components/common/data-list'
 import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
-import { GAME_HEAD } from '@/components/games/game-row'
 import { GameSessionBlock } from '@/components/games/game-session'
 import { MATCH_HEAD, MatchCard } from '@/components/matches/match-card'
 import { CARD_BASE, CARD_HOVER, TEXT_LINK, TYPO } from '@/lib/dashboard/tokens'
@@ -108,7 +107,7 @@ export default async function HomePage() {
                             <Link href={statsHref(user.id)} className={cn(TYPO.body2, TEXT_LINK)}>{NAV_LABEL.stats} 보기</Link>
                         </span>
                     </div>
-                    <DataList head={GAME_HEAD}>
+                    <DataList grouped>
                         {sessions.map((s) => <GameSessionBlock key={s.key} session={s} viewerId={user.id} />)}
                     </DataList>
                 </section>
