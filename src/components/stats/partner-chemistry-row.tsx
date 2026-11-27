@@ -1,7 +1,6 @@
 import type { PartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import type { User } from '@/types'
 import { ProfileLink } from '@/components/common/profile-link'
-import { GuestBadge } from '@/components/common/guest-badge'
 
 type Props = {
     partner: PartnerChemistry
@@ -33,13 +32,12 @@ export function PartnerChemistryRow({ partner, userMap }: Props) {
             <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
                     {user ? (
-                        <ProfileLink userId={partner.partnerId} isGuest={user.isGuest} className="text-body2 font-medium text-foreground hover:underline truncate">
+                        <ProfileLink userId={partner.partnerId} className="text-body2 font-medium text-foreground hover:underline truncate">
                             {name}
                         </ProfileLink>
                     ) : (
                         <span className="text-body2 font-medium text-foreground truncate">{name}</span>
                     )}
-                    {user?.isGuest && <GuestBadge />}
                     {showStreak && (
                         <span className="text-micro px-1.5 py-0.5 rounded-sm bg-win/20 text-win font-semibold shrink-0">
                             {partner.currentStreak}연승

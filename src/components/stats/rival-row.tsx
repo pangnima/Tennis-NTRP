@@ -5,7 +5,6 @@ import { effectiveNtrp } from '@/lib/rating/display'
 import { PILL_BASE, TEXT_MUTED } from '@/lib/dashboard/tokens'
 import { relativeDayLabel } from '@/lib/analytics/date-utils'
 import { ProfileLink } from '@/components/common/profile-link'
-import { GuestBadge } from '@/components/common/guest-badge'
 import { RecentFormBadges } from '@/components/common/recent-form-badges'
 
 type Props = {
@@ -30,13 +29,12 @@ export function RivalRow({ rival, userMap, today }: Props) {
                         {initial}
                     </span>
                     {user ? (
-                        <ProfileLink userId={rival.opponentUserId!} isGuest={user.isGuest} className="text-body2 font-medium text-foreground hover:underline truncate">
+                        <ProfileLink userId={rival.opponentUserId!} className="text-body2 font-medium text-foreground hover:underline truncate">
                             {name}
                         </ProfileLink>
                     ) : (
                         <span className="text-body2 font-medium text-foreground truncate">{name}</span>
                     )}
-                    {user?.isGuest && <GuestBadge />}
                     {tier && <span className={`${PILL_BASE} ${TIER_STYLE[tier]} shrink-0`}>{TIER_LABELS[tier]}</span>}
                 </div>
                 <span className="text-body2 text-foreground shrink-0 tabular-nums">

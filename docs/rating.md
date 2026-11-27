@@ -78,7 +78,7 @@ points(r) = clamp(round((r − low) / (high − low) × 100), 0, 99)
 - **'나' 한 명만** 추적한다. 상대·파트너의 레이팅은 굴리지 않고 그 게임에 적힌 값을 쓴다(§3.2).
 
 ### 3.2 상대 · 파트너 강도
-게임에는 선수마다 **기록 시점의 NTRP 스냅샷**(`game_players.ntrp`)이 있다 — 회원이면 그때의 공개 NTRP(통계 비공개면 자가선언), 비회원이면 넣을 때 적은 값.
+게임에는 선수마다 **기록 시점의 NTRP 스냅샷**(`game_players.ntrp`)이 있다 — 회원이면 그때의 레이팅 캐시(`personal_ntrp`, 없으면 자가선언 — `insert_game_players`), 비회원이면 넣을 때 적은 값.
 
 **상대(팀)** (`resolveOpponentRating`): ① 스냅샷(복식은 상대 둘 평균) → ② 상대 회원의 자가선언 `users.ntrp` → ③ 내 자가선언(동급 가정) → ④ `DEFAULT_RATING`.
 

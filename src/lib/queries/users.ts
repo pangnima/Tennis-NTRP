@@ -9,15 +9,13 @@ import type { User } from '@/types'
  * email·phone·login_id는 여기 없다(본인 것만 `get_my_account()`로 읽는다). `select('*')`는 권한 오류가 난다.
  */
 export const PUBLIC_USER_COLUMNS =
-    'id, name, nickname, role, profile_image, gender, dominant_hand, ntrp, personal_ntrp, tennis_start_date, racket_brand, racket_model, stats_hidden, is_guest, deleted_at, created_at'
+    'id, name, nickname, role, profile_image, gender, dominant_hand, ntrp, personal_ntrp, tennis_start_date, racket_brand, racket_model, stats_hidden, deleted_at, created_at'
 
 type UserRow = Omit<Database['public']['Tables']['users']['Row'], 'email' | 'phone' | 'login_id'>
 
-// DB row → User 도메인 타입 변환. queries/clubs.ts, queries/match-games.ts 등에서 재사용.
-// 기본값은 게스트 선수의 미입력 NULL 컬럼 대응:
+// DB row → User 도메인 타입 변환. 기본값은 NULL 컬럼 대응(탈퇴 익명화로 비워진 행 포함):
 //   - gender/dominantHand: DB에서 NULL이 가능한 컬럼이지만 타입은 string 유니온이므로 기본값 필요
-//   - ntrp: 게스트는 레이팅이 없으므로 0 (표시 시 별도 처리 필요)
-//   - isGuest: false가 기본이며, is_guest=true인 row는 public.users에 존재하는 임시 선수
+//   - ntrp: 값이 없으면 0 (표시 시 별도 처리 — effectiveNtrp)
 export function mapUserRow(row: UserRow): User {
     return {
         id: row.id,
@@ -33,7 +31,6 @@ export function mapUserRow(row: UserRow): User {
         racketBrand: row.racket_brand ?? undefined,
         racketModel: row.racket_model ?? undefined,
         createdAt: row.created_at,
-        isGuest: row.is_guest ?? false,
         statsHidden: row.stats_hidden ?? false,
         deletedAt: row.deleted_at ?? null,
     }
@@ -70,8 +67,7 @@ export type OpponentCandidate = {
     personalNtrp?: number  // 동적 개인 NTRP(개인경기 기반 캐시). 있으면 프리필 우선
     statsHidden?: boolean  // 통계 비공개 — 개인 NTRP를 감추고 자가선언 값만 쓴다 (derivePublicNtrp)
     dominantHand?: 'right' | 'left'  // 프로필 손잡이 — 선택 시 손잡이 자동 채움
-    gender?: 'male' | 'female'  // 자동 대진표의 성별 밸런스용 (방 참가자 조회에서만 채움, Week 40)
-    isGuest: boolean
+    gender?: 'male' | 'female'  // 자동 대진표의 성별 밸런스용 (매칭 참가자 조회에서만 채움)
 }
 
 /** users.dominant_hand 원시값 → 유니온 (NULL·미지원 값은 undefined) */

@@ -48,7 +48,7 @@ export default async function RankingPage({ searchParams }: Props) {
 
     return (
         <PageContainer>
-            <PageHeader title={NAV_LABEL.ranking} description={`${MIN_GAMES}경기 이상 뛴 회원의 레이팅 순위입니다. 세트 하나를 한 경기로 셉니다`} />
+            <PageHeader title={NAV_LABEL.ranking} description={`${MIN_GAMES}경기 이상 뛴 회원의 레이팅 순위입니다. 스코어 하나가 한 경기입니다`} />
             <LinkTabs items={TABS} activeKey={kind} ariaLabel="랭킹 종목" />
             {rows.length === 0 ? (
                 <EmptyState size="md" title="아직 순위에 오른 회원이 없습니다" description={`${MIN_GAMES}경기를 채우면 순위에 오릅니다`} />

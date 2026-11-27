@@ -7,7 +7,7 @@ import { PersonalAnalyticsSection } from '@/components/profile/personal-analytic
 import type { ProfileSummary } from '@/components/profile/profile-summary-row'
 import { WeakPasswordNotice } from '@/components/profile/weak-password-notice'
 import { StatsQuadGrid } from '@/components/stats/stats-quad-grid'
-import { aggregateRecentForm, type RecentFormResult } from '@/lib/analytics/form'
+import { aggregateRecentForm } from '@/lib/analytics/form'
 import { WEAK_PASSWORD_NOTICE } from '@/lib/auth/password-policy'
 import { TYPO } from '@/lib/dashboard/tokens'
 import { NAV_LABEL, statsHref } from '@/lib/nav-items'
@@ -24,13 +24,6 @@ type Props = {
 }
 
 type QuarterStats = { singles: PlayerStats; menDoubles: PlayerStats; womenDoubles: PlayerStats; mixedDoubles: PlayerStats }
-
-// 헤더 3대 스탯: 경기 수·승률(무승부 제외)·현재 연승(연승 중 아니면 0).
-function deriveHeaderStats(stats: QuarterStats, form: RecentFormResult): { games: number; winRate: number; winStreak: number } {
-    const overall = combinePlayerStats(stats.singles, stats.menDoubles, stats.womenDoubles, stats.mixedDoubles)
-    const winStreak = form.currentStreak?.type === 'W' ? form.currentStreak.length : 0
-    return { games: overall.totalMatches, winRate: overall.winRate, winStreak }
-}
 
 // 헤더 요약: 승률 링 + 보조 행. 주력 종목 = 경기 수 최다 종류.
 function deriveSummary(stats: QuarterStats): ProfileSummary {
@@ -118,7 +111,6 @@ export default async function MemberProfilePage({ params, searchParams }: Props)
                 {isSelf && <p className={TYPO.eyebrow}>{NAV_LABEL.stats}</p>}
                 <MemberProfileHeader
                     user={target}
-                    stats={deriveHeaderStats(bundle.stats, form)}
                     summary={deriveSummary(bundle.stats)}
                     recentForm={isSelf ? form : undefined}
                     personalRating={personalRating}

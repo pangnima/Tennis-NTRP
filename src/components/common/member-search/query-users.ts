@@ -29,7 +29,6 @@ export async function queryUsers(supabase: BrowserClient, rawQuery: string, self
     const { data, error } = await supabase
         .from('users')
         .select('id, name, nickname, ntrp, personal_ntrp, stats_hidden, dominant_hand, profile_image')
-        .eq('is_guest', false)
         .is('deleted_at', null)
         .neq('id', selfUserId)
         .or(`name.ilike.${pattern},nickname.ilike.${pattern}`)
@@ -46,7 +45,6 @@ export async function queryUsers(supabase: BrowserClient, rawQuery: string, self
         personalNtrp: u.personal_ntrp != null ? Number(u.personal_ntrp) : undefined,
         statsHidden: u.stats_hidden ?? false,
         dominantHand: u.dominant_hand === 'right' || u.dominant_hand === 'left' ? u.dominant_hand : undefined,
-        isGuest: false,
     }))
     const { items, hasMore } = splitOverflow(rows, USER_SEARCH_LIMIT)
     return { results: rankUserSearchResults(items, rawQuery), hasMore, error: null }

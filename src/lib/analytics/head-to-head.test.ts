@@ -18,7 +18,7 @@ function user(id: string, name: string, extra: Partial<User> = {}): User {
         id, name, nickname: name, role: 'member',
         gender: 'male', dominantHand: 'right', ntrp: 3.5,
         tennisStartDate: '2020-01-01', createdAt: '2020-01-01',
-        isGuest: false, statsHidden: false, ...extra,
+        statsHidden: false, ...extra,
     }
 }
 

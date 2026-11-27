@@ -12,7 +12,6 @@ export type User = {
     racketBrand?: string      // 주력 라켓 브랜드 (프리셋 한글 라벨 또는 기타 직접 입력). 설정에서 수정 가능
     racketModel?: string      // 주력 라켓 모델명 (선택)
     createdAt: string
-    isGuest: boolean   // true면 게스트 선수 (public.users에 존재하지만 Auth 계정 없음)
     statsHidden: boolean  // true면 승률·승무패를 타인에게 비공개
     deletedAt?: string | null  // 탈퇴 시각(soft delete). 있으면 화면은 이름·메타·NTRP 대신 '탈퇴한 회원'과 배지만
 }

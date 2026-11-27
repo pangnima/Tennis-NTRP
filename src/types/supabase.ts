@@ -489,8 +489,7 @@ export type Database = {
           dominant_hand: string | null
           email: string
           gender: string | null
-          id: string
-          is_guest: boolean
+          id: string
           login_id: string | null
           name: string
           nickname: string
@@ -510,8 +509,7 @@ export type Database = {
           dominant_hand?: string | null
           email: string
           gender?: string | null
-          id: string
-          is_guest?: boolean
+          id: string
           login_id?: string | null
           name: string
           nickname: string
@@ -531,8 +529,7 @@ export type Database = {
           dominant_hand?: string | null
           email?: string
           gender?: string | null
-          id?: string
-          is_guest?: boolean
+          id?: string
           login_id?: string | null
           name?: string
           nickname?: string

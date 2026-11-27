@@ -5,7 +5,7 @@ import {
     buildUserSearchPattern, normalizeUserSearchQuery, rankUserSearchResults, splitOverflow,
 } from './user-search'
 
-const c = (name: string, nickname?: string): OpponentCandidate => ({ id: name, name, nickname, isGuest: false })
+const c = (name: string, nickname?: string): OpponentCandidate => ({ id: name, name, nickname })
 
 describe('normalizeUserSearchQuery', () => {
     it('trim + 연속 공백 축약', () => {
