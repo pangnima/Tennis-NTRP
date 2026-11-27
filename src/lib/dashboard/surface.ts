@@ -14,14 +14,14 @@ export const SURFACE_LABELS: Record<string, string> = {
 
 /**
  * 코트 표면별 막대 그래프 색상 (실제 코트 색 직관 반영).
- * 하드=블루(cat-1), 클레이=적갈(cat-3), 인조잔디=그린(cat-2), 기타=슬레이트(cat-6), 미지정=뮤트.
- * 카테고리 팔레트라 win/loss 결과 시맨틱과 겹치지 않는다 (docs/color-system.md).
+ * 하드=블루, 클레이=적갈, 인조잔디=그린, 기타=슬레이트(L3 --surface-*), 미지정=뮤트.
+ * 결과색(win·loss)과 겹치지 않는다 (docs/design-system.md §1).
  */
 export const SURFACE_BAR_CLASS: Record<string, string> = {
-    hard: 'bg-cat-1',
-    clay: 'bg-cat-3',
-    grass: 'bg-cat-2',
-    other: 'bg-cat-6',
+    hard: 'bg-surface-hard',
+    clay: 'bg-surface-clay',
+    grass: 'bg-surface-turf',
+    other: 'bg-surface-other',
     unknown: 'bg-muted-foreground/40',
 }
 

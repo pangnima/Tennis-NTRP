@@ -48,7 +48,7 @@ export function CourtMergeBox({ id, names, courtName, defaultOfficial, defaultCh
                     const on = picked.has(n.name)
                     return (
                         <ActionButton key={n.name} size="sm" aria-pressed={on} onClick={() => toggle(n.name)} variant={on ? 'outline' : 'ghost'}
-                            className={on ? 'border-primary/50 text-foreground' : undefined}>
+                            className={on ? 'border-selected/50 text-foreground' : undefined}>
                             {n.name}<span className="font-normal tabular-nums">{n.uses}</span>
                         </ActionButton>
                     )

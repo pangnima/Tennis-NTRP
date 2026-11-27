@@ -68,7 +68,7 @@ export function FieldToggle<T extends string>({
                             onClick={() => onChange(o.value)}
                             className={`${PRESS_HEIGHT.lg} px-2.5 text-body2 rounded-md border transition-colors disabled:pointer-events-none disabled:opacity-50 ${
                                 active
-                                    ? 'border-spot-solid bg-spot-solid text-spot-foreground font-semibold'
+                                    ? 'border-selected-solid bg-selected-solid text-selected-foreground font-semibold'
                                     : 'border-input text-foreground hover:bg-muted/40'
                             }`}
                         >

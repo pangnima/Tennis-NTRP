@@ -7,32 +7,32 @@ type MatchTypeStyle = {
     bgClass: string
 }
 
-// 경기 타입은 '결과'가 아닌 '카테고리' 태그 — win(민트)/loss(코랄) 결과 시맨틱과 겹치지 않도록
-// 카테고리 팔레트(cat-*)에 앵커한다. 네 타입 모두 같은 방식으로 통일 (docs/color-system.md).
+// 종목은 '결과'가 아닌 분류 — L3 도메인 토큰(--match-*)을 쓴다. 결과색(win·loss)·주의색(spot)·정보색(info)과
+// 떨어진 색이라는 것을 colors.test.ts가 강제한다 (docs/design-system.md §1).
 const STYLES: Record<MatchType, MatchTypeStyle> = {
     singles: {
         label: '단식',
-        textClass: 'text-cat-1',
-        borderClass: 'border-cat-1/40',
-        bgClass: 'bg-cat-1/10',
+        textClass: 'text-match-singles',
+        borderClass: 'border-match-singles/40',
+        bgClass: 'bg-match-singles/10',
     },
     men_doubles: {
         label: '남복',
-        textClass: 'text-cat-8',
-        borderClass: 'border-cat-8/40',
-        bgClass: 'bg-cat-8/10',
+        textClass: 'text-match-mens',
+        borderClass: 'border-match-mens/40',
+        bgClass: 'bg-match-mens/10',
     },
     women_doubles: {
         label: '여복',
-        textClass: 'text-cat-5',
-        borderClass: 'border-cat-5/40',
-        bgClass: 'bg-cat-5/10',
+        textClass: 'text-match-womens',
+        borderClass: 'border-match-womens/40',
+        bgClass: 'bg-match-womens/10',
     },
     mixed_doubles: {
         label: '혼복',
-        textClass: 'text-cat-4',
-        borderClass: 'border-cat-4/40',
-        bgClass: 'bg-cat-4/10',
+        textClass: 'text-match-mixed',
+        borderClass: 'border-match-mixed/40',
+        bgClass: 'bg-match-mixed/10',
     },
 }
 
@@ -47,7 +47,7 @@ export const MATCH_TYPE_LABELS: Record<MatchType, string> = {
     mixed_doubles: STYLES.mixed_doubles.label,
 }
 
-// 경기 타입 Select 입력용 옵션 — 개인/클럽 폼 양쪽이 공유 (표시 순서 고정)
+// 종목 Select 입력용 옵션 (표시 순서 고정)
 export const MATCH_TYPE_OPTIONS: { value: MatchType; label: string }[] = [
     { value: 'singles', label: STYLES.singles.label },
     { value: 'men_doubles', label: STYLES.men_doubles.label },

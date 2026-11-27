@@ -59,7 +59,7 @@ export function MobileNav({ userId = null }: MobileNavProps) {
                         )
                     })}
                 </nav>
-                <div className="space-y-1 border-t border-foreground/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+                <div className="space-y-1 border-t border-border-subtle p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                     <ThemeToggle size="lg" />
                     {userId && (
                         <form action={logoutAction}>

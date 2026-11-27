@@ -21,7 +21,7 @@ export function InviteRoster({ roster, capacity, meKey }: { roster: InviteRoster
             <h2 className={TYPO.h3}>참가자 {formatHeadcount(roster.length, capacity)}</h2>
             <DataList head={{ cols: COLS, labels: ['참가자', '구분'] }}>
                 {roster.map((r) => (
-                    <div key={r.key} className={cn(CARD_ONLY, ROW_GRID, ROW_PAD, ROW_BOX, COLS, r.key === meKey && 'bg-primary/10 @max-4xl:bg-primary/10')}>
+                    <div key={r.key} className={cn(CARD_ONLY, ROW_GRID, ROW_PAD, ROW_BOX, COLS, r.key === meKey && 'bg-self/10 @max-4xl:bg-self/10')}>
                         <span className={cn(TYPO.bodyStrong, 'flex min-w-0 items-center gap-1.5 @4xl:text-body2 @4xl:font-medium')}>
                             <span className="min-w-0 truncate">{r.name}</span>
                             <GenderChip gender={r.gender} />

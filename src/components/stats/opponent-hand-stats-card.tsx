@@ -14,8 +14,8 @@ const HAND_LABELS: Record<keyof OpponentHandStats, string> = {
 
 // 손잡이별 막대 색상 (오른손=블루, 왼손=바이올렛)
 const HAND_BAR_CLASS: Record<keyof OpponentHandStats, string> = {
-    right: 'bg-cat-1',
-    left: 'bg-cat-5',
+    right: 'bg-hand-right',
+    left: 'bg-hand-left',
 }
 
 export function OpponentHandStatsCard({ handStats }: Props) {

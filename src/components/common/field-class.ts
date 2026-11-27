@@ -24,7 +24,7 @@ export const FIELD_SCALE: ReadonlyArray<{ size: FieldSize; px: number; use: stri
 ]
 
 const BASE = cn(
-    'w-full min-w-0 rounded-lg border border-input bg-background px-3 text-body text-foreground dark:bg-input/30',
+    'w-full min-w-0 rounded-lg border border-input bg-field px-3 text-body text-foreground',
     'placeholder:text-muted-foreground outline-none transition-colors focus:border-ring',
     'disabled:cursor-not-allowed disabled:opacity-50',
 )
@@ -54,6 +54,6 @@ export function fieldMessageClass(tone: FieldTone = 'muted', className?: string)
 
 /** `EnumSelect`(shadcn Select 트리거)를 칸과 같은 높이·모양으로 — `data-[size=default]`가 트리거 기본 높이를 덮는다 */
 export const FIELD_SELECT_TRIGGER = cn(
-    'w-full rounded-lg border-input bg-background px-3 text-body dark:bg-input/30 focus:border-ring',
+    'w-full rounded-lg border-input bg-field px-3 text-body focus:border-ring',
     FIELD_HEIGHT.lg, 'data-[size=default]:h-11',
 )

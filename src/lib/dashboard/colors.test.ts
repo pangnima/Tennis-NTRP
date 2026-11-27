@@ -5,20 +5,20 @@ import { describe, expect, it } from 'vitest'
 import { OG } from '@/lib/og/brand'
 
 /**
- * 컬러 시스템 회귀 가드 (docs/color-system.md).
- * 1) globals.css 밖에 하드코딩된 색상이 없는지
- * 2) 라이트/다크 토큰이 WCAG 대비를 만족하는지
- * 3) OG 이미지의 수동 미러 값이 라이트 토큰과 어긋나지 않았는지
+ * 컬러 시스템 회귀 가드 (docs/design-system.md §1).
+ * 1) globals.css 밖에 하드코딩된 색상·`dark:` 분기·번호 이름(cat-N)이 없는지
+ * 2) globals.css 안에서도 hex는 L1 팔레트에만 있는지(역할·도메인 토큰은 팔레트만 참조)
+ * 3) 라이트/다크 토큰이 WCAG 대비를 만족하고, 분류색이 역할색과 떨어져 있는지
+ * 4) OG 이미지·브라우저 크롬의 수동 미러 값이 토큰과 어긋나지 않았는지
  */
 
 const SRC = path.resolve(__dirname, '../..')
 const GLOBALS = path.join(SRC, 'app/globals.css')
 
 // ── 파일 수집 ────────────────────────────────────────────────────────
-/** 팔레트 교체 대상에서 제외되는 경로 — 이유는 docs/color-system.md §6 */
+/** 팔레트 교체 대상에서 제외되는 경로 — 이유는 docs/design-system.md §1 「예외」 */
 const ALLOWLIST = [
     'components/ui', // shadcn 자동 생성, 수정 금지
-    'lib/rating/tier.ts', // 티어 8계급 = 게임 랭크 정체성, 브랜드 팔레트와 분리
     'lib/og/brand.ts', // Satori는 CSS 변수 미지원 — 아래에서 값 일치를 따로 검증
     'app/layout.tsx', // viewport.themeColor(브라우저 크롬)는 CSS 변수 미지원 — 〃
     'components/auth/provider-marks.tsx', // 제3자 브랜드 마크 — 구글 가이드가 정한 색이라 팔레트 교체 대상이 아니다
@@ -46,6 +46,14 @@ const BANNED_ARBITRARY = new RegExp(`\\b(?:${UTILITY_PREFIX})-\\[#`)
 const BANNED_HEX = /['"`]#[0-9a-fA-F]{3,8}['"`]/
 
 describe('색상 하드코딩 금지', () => {
+    it('`dark:` 분기를 쓰지 않는다 — 라이트/다크는 토큰이 갈라 쥔다', () => {
+        expect(hitsOf(/(?<![\w-])dark:[\w[]/g)).toEqual([])
+    })
+
+    it('번호 이름의 분류색(cat-N)을 쓰지 않는다 — 뜻 이름(match-*·surface-* …)만', () => {
+        expect(hitsOf(/(?<![\w-])(?:[\w-]+-)?cat-\d\b/g)).toEqual([])
+    })
+
     it('Tailwind 기본 팔레트 클래스를 쓰지 않는다', () => {
         const hits = SOURCES.filter((f) => BANNED_PALETTE.test(readFileSync(f, 'utf-8')))
             .map((f) => path.relative(SRC, f))
@@ -118,6 +126,38 @@ function readTokens(selector: string): Record<string, string> {
     return out
 }
 
+/** L3 도메인 토큰 — 글자로도 쓰이므로 대비를 함께 본다 */
+const DOMAIN_TOKENS = [
+    'match-singles', 'match-mens', 'match-womens', 'match-mixed',
+    'surface-hard', 'surface-clay', 'surface-turf', 'surface-other',
+    'side-deuce', 'side-ad', 'hand-right', 'hand-left',
+    ...Array.from({ length: 8 }, (_, i) => `avatar-${i + 1}`),
+    ...['iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'challenger'].map((t) => `tier-${t}`),
+]
+
+const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+const distance = (a: string, b: string) => {
+    const [x, y] = [rgb(a), rgb(b)]
+    return Math.hypot(x[0] - y[0], x[1] - y[1], x[2] - y[2])
+}
+
+describe('색 3계층 — hex는 L1 팔레트에만', () => {
+    it('역할·도메인 토큰은 hex를 직접 쓰지 않는다(팔레트·다른 토큰만 참조)', () => {
+        // 모드마다 따로 본다 — 한 객체로 합치면 다크 값이 같은 이름의 라이트 값을 덮어 라이트 쪽 hex를 놓친다
+        const dark = Object.entries(readTokens('\\.dark'))
+        expect(dark.length).toBeGreaterThan(40) // 다크 블록을 실제로 읽었는가
+        const all = [...Object.entries(readTokens(':root')), ...dark]
+        const offenders = all.filter(([name, v]) => !name.startsWith('palette-') && /#[0-9a-fA-F]{3,8}\b/.test(v))
+        expect(offenders).toEqual([])
+    })
+
+    it('팔레트 값은 모두 6자리 hex다', () => {
+        const palette = Object.entries(readTokens(':root')).filter(([name]) => name.startsWith('palette-'))
+        expect(palette.length).toBeGreaterThan(0)
+        for (const [name, v] of palette) expect(v, name).toMatch(/^#[0-9a-f]{6}$/)
+    })
+})
+
 const LIGHT = readTokens(':root')
 const DARK = { ...LIGHT, ...readTokens('\\.dark') }
 
@@ -158,7 +198,10 @@ const TEXT_ON_SURFACE: [string, number][] = [
     ['loss', 4.5],
     ['spot', 4.5],
     ['destructive', 4.5],
-    ...Array.from({ length: 8 }, (_, i): [string, number] => [`cat-${i + 1}`, 4.5]),
+    ['self', 4.5],
+    ['selected', 4.5],
+    ['data', 4.5],
+    ...DOMAIN_TOKENS.map((n): [string, number] => [n, 4.5]),
 ]
 
 /**
@@ -171,7 +214,9 @@ const SOLID_PAIRS: [string, string][] = [
     ['loss-foreground', 'loss'],
     ['info-foreground', 'info'],
     ['destructive-foreground', 'destructive'],
-    ['spot-foreground', 'spot-solid'], // Chip solid / Badge lime / Button accent
+    ['spot-foreground', 'spot-solid'], // ActionButton solid
+    ['selected-foreground', 'selected-solid'], // FieldToggle·애드/듀스의 켜진 칸
+    ['primary-foreground', 'selected'], // 회원 검색 결과의 체크 표시
 ]
 
 describe.each([
@@ -214,19 +259,26 @@ describe.each([
         expect(contrast(resolve(tokens, 'input'), resolve(tokens, 'card'))).toBeGreaterThanOrEqual(3)
     })
 
-    it('카테고리 팔레트가 승패 시맨틱과 눈에 띄게 다른 색이다', () => {
-        // "분류 태그는 결과 색을 빌려 쓰지 않는다"는 규칙을 값으로 고정한다 (docs/color-system.md §3).
-        // primary와는 겹칠 수 있다 — cat-1(단식·하드코트)은 브랜드 블루에 앵커한 의도된 공유다(§4).
-        const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-        const distance = (a: string, b: string) => {
-            const [x, y] = [rgb(a), rgb(b)]
-            return Math.hypot(x[0] - y[0], x[1] - y[1], x[2] - y[2])
-        }
-        for (let i = 1; i <= 8; i++) {
-            const cat = resolve(tokens, `cat-${i}`)
+    it('분류색은 결과색(win·loss)과 눈에 띄게 다르다', () => {
+        // "분류 태그는 결과 색을 빌려 쓰지 않는다" (docs/design-system.md §1).
+        // 하드코트·듀스·오른손이 정보 블루를 쓰는 것은 의도된 공유라 여기서 info·primary는 보지 않는다.
+        for (const name of DOMAIN_TOKENS.filter((n) => !n.startsWith('tier-'))) {
             for (const semantic of ['win', 'loss'] as const) {
-                expect(distance(cat, resolve(tokens, semantic)), `cat-${i} vs ${semantic}`).toBeGreaterThan(30)
+                expect(distance(resolve(tokens, name), resolve(tokens, semantic)), `${name} vs ${semantic}`).toBeGreaterThan(30)
             }
+        }
+    })
+
+    it('종목 칩 넷은 역할색(주의·정보·행동·결과)과도, 서로끼리도 다르다', () => {
+        // 혼복 칩이 「신청 중」(spot)과, 단식 칩이 정보 블루(info)와 같은 hex였다(Week 72 이전)
+        const MATCH = ['match-singles', 'match-mens', 'match-womens', 'match-mixed']
+        for (const m of MATCH) {
+            for (const role of ['spot', 'spot-solid', 'info', 'primary', 'self', 'win', 'loss'] as const) {
+                expect(distance(resolve(tokens, m), resolve(tokens, role)), `${m} vs ${role}`).toBeGreaterThan(30)
+            }
+        }
+        for (const [i, a] of MATCH.entries()) for (const b of MATCH.slice(i + 1)) {
+            expect(distance(resolve(tokens, a), resolve(tokens, b)), `${a} vs ${b}`).toBeGreaterThan(30)
         }
     })
 

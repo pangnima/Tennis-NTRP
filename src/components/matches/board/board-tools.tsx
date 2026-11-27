@@ -15,7 +15,7 @@ export function BoardTools({ panel, onTogglePanel, onAddRow }: { panel: boolean;
     const Chevron = panel ? ChevronUp : ChevronDown
     return (
         <div className="flex items-center gap-2">
-            <ActionButton size="sm" aria-expanded={panel} onClick={onTogglePanel} className={cn(panel && 'border-primary/50 bg-primary/10')}>
+            <ActionButton size="sm" aria-expanded={panel} onClick={onTogglePanel} className={cn(panel && 'border-selected/50 bg-selected/10')}>
                 <Shuffle className="size-3.5" aria-hidden />자동 대진표<Chevron className="size-3.5" aria-hidden />
             </ActionButton>
             <ActionButton size="sm" onClick={onAddRow}>

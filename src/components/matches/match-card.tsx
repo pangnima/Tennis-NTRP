@@ -28,7 +28,7 @@ const CARD_ONLY = '@max-4xl:rounded-lg @max-4xl:border @max-4xl:border-border @m
  * 내가 만든 매칭 = **옅은 민트 줄**(참가자 표의 내 줄과 같은 색 — 「내 것 = 옅은 민트」). 카드 모드는 카드 바탕을 덮는다.
  * 뒤에 와야 `CARD_ONLY`의 카드 바탕을 이긴다.
  */
-const HOSTED_ROW = 'bg-primary/10 @max-4xl:bg-primary/10 hover:bg-primary/15'
+const HOSTED_ROW = 'bg-self/10 @max-4xl:bg-self/10 hover:bg-self/15'
 /** 날짜·시간 — 카드에서는 16px 굵게(그 카드의 제목), 표에서는 다른 칸과 같은 14px */
 const WHEN = cn(TYPO.bodyStrong, 'tabular-nums @4xl:text-body2 @4xl:font-medium')
 /** 카드 모드에서만 붙는 이름표(「호스트」·「참가」) — 표 모드에서는 열 제목이 그 일을 한다 */
@@ -72,7 +72,7 @@ export function MatchCard({ match, showJoined = true }: Props) {
             <span className={cn(TYPO.body2, 'min-w-0 truncate')}>{place}</span>
             <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 @4xl:contents">
                 {/* 카드의 「호스트」는 열 제목 대신인 이름표(모든 줄). 내가 만든 매칭은 이름이 민트·굵게 */}
-                <span className={cn(TYPO.body2, 'min-w-0 truncate', match.hosted && 'font-semibold text-primary')}>
+                <span className={cn(TYPO.body2, 'min-w-0 truncate', match.hosted && 'font-semibold text-self')}>
                     <span className={cn(CARD_LABEL, 'font-normal')}>호스트 </span>{match.hostName}
                 </span>
                 <span className={cn(TYPO.body2, 'shrink-0 tabular-nums')}><span className={CARD_LABEL}>· 1인당 </span>{formatPerPerson(match)}</span>

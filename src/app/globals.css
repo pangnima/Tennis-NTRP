@@ -5,18 +5,38 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   /* [중요] 모든 텍스트 Pretendard. mono 역할도 Pretendard + tabular-nums로 대체 */
   --font-sans: var(--font-pretendard), var(--font-geist-sans), sans-serif;
   --font-mono: var(--font-pretendard), var(--font-geist-mono), monospace;
   --font-heading: var(--font-sans);
-  /* 시그니처/시맨틱 컬러 (docs/color-system.md) */
+
+  /* ── 유틸리티로 노출하는 색 = L2 역할 + L3 도메인 (docs/design-system.md §1) ──
+     L1 팔레트(--palette-*)는 노출하지 않는다 — 컴포넌트는 색 이름이 아니라 역할 이름만 안다. */
+  /* 면·글자 */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  /* 경계·입력 */
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-input: var(--input);
+  --color-field: var(--field);
+  --color-ring: var(--ring);
+  /* 행동·상태 */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-spot: var(--spot);
   --color-spot-solid: var(--spot-solid);
   --color-spot-foreground: var(--spot-foreground);
-  --color-accent-lime: var(--accent-lime);
-  --color-accent-lime-foreground: var(--accent-lime-foreground);
   --color-win: var(--win);
   --color-win-solid: var(--win-solid);
   --color-win-foreground: var(--win-foreground);
@@ -25,38 +45,50 @@
   --color-loss-foreground: var(--loss-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
-  /* 카테고리 데이터 팔레트 — 경기 타입·코트 표면·손잡이·아바타 등 '결과가 아닌 분류' 전용 */
-  --color-cat-1: var(--cat-1);
-  --color-cat-2: var(--cat-2);
-  --color-cat-3: var(--cat-3);
-  --color-cat-4: var(--cat-4);
-  --color-cat-5: var(--cat-5);
-  --color-cat-6: var(--cat-6);
-  --color-cat-7: var(--cat-7);
-  --color-cat-8: var(--cat-8);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  /* radius: 최대 8px 상한(pill은 아바타·점·프로그레스만 별도) */
-  --radius-xs: 0.125rem; /* 2px — 배지·태그 */
-  --radius-sm: 0.25rem;  /* 4px — 칩·인풋 */
+  /* 관계·선택·데이터 */
+  --color-self: var(--self);
+  --color-selected: var(--selected);
+  --color-selected-solid: var(--selected-solid);
+  --color-selected-foreground: var(--selected-foreground);
+  --color-data: var(--data);
+  /* L3 도메인 — 결과가 아닌 분류. 뜻 이름으로만 쓴다 */
+  --color-match-singles: var(--match-singles);
+  --color-match-mens: var(--match-mens);
+  --color-match-womens: var(--match-womens);
+  --color-match-mixed: var(--match-mixed);
+  --color-surface-hard: var(--surface-hard);
+  --color-surface-clay: var(--surface-clay);
+  --color-surface-turf: var(--surface-turf);
+  --color-surface-other: var(--surface-other);
+  --color-side-deuce: var(--side-deuce);
+  --color-side-ad: var(--side-ad);
+  --color-hand-right: var(--hand-right);
+  --color-hand-left: var(--hand-left);
+  --color-avatar-1: var(--avatar-1);
+  --color-avatar-2: var(--avatar-2);
+  --color-avatar-3: var(--avatar-3);
+  --color-avatar-4: var(--avatar-4);
+  --color-avatar-5: var(--avatar-5);
+  --color-avatar-6: var(--avatar-6);
+  --color-avatar-7: var(--avatar-7);
+  --color-avatar-8: var(--avatar-8);
+  --color-tier-iron: var(--tier-iron);
+  --color-tier-bronze: var(--tier-bronze);
+  --color-tier-silver: var(--tier-silver);
+  --color-tier-gold: var(--tier-gold);
+  --color-tier-platinum: var(--tier-platinum);
+  --color-tier-diamond: var(--tier-diamond);
+  --color-tier-master: var(--tier-master);
+  --color-tier-challenger: var(--tier-challenger);
+
+  /* radius: 단계 넷 + full (docs/design-system.md §5) */
+  --radius-xs: 0.125rem; /* 2px — (ui 내부) */
+  --radius-sm: 0.25rem;  /* 4px — 칩·뱃지 */
   --radius-md: 0.375rem; /* 6px — 버튼·토글 */
-  --radius-lg: 0.5rem;   /* 8px — 카드·패널 */
-  --radius-xl: 0.75rem;  /* 12px — 모달·헤더 */
+  --radius-lg: 0.5rem;   /* 8px — 칸·카드·패널 */
+  --radius-xl: 0.75rem;  /* 12px — 팝업 */
   --radius-2xl: 0.75rem;
   --radius-3xl: 1rem;
   --radius-4xl: 1rem;
@@ -102,114 +134,223 @@
   }
 }
 
-/* ── 원시 브랜드 팔레트 (L1) — 모드 무관 사양 원본 ────────────────────
-   시맨틱 토큰(L2)이 이 값을 참조하거나, WCAG AA 확보를 위해 조정한 값을 쓰고
-   주석에 원본 대비를 남긴다. 사양서 ↔ 코드 추적용이며 유틸리티로 노출하지 않는다. */
+/* ══ 색 3계층 (docs/design-system.md §1) ═════════════════════════════════
+   L1 팔레트  --palette-<색>-<단계>  hex는 **여기에만** 있다. 유틸리티로 노출하지 않는다.
+   L2 역할    --background·--primary·--self …  var(--palette-*)만 참조한다. 라이트/다크는 여기서 갈린다.
+   L3 도메인  --match-*·--surface-*·--tier-* …  분류의 뜻 이름. 역시 팔레트만 참조한다.
+   ⇒ 브랜드색을 바꾸려면 L1의 값만 고친다. 역할을 다른 색으로 옮기려면 L2 한 줄만 고친다.
+   단계 숫자는 밝기 순서(작을수록 밝다). 대비율은 colors.test.ts가 L2·L3 값으로 강제한다. */
+
+/* ── L1 팔레트 ──────────────────────────────────────────────────────── */
 :root {
-  --brand-blue: #118ab2;       /* 라이트 메인 액션 */
-  --brand-blue-light: #2cb1db; /* 다크 보조 액션 */
-  --brand-mint: #06d6a0;       /* 성공 / 다크 메인 액션 */
-  --brand-coral: #ff7f50;      /* 알림·취소·패배 */
-  --brand-yellow: #ffd166;     /* 스팟 — 별점·대기·강조 (구 라임 시그니처 승계) */
+  /* ink — 푸른빛 쿨 그레이(면·글자·경계) */
+  --palette-ink-0: #ffffff;
+  --palette-ink-50: #f4f7f9;
+  --palette-ink-100: #e6edf2;
+  --palette-ink-200: #d3dde4;
+  --palette-ink-400: #a9b9c1;
+  --palette-ink-500: #7c8f9c;
+  --palette-ink-600: #647985;
+  --palette-ink-700: #435562;
+  --palette-ink-750: #344854;
+  --palette-ink-800: #1d2d35;
+  --palette-ink-900: #15222b;
+  --palette-ink-950: #0b1319;
+  /* 브랜드 — 블루(라이트 행동) · 민트(다크 행동·승) · 코랄(패·위험) · 옐로우(채움 CTA·주의) */
+  --palette-blue-700: #0e7695;   /* 사양 #118AB2를 흰 글씨 AA로 조정 */
+  --palette-blue-400: #2cb1db;
+  --palette-mint-700: #07805f;
+  --palette-mint-400: #06d6a0;   /* 사양 원본 */
+  --palette-coral-700: #b85335;
+  --palette-coral-400: #ff7f50;  /* 사양 원본 */
+  --palette-coral-300: #ff9470;
+  --palette-yellow-700: #8a6a0f; /* 옐로우 계열 딥 골드 — 밝은 면 위 글자용 */
+  --palette-yellow-300: #ffd166; /* 사양 원본 */
+  /* 분류 — 결과색(민트·코랄)·행동색과 떨어진 색 */
+  --palette-cobalt-600: #2f6fa8;
+  --palette-cobalt-300: #7fb3e8;
+  --palette-violet-600: #6e4fc4;
+  --palette-violet-300: #a78bfa;
+  --palette-pink-700: #a8386b;
+  --palette-pink-300: #f472a5;
+  --palette-olive-700: #587112;
+  --palette-olive-300: #b5d46a;
+  --palette-green-700: #2e7d32;
+  --palette-green-300: #4ade80;
+  --palette-clay-700: #9c5a18;
+  --palette-clay-400: #cf7a52;
+  --palette-steel-600: #5a6e7a;
+  --palette-steel-400: #8d9fa8;
+  /* 티어 — 게임 랭크의 정체성(아이언~챌린저). 브랜드색을 바꿔도 따라가지 않는다 */
+  --palette-zinc-600: #63636b;
+  --palette-zinc-400: #a1a1aa;
+  --palette-amber-700: #b45309;
+  --palette-amber-500: #f59e0b;
+  --palette-silver-600: #5b6b80;
+  --palette-silver-300: #cbd5e1;
+  --palette-gold-700: #a16207;
+  --palette-gold-400: #facc15;
+  --palette-teal-700: #0f766e;
+  --palette-teal-400: #2dd4bf;
+  --palette-sky-700: #0369a1;
+  --palette-sky-400: #38bdf8;
+  --palette-purple-700: #7e22ce;
+  --palette-purple-400: #c084fc;
+  --palette-red-700: #c62828;
+  --palette-red-400: #f87171;
 }
 
-/* ── 시맨틱 토큰 (L2) — 라이트 ────────────────────────────────────────
-   푸른빛 쿨 그레이 베이스: background < secondary/muted(surface-2) < card/popover
-   깊이는 1px 보더 우선, 그림자 없이 영역을 구분한다.
-   악센트는 3역할 — `--X`(표면 위 텍스트·테두리, AA 확보) / `--X-solid`(브랜드 비비드 채움)
-   / `--X-foreground`(solid 위 텍스트). 대비율은 흰 카드 기준. */
+/* ── L2 역할 + L3 도메인 — 라이트 ─────────────────────────────────────
+   쿨 그레이 바탕: background < secondary/muted < card. 깊이는 그림자 없이 1px 보더로.
+   악센트는 3역할 — `--X`(면 위 글자·테두리, AA) / `--X-solid`(비비드 채움, 글자를 얹지 않는 바·링) / `--X-foreground`(채움 위 글자). */
 :root {
-  --background: #f4f7f9; /* 쿨 그레이 배경 */
-  --foreground: #1d2d35; /* ink — 본문 (배경 대비 ≈13.2:1) */
-  --card: #ffffff;       /* surface — 카드·패널 */
-  --card-foreground: #1d2d35;
-  --popover: #ffffff;
-  --popover-foreground: #1d2d35;
-  --primary: #0e7695;    /* 브랜드 블루 — 사양 #118AB2를 AA로 조정 (흰 글씨 ≈5.2:1) */
-  --primary-foreground: #ffffff;
-  --secondary: #e6edf2;  /* surface-2 — 인셋·헤더 */
-  --secondary-foreground: #1d2d35;
-  --muted: #e6edf2;
-  --muted-foreground: #435562; /* 보조 텍스트(이름표·도움말) — 카드 ≈7.7:1 · 배경 ≈7.2:1 · 회색 바탕 ≈6.5:1. 값은 foreground로 쓴다(docs/color-system.md §5) */
-  --accent: #e6edf2;
-  --accent-foreground: #1d2d35;
-  --border: #d3dde4;     /* 1px 에어라인 */
-  --input: #7c8f9c;      /* 입력 경계 — 흰 카드 대비 ≈3.4:1 (WCAG 1.4.11, bg-transparent 인풋) */
-  --ring: var(--primary); /* 포커스 링 = 브랜드 액션 색 */
-  /* 시그니처/시맨틱 */
-  --spot: #8a6a0f;         /* 스팟 텍스트 톤 — 옐로우 계열 딥 골드 (≈5.1:1) */
-  --spot-solid: #ffd166;   /* 사양 원본 — 별점·아이콘·채움 */
-  --spot-foreground: #1d2d35;
-  --win: #07805f;          /* 승·긍정 텍스트 톤 — 민트 계열 (≈4.9:1) */
-  --win-solid: #06d6a0;    /* 사양 민트 원본 */
-  --win-foreground: #ffffff;  /* solid 배지는 --win(진한 민트) 채움 — 비비드 --win-solid는 텍스트를 얹지 않는 바·링 전용 */
-  --loss: #b85335;         /* 패·부정 텍스트 톤 — 코랄 계열 (≈4.9:1) */
-  --loss-solid: #ff7f50;   /* 사양 코랄 원본 */
-  --loss-foreground: #ffffff;
-  --info: #0e7a9c;         /* 보조 정보 — primary와 같은 블루 계열 한 톤 밝게 (≈4.8:1) */
-  --info-foreground: #ffffff;
-  /* 위험 액션·에러 = 알림 코랄로 통합 (패배와 같은 대역, 구분은 컨텍스트·형태가 담당) */
-  --destructive: var(--loss);
-  --destructive-foreground: #ffffff;
-  /* 하위호환 별칭 — components/ui 의 button·badge 전용(수정 금지 규칙). 앱 코드는 spot을 쓴다 */
-  --accent-lime: var(--spot-solid);
-  --accent-lime-foreground: var(--spot-foreground);
-  /* 카테고리 데이터 팔레트 — 결과가 아닌 분류 태그 전용. 텍스트·채움 겸용 단일 값 */
-  --cat-1: #0e7a9c; /* 단식·하드코트·오른손·듀스코트 */
-  --cat-2: #2e7d32; /* 인조잔디 — 순수 그린(win 민트와 분리) */
-  --cat-3: #9c5a18; /* 클레이코트 — 흙빛 브라운(loss 코랄과 분리) */
-  --cat-4: #916400; /* 혼복 */
-  --cat-5: #6e4fc4; /* 여복·애드코트·왼손 */
-  --cat-6: #5a6e7a; /* 기타·미지정 */
-  --cat-7: #a8386b; /* 특별매치·아바타 */
-  --cat-8: #2f6fa8; /* 남복·아바타 */
-  --radius: 0.5rem; /* 8px — 카드 기준 */
-}
-
-/* ── 시맨틱 토큰 (L2) — 다크 ──────────────────────────────────────────
-   야간 코트 조명 톤. 메인 액션이 블루가 아닌 민트로 스위칭된다(사양).
-   민트는 다크 카드 위 ≈8.6:1이라 비비드 원본을 텍스트로도 쓸 수 있어 -solid와 값이 같다. */
-.dark {
-  --background: #0b1319; /* 다크 네이비 */
-  --foreground: #e6edf0; /* light ink — 배경 대비 ≈15.8:1 */
-  --card: #15222b;       /* 다크 차콜 */
-  --card-foreground: #e6edf0;
-  --popover: #15222b;
-  --popover-foreground: #e6edf0;
-  --primary: #06d6a0;    /* 브랜드 민트 — 사양 원본 (다크에서 블루보다 시인성 우위) */
-  --primary-foreground: #0b1319;
-  --secondary: #1e2e38;  /* surface-2 */
-  --secondary-foreground: #e6edf0;
-  --muted: #1e2e38;
-  --muted-foreground: #a9b9c1; /* 보조 텍스트 — 카드 ≈8.0:1 · 배경 ≈9.3:1 · 회색 바탕 ≈6.9:1 */
-  --accent: #1e2e38;
-  --accent-foreground: #e6edf0;
-  --border: #344854;     /* 카드 대비 ~1.7:1 — 시인성 확보 */
-  --input: #647985;      /* 입력 경계 — 카드 대비 ≈3.6:1 (WCAG 1.4.11) */
+  --background: var(--palette-ink-50);
+  --foreground: var(--palette-ink-800);       /* 배경 대비 ≈13:1 */
+  --card: var(--palette-ink-0);
+  --card-foreground: var(--palette-ink-800);
+  --popover: var(--palette-ink-0);
+  --popover-foreground: var(--palette-ink-800);
+  --secondary: var(--palette-ink-100);
+  --secondary-foreground: var(--palette-ink-800);
+  --muted: var(--palette-ink-100);
+  --muted-foreground: var(--palette-ink-700); /* 보조 글자(이름표·도움말) — 카드 ≈7.7:1 · 회색 바탕 ≈6.5:1 */
+  --accent: var(--palette-ink-100);
+  --accent-foreground: var(--palette-ink-800);
+  --border: var(--palette-ink-200);
+  --border-subtle: color-mix(in srgb, var(--foreground) 5%, transparent); /* 헤더·사이드바·탭 바 같은 셸의 가장자리 */
+  --input: var(--palette-ink-500);            /* 입력 경계 — 카드 대비 ≈3.4:1 (WCAG 1.4.11) */
+  --field: var(--background);                 /* 입력 칸 바탕 */
   --ring: var(--primary);
-  --spot: #ffd166;
-  --spot-solid: #ffd166;
-  --spot-foreground: #0b1319;
-  --win: #06d6a0;
-  --win-solid: #06d6a0;
-  --win-foreground: #0b1319;
-  --loss: #ff9470;       /* 카드 대비 ≈7.5:1 */
-  --loss-solid: #ff7f50;
-  --loss-foreground: #0b1319;
-  --info: #2cb1db;       /* 사양 보조 액션 블루 */
-  --info-foreground: #0b1319;
+
+  /* 행동·상태 */
+  --primary: var(--palette-blue-700);         /* 링크·포커스·눌린 행동. 흰 글씨 ≈5.2:1 */
+  --primary-foreground: var(--palette-ink-0);
+  --spot: var(--palette-yellow-700);          /* 주의·대기 글자(「신청 중」) */
+  --spot-solid: var(--palette-yellow-300);    /* 채움 CTA(ActionButton solid)·하단 탭 가운데·알림 수 */
+  --spot-foreground: var(--palette-ink-800);
+  --win: var(--palette-mint-700);
+  --win-solid: var(--palette-mint-400);
+  --win-foreground: var(--palette-ink-0);
+  --loss: var(--palette-coral-700);
+  --loss-solid: var(--palette-coral-400);
+  --loss-foreground: var(--palette-ink-0);
+  --info: var(--palette-blue-700);            /* 보조 정보 — 라이트에선 primary와 같은 블루(의도된 공유) */
+  --info-foreground: var(--palette-ink-0);
+  --destructive: var(--loss);                 /* 위험 행동·오류 = 패와 같은 코랄(구분은 자리·모양이 맡는다) */
+  --destructive-foreground: var(--palette-ink-0);
+
+  /* 관계·선택·데이터 — 지금은 primary·spot과 같은 값이지만 **역할이 달라** 따로 둔다 */
+  --self: var(--palette-blue-700);            /* 내 것 — 내 이름·내가 만든 매칭·내 게임 */
+  --selected: var(--palette-blue-700);        /* 고른 것(틴트) — 고른 회원 칩·눌린 토글 */
+  --selected-solid: var(--palette-yellow-300);/* 고른 것(채움) — 폼의 택일 토글(FieldToggle·애드/듀스) */
+  --selected-foreground: var(--palette-ink-800);
+  --data: var(--palette-mint-700);            /* 순차 데이터(활동량 히트맵) — 결과색이 아니다 */
+
+  /* L3 도메인 */
+  --match-singles: var(--palette-pink-700);
+  --match-mens: var(--palette-cobalt-600);
+  --match-womens: var(--palette-violet-600);
+  --match-mixed: var(--palette-olive-700);
+  --surface-hard: var(--palette-blue-700);    /* 하드코트 = 파란 코트(info와 같은 색 — 의도된 공유) */
+  --surface-clay: var(--palette-clay-700);
+  --surface-turf: var(--palette-green-700);
+  --surface-other: var(--palette-steel-600);
+  --side-deuce: var(--palette-blue-700);
+  --side-ad: var(--palette-violet-600);
+  --hand-right: var(--palette-blue-700);
+  --hand-left: var(--palette-violet-600);
+  /* 이니셜 아바타 — 해시로 고른다. 순서를 바꾸면 모든 회원의 아바타 색이 바뀐다 */
+  --avatar-1: var(--palette-green-700);
+  --avatar-2: var(--palette-blue-700);
+  --avatar-3: var(--palette-violet-600);
+  --avatar-4: var(--palette-yellow-700);
+  --avatar-5: var(--palette-pink-700);
+  --avatar-6: var(--palette-clay-700);
+  --avatar-7: var(--palette-cobalt-600);
+  --avatar-8: var(--palette-steel-600);
+  --tier-iron: var(--palette-zinc-600);
+  --tier-bronze: var(--palette-amber-700);
+  --tier-silver: var(--palette-silver-600);
+  --tier-gold: var(--palette-gold-700);
+  --tier-platinum: var(--palette-teal-700);
+  --tier-diamond: var(--palette-sky-700);
+  --tier-master: var(--palette-purple-700);
+  --tier-challenger: var(--palette-red-700);
+
+  --radius: 0.5rem;
+}
+
+/* ── L2 역할 + L3 도메인 — 다크 ───────────────────────────────────────
+   야간 코트 조명 톤. 행동색이 블루에서 민트로 바뀐다(사양) — 민트는 다크 카드 위 ≈8.6:1이라 글자로도 쓴다. */
+.dark {
+  --background: var(--palette-ink-950);
+  --foreground: var(--palette-ink-100);
+  --card: var(--palette-ink-900);
+  --card-foreground: var(--palette-ink-100);
+  --popover: var(--palette-ink-900);
+  --popover-foreground: var(--palette-ink-100);
+  --secondary: var(--palette-ink-800);
+  --secondary-foreground: var(--palette-ink-100);
+  --muted: var(--palette-ink-800);
+  --muted-foreground: var(--palette-ink-400);
+  --accent: var(--palette-ink-800);
+  --accent-foreground: var(--palette-ink-100);
+  --border: var(--palette-ink-750);
+  --border-subtle: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --input: var(--palette-ink-600);
+  --field: color-mix(in srgb, var(--input) 30%, transparent);
+  --ring: var(--primary);
+
+  --primary: var(--palette-mint-400);
+  --primary-foreground: var(--palette-ink-950);
+  --spot: var(--palette-yellow-300);
+  --spot-solid: var(--palette-yellow-300);
+  --spot-foreground: var(--palette-ink-950);
+  --win: var(--palette-mint-400);
+  --win-solid: var(--palette-mint-400);
+  --win-foreground: var(--palette-ink-950);
+  --loss: var(--palette-coral-300);
+  --loss-solid: var(--palette-coral-400);
+  --loss-foreground: var(--palette-ink-950);
+  --info: var(--palette-blue-400);
+  --info-foreground: var(--palette-ink-950);
   --destructive: var(--loss);
   --destructive-foreground: var(--loss-foreground);
-  --accent-lime: var(--spot-solid);
-  --accent-lime-foreground: var(--spot-foreground);
-  --cat-1: #2cb1db;
-  --cat-2: #4ade80;
-  --cat-3: #cf7a52;
-  --cat-4: #ffd166;
-  --cat-5: #a78bfa;
-  --cat-6: #8d9fa8;
-  --cat-7: #f472a5;
-  --cat-8: #7fb3e8;
+
+  --self: var(--palette-mint-400);
+  --selected: var(--palette-mint-400);
+  --selected-solid: var(--palette-yellow-300);
+  --selected-foreground: var(--palette-ink-950);
+  --data: var(--palette-mint-400);
+
+  --match-singles: var(--palette-pink-300);
+  --match-mens: var(--palette-cobalt-300);
+  --match-womens: var(--palette-violet-300);
+  --match-mixed: var(--palette-olive-300);
+  --surface-hard: var(--palette-blue-400);
+  --surface-clay: var(--palette-clay-400);
+  --surface-turf: var(--palette-green-300);
+  --surface-other: var(--palette-steel-400);
+  --side-deuce: var(--palette-blue-400);
+  --side-ad: var(--palette-violet-300);
+  --hand-right: var(--palette-blue-400);
+  --hand-left: var(--palette-violet-300);
+  --avatar-1: var(--palette-green-300);
+  --avatar-2: var(--palette-blue-400);
+  --avatar-3: var(--palette-violet-300);
+  --avatar-4: var(--palette-yellow-300);
+  --avatar-5: var(--palette-pink-300);
+  --avatar-6: var(--palette-clay-400);
+  --avatar-7: var(--palette-cobalt-300);
+  --avatar-8: var(--palette-steel-400);
+  --tier-iron: var(--palette-zinc-400);
+  --tier-bronze: var(--palette-amber-500);
+  --tier-silver: var(--palette-silver-300);
+  --tier-gold: var(--palette-gold-400);
+  --tier-platinum: var(--palette-teal-400);
+  --tier-diamond: var(--palette-sky-400);
+  --tier-master: var(--palette-purple-400);
+  --tier-challenger: var(--palette-red-400);
 }
 
 @layer base {

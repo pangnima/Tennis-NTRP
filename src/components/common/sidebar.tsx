@@ -21,7 +21,7 @@ export function Sidebar({ userId }: SidebarProps) {
     const pathname = usePathname()
     const { collapsed } = useSidebar()
     const items = userId ? buildSideItems(userId) : []
-    const divider = 'border-foreground/5 dark:border-foreground/10'
+    const divider = 'border-border-subtle'
 
     return (
         <aside className={cn('hidden md:flex flex-col shrink-0 border-r bg-card transition-[width] duration-200', divider, collapsed ? 'w-16' : 'w-60')}>

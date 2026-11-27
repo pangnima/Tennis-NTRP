@@ -15,7 +15,7 @@ export function MatchStatusChips({ match, showJoined }: { match: MatchListItem; 
             {match.confirmedAt
                 ? <span className={cn(NEUTRAL_PILL, chip)}>확정됨</span>
                 : (match.closedAt || isMatchFull(match.capacity, match.memberCount)) && <span className={cn(NEUTRAL_PILL, chip)}>모집 마감</span>}
-            {!match.hosted && showJoined && match.joined && <span className={cn(PILL_BASE, chip, 'border-primary/40 text-primary')}>참가 중</span>}
+            {!match.hosted && showJoined && match.joined && <span className={cn(PILL_BASE, chip, 'border-self/40 text-self')}>참가 중</span>}
             {match.applied && !match.joined && <span className={cn(PILL_BASE, chip, 'border-spot/50 text-spot')}>신청 중</span>}
         </>
     )

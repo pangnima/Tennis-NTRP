@@ -28,7 +28,7 @@ export function Header({ userDisplay = null, userId = null, inbox = null }: Head
     const { collapsed, toggle } = useSidebar()
 
     return (
-        <header className="relative min-h-14 border-b border-foreground/5 dark:border-foreground/10 bg-card flex items-center px-2 md:px-6 shrink-0 gap-3 pt-[env(safe-area-inset-top)]">
+        <header className="relative min-h-14 border-b border-border-subtle bg-card flex items-center px-2 md:px-6 shrink-0 gap-3 pt-[env(safe-area-inset-top)]">
             <MobileNav userId={userId} />
             <ActionButton
                 variant="ghost"

@@ -31,7 +31,7 @@ export function LineupPoolPicker({ pool, excluded, onToggle, matchType, onAddGue
                     const on = !excluded.has(p.key)
                     return (
                         <ActionButton key={p.key} size="sm" aria-pressed={on} onClick={() => onToggle(p.key)} variant={on ? 'outline' : 'ghost'}
-                            className={on ? 'border-primary/50 text-foreground' : 'line-through'}>
+                            className={on ? 'border-selected/50 text-foreground' : 'line-through'}>
                             {p.name}{p.ntrp != null && <span className="tabular-nums">{p.ntrp.toFixed(1)}</span>}
                             {!p.isMember && <span className="text-muted-foreground">비회원{p.gender ? ` · ${GENDER_SHORT_LABEL[p.gender]}` : ''}</span>}
                         </ActionButton>

@@ -7,8 +7,8 @@ type Props = { court: DoublesCourtStats }
 
 // 코트 사이드별 막대 색상 (애드/백핸드=바이올렛, 듀스/포핸드=블루)
 const COURT_BAR_CLASS: Record<'ad' | 'deuce', string> = {
-    ad: 'bg-cat-5',
-    deuce: 'bg-cat-1',
+    ad: 'bg-side-ad',
+    deuce: 'bg-side-deuce',
 }
 
 export function DoublesCourtStatsCard({ court }: Props) {
@@ -40,7 +40,7 @@ export function DoublesCourtStatsCard({ court }: Props) {
                 winRate={calcWinRate(court.deuce.wins, court.deuce.losses)}
                 barClass={COURT_BAR_CLASS.deuce}
             />
-            <p className="text-caption text-muted-foreground border-t border-foreground/5 pt-2">
+            <p className="text-caption text-muted-foreground border-t border-border-subtle pt-2">
                 * 복식 경기 기준. 코트 미지정 경기는 듀스에 포함.
             </p>
         </SectionCard>

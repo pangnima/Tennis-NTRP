@@ -30,7 +30,7 @@ type SeatProps = {
 
 /** 보기 모드의 이름 한 칸 — 나 = 민트·굵게 / 이긴 팀 = 굵게 / 그 밖 = 보통. `BoardTeamNames`(대칭형 표)도 같은 규칙을 읽는다 */
 export function seatNameClass(me: boolean, winner: boolean): string {
-    return me ? 'text-body2 font-semibold text-primary' : winner ? 'text-body2 font-semibold text-foreground' : TYPO.body2
+    return me ? 'text-body2 font-semibold text-self' : winner ? 'text-body2 font-semibold text-foreground' : TYPO.body2
 }
 
 /** 자리 하나 — 편집이면 선수 선택칸, 보기면 이름. 표 모드와 카드 모드가 같은 조각을 다르게 놓는다 */

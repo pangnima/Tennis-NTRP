@@ -24,12 +24,12 @@ const HOURS = Array.from({ length: 24 }, (_, h) => h)
 // 활동량(count) → maxCount 기준 라임 강도
 function cellClass(count: number, maxCount: number): string {
     if (count === 0) return 'bg-muted/40'
-    if (maxCount <= 1) return 'bg-win/70'
+    if (maxCount <= 1) return 'bg-data/70'
     const ratio = count / maxCount
-    if (ratio > 0.75) return 'bg-win/80'
-    if (ratio > 0.5) return 'bg-win/60'
-    if (ratio > 0.25) return 'bg-win/40'
-    return 'bg-win/20'
+    if (ratio > 0.75) return 'bg-data/80'
+    if (ratio > 0.5) return 'bg-data/60'
+    if (ratio > 0.25) return 'bg-data/40'
+    return 'bg-data/20'
 }
 
 // 경기 활동 — 요일(Y)×시간(X) 히트맵, 주간/월간 토글.
@@ -96,7 +96,7 @@ export function ActivityHourHeatmapCard({ weekly, monthly }: Props) {
                 {!isEmpty && (
                     <div className={`ml-auto flex items-center gap-1.5 text-caption ${TEXT_MUTED}`}>
                         <span>적음</span>
-                        {['bg-win/20', 'bg-win/40', 'bg-win/60', 'bg-win/80'].map((c) => (
+                        {['bg-data/20', 'bg-data/40', 'bg-data/60', 'bg-data/80'].map((c) => (
                             <span key={c} className={`h-2.5 w-2.5 rounded-[2px] ${c}`} />
                         ))}
                         <span>많음</span>

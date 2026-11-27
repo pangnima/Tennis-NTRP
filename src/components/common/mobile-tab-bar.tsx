@@ -17,7 +17,7 @@ export function MobileTabBar({ userId }: { userId: string }) {
     return (
         <nav
             aria-label="주 메뉴"
-            className="md:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-foreground/10 bg-card pb-[env(safe-area-inset-bottom)]"
+            className="md:hidden fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-border-subtle bg-card pb-[env(safe-area-inset-bottom)]"
         >
             {buildTabItems(userId).map((item) => {
                 const active = isNavItemActive(item, pathname)
