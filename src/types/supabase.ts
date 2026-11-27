@@ -14,73 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      ai_coaching_cache: {
-        Row: {
-          bundle_hash: string
-          content: Json
-          generated_at: string
-          model: string
-          user_id: string
-        }
-        Insert: {
-          bundle_hash: string
-          content: Json
-          generated_at?: string
-          model: string
-          user_id: string
-        }
-        Update: {
-          bundle_hash?: string
-          content?: Json
-          generated_at?: string
-          model?: string
-          user_id?: string
-        }
+      court_aliases: {
+        Row: { alias: string; court_id: string; created_at: string; key: string }
+        Insert: { alias: string; court_id: string; created_at?: string; key: string }
+        Update: { alias?: string; court_id?: string; created_at?: string; key?: string }
         Relationships: [
           {
-            foreignKeyName: "ai_coaching_cache_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "users"
+            foreignKeyName: "court_aliases_court_id_fkey"
+            columns: ["court_id"]
+            isOneToOne: false
+            referencedRelation: "courts"
             referencedColumns: ["id"]
           },
         ]
       }
-      club_invites: {
-        Row: {
-          club_id: string
-          created_at: string
-          created_by: string
-          expires_at: string | null
-          is_active: boolean
-          token: string
-        }
-        Insert: {
-          club_id: string
-          created_at?: string
-          created_by: string
-          expires_at?: string | null
-          is_active?: boolean
-          token?: string
-        }
-        Update: {
-          club_id?: string
-          created_at?: string
-          created_by?: string
-          expires_at?: string | null
-          is_active?: boolean
-          token?: string
-        }
+      courts: {
+        Row: { created_at: string; created_by: string | null; id: string; name: string }
+        Insert: { created_at?: string; created_by?: string | null; id?: string; name: string }
+        Update: { created_at?: string; created_by?: string | null; id?: string; name?: string }
         Relationships: [
           {
-            foreignKeyName: "club_invites_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_invites_created_by_fkey"
+            foreignKeyName: "courts_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "users"
@@ -88,479 +42,67 @@ export type Database = {
           },
         ]
       }
-      club_members: {
+      game_edits: {
         Row: {
-          club_id: string
-          joined_at: string
-          role: string
-          status: string
-          user_id: string
-        }
-        Insert: {
-          club_id: string
-          joined_at?: string
-          role?: string
-          status?: string
-          user_id: string
-        }
-        Update: {
-          club_id?: string
-          joined_at?: string
-          role?: string
-          status?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "club_members_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_members_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      club_player_ratings: {
-        Row: {
-          club_id: string
-          matches_played: number
-          rating: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          club_id: string
-          matches_played?: number
-          rating?: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          club_id?: string
-          matches_played?: number
-          rating?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "club_player_ratings_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_player_ratings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      club_rating_history: {
-        Row: {
-          club_id: string
+          action: string
+          actor_id: string | null
+          after: Json | null
+          before: Json
+          court_name: string | null
+          court_no: string | null
           created_at: string
-          delta: number
+          game_id: string
           id: string
           match_id: string | null
-          rating_after: number
-          rating_before: number
-          user_id: string
-        }
-        Insert: {
-          club_id: string
-          created_at?: string
-          delta: number
-          id?: string
-          match_id?: string | null
-          rating_after: number
-          rating_before: number
-          user_id: string
-        }
-        Update: {
-          club_id?: string
-          created_at?: string
-          delta?: number
-          id?: string
-          match_id?: string | null
-          rating_after?: number
-          rating_before?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "club_rating_history_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_rating_history_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_matches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "club_rating_history_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "user_match_participations"
-            referencedColumns: ["match_id"]
-          },
-          {
-            foreignKeyName: "club_rating_history_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      clubs: {
-        Row: {
-          court_schedule: string | null
-          created_at: string
-          delete_password_hash: string | null
-          description: string | null
-          id: string
-          is_public: boolean
-          logo_url: string | null
-          member_count: number
-          name: string
-          owner_id: string
-          region: string | null
-        }
-        Insert: {
-          court_schedule?: string | null
-          created_at?: string
-          delete_password_hash?: string | null
-          description?: string | null
-          id?: string
-          is_public?: boolean
-          logo_url?: string | null
-          member_count?: number
-          name: string
-          owner_id: string
-          region?: string | null
-        }
-        Update: {
-          court_schedule?: string | null
-          created_at?: string
-          delete_password_hash?: string | null
-          description?: string | null
-          id?: string
-          is_public?: boolean
-          logo_url?: string | null
-          member_count?: number
-          name?: string
-          owner_id?: string
-          region?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "clubs_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_game_courts: {
-        Row: {
-          id: string
-          label: string
-          match_game_id: string
-          order: number
-          surface: string | null
-        }
-        Insert: {
-          id?: string
-          label: string
-          match_game_id: string
-          order: number
-          surface?: string | null
-        }
-        Update: {
-          id?: string
-          label?: string
-          match_game_id?: string
-          order?: number
-          surface?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_courts_match_game_id_fkey"
-            columns: ["match_game_id"]
-            isOneToOne: false
-            referencedRelation: "match_games"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_game_matches: {
-        Row: {
-          court_id: string
-          id: string
-          match_game_id: string
           match_type: string
-          order: number
-          result_sets: Json | null
-          round_id: string
-          status: string
-          time_slot_id: string
-          winner_id: string | null
+          member_ids: string[]
+          played_at: string
+          played_time: string | null
         }
-        Insert: {
-          court_id: string
-          id?: string
-          match_game_id: string
-          match_type: string
-          order?: number
-          result_sets?: Json | null
-          round_id: string
-          status?: string
-          time_slot_id: string
-          winner_id?: string | null
-        }
-        Update: {
-          court_id?: string
-          id?: string
-          match_game_id?: string
-          match_type?: string
-          order?: number
-          result_sets?: Json | null
-          round_id?: string
-          status?: string
-          time_slot_id?: string
-          winner_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_matches_court_id_fkey"
-            columns: ["court_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_courts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_game_matches_match_game_id_fkey"
-            columns: ["match_game_id"]
-            isOneToOne: false
-            referencedRelation: "match_games"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_game_matches_round_id_fkey"
-            columns: ["round_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_rounds"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_game_matches_time_slot_id_fkey"
-            columns: ["time_slot_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_time_slots"
-            referencedColumns: ["id"]
-          },
-        ]
+        Insert: { [_ in never]: never }
+        Update: { [_ in never]: never }
+        Relationships: []
       }
-      match_game_participants: {
-        Row: {
-          id: string
-          is_ad: boolean
-          match_id: string
-          side: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          is_ad?: boolean
-          match_id: string
-          side: string
-          user_id: string
-        }
-        Update: {
-          id?: string
-          is_ad?: boolean
-          match_id?: string
-          side?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_participants_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_matches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_game_participants_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "user_match_participations"
-            referencedColumns: ["match_id"]
-          },
-          {
-            foreignKeyName: "match_game_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_game_rounds: {
-        Row: {
-          id: string
-          label: string
-          match_game_id: string
-          order: number
-        }
-        Insert: {
-          id?: string
-          label: string
-          match_game_id: string
-          order: number
-        }
-        Update: {
-          id?: string
-          label?: string
-          match_game_id?: string
-          order?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_rounds_match_game_id_fkey"
-            columns: ["match_game_id"]
-            isOneToOne: false
-            referencedRelation: "match_games"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_game_time_slots: {
-        Row: {
-          end_at: string
-          id: string
-          round_id: string
-          start_at: string
-        }
-        Insert: {
-          end_at: string
-          id?: string
-          round_id: string
-          start_at: string
-        }
-        Update: {
-          end_at?: string
-          id?: string
-          round_id?: string
-          start_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_time_slots_round_id_fkey"
-            columns: ["round_id"]
-            isOneToOne: false
-            referencedRelation: "match_game_rounds"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_games: {
-        Row: {
-          club_id: string
-          created_at: string
-          date: string
-          id: string
-          is_fixed: boolean
+      game_players: {        Row: {
+          game_id: string
+          gender: string | null
+          hand: string | null
           name: string
-        }
-        Insert: {
-          club_id: string
-          created_at?: string
-          date: string
-          id?: string
-          is_fixed?: boolean
-          name: string
-        }
-        Update: {
-          club_id?: string
-          created_at?: string
-          date?: string
-          id?: string
-          is_fixed?: boolean
-          name?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_games_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_request_participants: {
-        Row: {
-          dominant_hand: string | null
-          id: string
-          name: string
-          ntrp_snapshot: number | null
-          participation_status: string
-          request_id: string
-          responded_at: string | null
-          role: string
+          ntrp: number | null
+          slot: number
+          team: number
           user_id: string | null
         }
         Insert: {
-          dominant_hand?: string | null
-          id?: string
+          game_id: string
+          gender?: string | null
+          hand?: string | null
           name: string
-          ntrp_snapshot?: number | null
-          participation_status?: string
-          request_id: string
-          responded_at?: string | null
-          role: string
+          ntrp?: number | null
+          slot: number
+          team: number
           user_id?: string | null
         }
         Update: {
-          dominant_hand?: string | null
-          id?: string
+          game_id?: string
+          gender?: string | null
+          hand?: string | null
           name?: string
-          ntrp_snapshot?: number | null
-          participation_status?: string
-          request_id?: string
-          responded_at?: string | null
-          role?: string
+          ntrp?: number | null
+          slot?: number
+          team?: number
           user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "match_request_participants_request_id_fkey"
-            columns: ["request_id"]
+            foreignKeyName: "game_players_game_id_fkey"
+            columns: ["game_id"]
             isOneToOne: false
-            referencedRelation: "match_requests"
+            referencedRelation: "games"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "match_request_participants_user_id_fkey"
+            foreignKeyName: "game_players_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -568,333 +110,290 @@ export type Database = {
           },
         ]
       }
-      match_requests: {
+      games: {
         Row: {
           court_name: string | null
+          court_no: string | null
           created_at: string
-          group_seq: number | null
-          id: string
-          match_type: string
-          notes: string | null
-          opponent_accepted_at: string | null
-          opponent_user_id: string
-          origin: string
-          played_at: string
-          played_time: string
-          requester_id: string
-          responded_at: string | null
-          room_id: string | null
-          rotation_session_id: string | null
-          set_scores: Json
-          status: string
-          surface: string
-        }
-        Insert: {
-          court_name?: string | null
-          created_at?: string
-          group_seq?: number | null
-          id?: string
-          match_type?: string
-          notes?: string | null
-          opponent_accepted_at?: string | null
-          opponent_user_id: string
-          origin?: string
-          played_at: string
-          played_time: string
-          requester_id: string
-          responded_at?: string | null
-          room_id?: string | null
-          rotation_session_id?: string | null
-          set_scores?: Json
-          status?: string
-          surface: string
-        }
-        Update: {
-          court_name?: string | null
-          created_at?: string
-          group_seq?: number | null
-          id?: string
-          match_type?: string
-          notes?: string | null
-          opponent_accepted_at?: string | null
-          opponent_user_id?: string
-          origin?: string
-          played_at?: string
-          played_time?: string
-          requester_id?: string
-          responded_at?: string | null
-          room_id?: string | null
-          rotation_session_id?: string | null
-          set_scores?: Json
-          status?: string
-          surface?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_requests_opponent_user_id_fkey"
-            columns: ["opponent_user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_requests_requester_id_fkey"
-            columns: ["requester_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_requests_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_result_negotiations: {
-        Row: {
-          confirmed_by: string[]
-          dispute_count: number
-          dispute_reason: string | null
-          disputed_at: string | null
-          disputed_by: string | null
-          proposed_at: string | null
-          proposed_by: string | null
-          proposed_set_scores: Json
-          request_id: string
-          result_status: string
-          set_scores: Json
-        }
-        Insert: {
-          confirmed_by?: string[]
-          dispute_count?: number
-          dispute_reason?: string | null
-          disputed_at?: string | null
-          disputed_by?: string | null
-          proposed_at?: string | null
-          proposed_by?: string | null
-          proposed_set_scores?: Json
-          request_id: string
-          result_status?: string
-          set_scores?: Json
-        }
-        Update: {
-          confirmed_by?: string[]
-          dispute_count?: number
-          dispute_reason?: string | null
-          disputed_at?: string | null
-          disputed_by?: string | null
-          proposed_at?: string | null
-          proposed_by?: string | null
-          proposed_set_scores?: Json
-          request_id?: string
-          result_status?: string
-          set_scores?: Json
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_result_negotiations_disputed_by_fkey"
-            columns: ["disputed_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_result_negotiations_proposed_by_fkey"
-            columns: ["proposed_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_result_negotiations_request_id_fkey"
-            columns: ["request_id"]
-            isOneToOne: true
-            referencedRelation: "match_requests"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_room_guests: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          dominant_hand: string | null
-          gender: string | null
-          id: string
-          name: string
-          ntrp: number | null
-          room_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          dominant_hand?: string | null
-          gender?: string | null
-          id?: string
-          name: string
-          ntrp?: number | null
-          room_id: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          dominant_hand?: string | null
-          gender?: string | null
-          id?: string
-          name?: string
-          ntrp?: number | null
-          room_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_room_guests_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_room_guests_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_room_members: {
-        Row: {
-          created_at: string
-          id: string
-          responded_at: string | null
-          role: string
-          room_id: string
-          source_role: string | null
-          status: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          responded_at?: string | null
-          role: string
-          room_id: string
-          source_role?: string | null
-          status: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          responded_at?: string | null
-          role?: string
-          room_id?: string
-          source_role?: string | null
-          status?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_room_members_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_room_members_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_room_secrets: {
-        Row: {
-          password_hash: string
-          room_id: string
-        }
-        Insert: {
-          password_hash: string
-          room_id: string
-        }
-        Update: {
-          password_hash?: string
-          room_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_room_secrets_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: true
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      match_rooms: {
-        Row: {
-          closed_at: string | null
-          court_count: number
-          court_name: string | null
-          created_at: string
+          created_by: string
           duration_minutes: number | null
-          host_user_id: string
           id: string
-          is_listed: boolean
-          is_settled: boolean
+          locked_at: string | null
+          match_id: string | null
           match_type: string
           notes: string | null
           played_at: string
           played_time: string | null
-          slot_minutes: number | null
-          source_kind: string
+          sets: Json
           surface: string | null
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
-          closed_at?: string | null
-          court_count?: number
           court_name?: string | null
+          court_no?: string | null
           created_at?: string
+          created_by: string
           duration_minutes?: number | null
-          host_user_id: string
           id?: string
-          is_listed?: boolean
-          is_settled?: boolean
+          locked_at?: string | null
+          match_id?: string | null
           match_type: string
           notes?: string | null
           played_at: string
           played_time?: string | null
-          slot_minutes?: number | null
-          source_kind: string
+          sets: Json
           surface?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
-          closed_at?: string | null
-          court_count?: number
           court_name?: string | null
+          court_no?: string | null
           created_at?: string
+          created_by?: string
           duration_minutes?: number | null
-          host_user_id?: string
           id?: string
-          is_listed?: boolean
-          is_settled?: boolean
+          locked_at?: string | null
+          match_id?: string | null
           match_type?: string
           notes?: string | null
           played_at?: string
           played_time?: string | null
-          slot_minutes?: number | null
-          source_kind?: string
+          sets?: Json
           surface?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "match_rooms_host_user_id_fkey"
-            columns: ["host_user_id"]
+            foreignKeyName: "games_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_applications: {
+        Row: {
+          created_at: string
+          match_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          match_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          match_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_applications_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_applications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_guests: {
+        Row: {
+          added_by: string | null
+          created_at: string
+          gender: string | null
+          hand: string | null
+          id: string
+          match_id: string
+          name: string
+          ntrp: number
+        }
+        Insert: {
+          added_by?: string | null
+          created_at?: string
+          gender?: string | null
+          hand?: string | null
+          id?: string
+          match_id: string
+          name: string
+          ntrp: number
+        }
+        Update: {
+          added_by?: string | null
+          created_at?: string
+          gender?: string | null
+          hand?: string | null
+          id?: string
+          match_id?: string
+          name?: string
+          ntrp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_guests_added_by_fkey"
+            columns: ["added_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_guests_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_members: {
+        Row: {
+          joined_at: string
+          match_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          joined_at?: string
+          match_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          joined_at?: string
+          match_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_members_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      match_secrets: {
+        Row: {
+          invite_token: string
+          match_id: string
+          password_hash: string | null
+        }
+        Insert: {
+          invite_token?: string
+          match_id: string
+          password_hash?: string | null
+        }
+        Update: {
+          invite_token?: string
+          match_id?: string
+          password_hash?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_secrets_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: true
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          closed_at: string | null
+          confirmed_at: string | null
+          court_name: string | null
+          court_fee: number | null
+          capacity: number
+          court_no: string | null
+          created_at: string
+          duration_minutes: number
+          host_id: string
+          id: string
+          is_listed: boolean
+          match_type: string
+          notes: string | null
+          played_at: string
+          played_time: string | null
+          surface: string | null
+          title: string | null
+        }
+        Insert: {
+          closed_at?: string | null
+          confirmed_at?: string | null
+          court_name?: string | null
+          court_fee?: number | null
+          capacity?: number
+          court_no?: string | null
+          created_at?: string
+          duration_minutes?: number
+          host_id: string
+          id?: string
+          is_listed?: boolean
+          match_type: string
+          notes?: string | null
+          played_at: string
+          played_time?: string | null
+          surface?: string | null
+          title?: string | null
+        }
+        Update: {
+          closed_at?: string | null
+          confirmed_at?: string | null
+          court_name?: string | null
+          court_fee?: number | null
+          capacity?: number
+          court_no?: string | null
+          created_at?: string
+          duration_minutes?: number
+          host_id?: string
+          id?: string
+          is_listed?: boolean
+          match_type?: string
+          notes?: string | null
+          played_at?: string
+          played_time?: string | null
+          surface?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_host_id_fkey"
+            columns: ["host_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -906,11 +405,11 @@ export type Database = {
           actor_user_id: string | null
           created_at: string
           dedupe_key: string | null
+          game_id: string | null
           id: string
+          match_id: string | null
           payload: Json
           read_at: string | null
-          request_id: string | null
-          room_id: string | null
           type: string
           user_id: string
         }
@@ -918,11 +417,11 @@ export type Database = {
           actor_user_id?: string | null
           created_at?: string
           dedupe_key?: string | null
+          game_id?: string | null
           id?: string
+          match_id?: string | null
           payload?: Json
           read_at?: string | null
-          request_id?: string | null
-          room_id?: string | null
           type: string
           user_id: string
         }
@@ -930,11 +429,11 @@ export type Database = {
           actor_user_id?: string | null
           created_at?: string
           dedupe_key?: string | null
+          game_id?: string | null
           id?: string
+          match_id?: string | null
           payload?: Json
           read_at?: string | null
-          request_id?: string | null
-          room_id?: string | null
           type?: string
           user_id?: string
         }
@@ -947,247 +446,14 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "notifications_request_id_fkey"
-            columns: ["request_id"]
+            foreignKeyName: "notifications_match_id_fkey"
+            columns: ["match_id"]
             isOneToOne: false
-            referencedRelation: "match_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
+            referencedRelation: "matches"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      personal_match_participants: {
-        Row: {
-          dominant_hand: string | null
-          id: string
-          match_id: string
-          name: string
-          ntrp_snapshot: number | null
-          role: string
-          user_id: string | null
-        }
-        Insert: {
-          dominant_hand?: string | null
-          id?: string
-          match_id: string
-          name: string
-          ntrp_snapshot?: number | null
-          role: string
-          user_id?: string | null
-        }
-        Update: {
-          dominant_hand?: string | null
-          id?: string
-          match_id?: string
-          name?: string
-          ntrp_snapshot?: number | null
-          role?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "personal_match_participants_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "personal_matches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "personal_match_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      personal_matches: {
-        Row: {
-          court_name: string | null
-          created_at: string
-          group_seq: number | null
-          has_result: boolean | null
-          id: string
-          is_perspective: boolean
-          match_type: string
-          notes: string | null
-          origin: string
-          played_at: string
-          played_time: string | null
-          room_id: string | null
-          rotation_session_id: string | null
-          set_scores: Json
-          source_request_id: string | null
-          source_type: string
-          surface: string | null
-          user_id: string
-        }
-        Insert: {
-          court_name?: string | null
-          created_at?: string
-          group_seq?: number | null
-          has_result?: boolean | null
-          id?: string
-          is_perspective?: boolean
-          match_type: string
-          notes?: string | null
-          origin?: string
-          played_at: string
-          played_time?: string | null
-          room_id?: string | null
-          rotation_session_id?: string | null
-          set_scores?: Json
-          source_request_id?: string | null
-          source_type?: string
-          surface?: string | null
-          user_id: string
-        }
-        Update: {
-          court_name?: string | null
-          created_at?: string
-          group_seq?: number | null
-          has_result?: boolean | null
-          id?: string
-          is_perspective?: boolean
-          match_type?: string
-          notes?: string | null
-          origin?: string
-          played_at?: string
-          played_time?: string | null
-          room_id?: string | null
-          rotation_session_id?: string | null
-          set_scores?: Json
-          source_request_id?: string | null
-          source_type?: string
-          surface?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "personal_matches_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "personal_matches_source_request_id_fkey"
-            columns: ["source_request_id"]
-            isOneToOne: false
-            referencedRelation: "match_requests"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "personal_matches_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      rotation_session_participants: {
-        Row: {
-          created_at: string
-          participation_status: string
-          responded_at: string | null
-          session_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          participation_status?: string
-          responded_at?: string | null
-          session_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          participation_status?: string
-          responded_at?: string | null
-          session_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "rotation_session_participants_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "rotation_sessions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rotation_session_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      rotation_sessions: {
-        Row: {
-          court_name: string | null
-          created_at: string
-          id: string
-          match_type: string
-          notes: string | null
-          played_at: string
-          played_time: string
-          players: Json
-          room_id: string | null
-          surface: string
-          user_id: string
-        }
-        Insert: {
-          court_name?: string | null
-          created_at?: string
-          id?: string
-          match_type: string
-          notes?: string | null
-          played_at: string
-          played_time: string
-          players: Json
-          room_id?: string | null
-          surface: string
-          user_id: string
-        }
-        Update: {
-          court_name?: string | null
-          created_at?: string
-          id?: string
-          match_type?: string
-          notes?: string | null
-          played_at?: string
-          played_time?: string
-          players?: Json
-          room_id?: string | null
-          surface?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "rotation_sessions_room_id_fkey"
-            columns: ["room_id"]
-            isOneToOne: false
-            referencedRelation: "match_rooms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rotation_sessions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -1284,433 +550,143 @@ export type Database = {
       }
     }
     Views: {
-      user_match_participations: {
-        Row: {
-          club_id: string | null
-          match_id: string | null
-          match_type: string | null
-          result: string | null
-          user_id: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "match_game_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "match_games_club_id_fkey"
-            columns: ["club_id"]
-            isOneToOne: false
-            referencedRelation: "clubs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
-      accept_match_request: {
-        Args: { p_request_id: string }
-        Returns: undefined
-      }
-      add_guest_player:
-        | { Args: { p_club_id: string; p_nickname: string }; Returns: string }
-        | {
-            Args: { p_club_id: string; p_gender?: string; p_nickname: string }
-            Returns: string
-          }
-      add_room_guest: {
-        Args: {
-          p_gender?: string
-          p_hand?: string
-          p_name: string
-          p_ntrp?: number
-          p_room_id: string
-        }
-        Returns: string
-      }
-      add_rotation_session_player: {
-        Args: { p_session_id: string; p_user_id: string }
-        Returns: undefined
-      }
-      apply_club_rating_snapshot: {
-        Args: { p_club_id: string; p_snapshot: Json }
-        Returns: undefined
-      }
-      backfill_rotation_perspectives: {
-        Args: { p_session_id: string; p_user_id: string }
-        Returns: number
-      }
-      close_match_room: { Args: { p_room_id: string }; Returns: undefined }
-      close_rotation_room: { Args: { p_room_id: string }; Returns: undefined }
-      confirm_match_result: { Args: { p_request_id: string }; Returns: boolean }
-      copy_personal_match_perspective: {
-        Args: {
-          p_opponent: Json
-          p_opponent2: Json
-          p_partner: Json
-          p_sets: Json
-          p_source_match_id: string
-          p_user_id: string
-        }
-        Returns: string
-      }
-      create_match_game: {
-        Args: {
-          p_club_id: string
-          p_courts: Json
-          p_date: string
-          p_matches: Json
-          p_name: string
-          p_rounds: Json
-        }
-        Returns: string
-      }
-      create_match_request: {
-        Args: {
-          p_court_name?: string
-          p_match_type: string
-          p_notes?: string
-          p_opponent_user_id: string
-          p_opponent2?: Json
-          p_partner?: Json
-          p_played_at: string
-          p_played_time: string
-          p_set_scores?: Json
-          p_surface: string
-        }
-        Returns: string
-      }
-      create_match_room: {
-        Args: {
-          p_court_count?: number
-          p_duration_minutes?: number
-          p_listed?: boolean
-          p_password: string
-          p_source_id: string
-          p_source_kind: string
-        }
-        Returns: string
-      }
-      create_room_game: {
-        Args: {
-          p_opponent_user_id: string
-          p_opponent2?: Json
-          p_partner?: Json
-          p_replace_match_id?: string
-          p_room_id: string
-        }
-        Returns: string
-      }
-      create_room_lineup: {
-        Args: { p_games: Json; p_room_id: string; p_slot_minutes?: number }
-        Returns: number
-      }
-      derive_public_ntrp: {
-        Args: { p_user: Database["public"]["Tables"]["users"]["Row"] }
-        Returns: number
-      }
-      dispute_match_result: {
-        Args: { p_reason?: string; p_request_id: string }
-        Returns: undefined
-      }
-      enter_match_room: {
-        Args: { p_password: string; p_room_id: string }
-        Returns: undefined
-      }
-      finalize_rotation_session: {
-        Args: { p_expected_seq?: number; p_games: Json; p_session_id: string }
-        Returns: undefined
-      }
       find_login_id: {
         Args: { p_email: string; p_name: string }
         Returns: Json
       }
-      get_club_activity_ranking: {
-        Args: { p_club_id: string; p_since?: string }
-        Returns: {
-          match_count: number
-          user_id: string
-          win_count: number
-        }[]
-      }
-      get_club_member_counts: {
-        Args: { p_club_ids: string[] }
-        Returns: {
-          club_id: string
-          guest: number
-          regular: number
-        }[]
-      }
-      get_club_win_rate_ranking: {
-        Args: { p_club_id: string; p_min_matches?: number }
-        Returns: {
-          loss_count: number
-          match_count: number
-          match_type_group: string
-          user_id: string
-          win_count: number
-          win_rate: number
-        }[]
-      }
-      get_invite_preview: {
-        Args: { p_token: string }
-        Returns: {
-          club_id: string
-          is_public: boolean
-          logo_url: string
-          name: string
-          region: string
-        }[]
-      }
-      get_match_room_detail: { Args: { p_room_id: string }; Returns: Json }
-      get_public_personal_matches: {
-        Args: { p_user_id: string }
-        Returns: Json
-      }
-      get_room_lineup_requests: {
-        Args: { p_room_id: string }
-        Returns: {
-          game_id: string
-          request_id: string
-        }[]
-      }
-      get_rotation_session_games: {
-        Args: { p_session_id: string }
-        Returns: Json
-      }
-      get_user_doubles_court_stats: {
-        Args: { p_club_id?: string; p_user_id: string }
-        Returns: Json
-      }
-      get_user_head_to_head: {
-        Args: { p_club_id?: string; p_user_id: string }
-        Returns: {
-          draws: number
-          losses: number
-          matches: number
-          opponent_id: string
-          wins: number
-        }[]
-      }
-      get_user_match_stats_v2: {
-        Args: { p_club_id?: string; p_user_id: string }
-        Returns: Json
-      }
-      get_user_partner_stats: {
-        Args: { p_club_id?: string; p_user_id: string }
-        Returns: {
-          draws: number
-          losses: number
-          matches: number
-          partner_id: string
-          wins: number
-        }[]
-      }
-      insert_room_lineup_games: {
-        Args: { p_games: Json; p_room_id: string }
-        Returns: number
-      }
-      invert_set_scores: { Args: { p_sets: Json }; Returns: Json }
-      invite_room_members: {
-        Args: { p_room_id: string; p_user_ids: string[] }
-        Returns: number
-      }
       is_active_member: { Args: { p_user_id: string }; Returns: boolean }
-      is_club_approved_member: {
-        Args: { p_club_id: string; p_user_id: string }
-        Returns: boolean
-      }
-      is_club_owner: {
-        Args: { p_club_id: string; p_user_id: string }
-        Returns: boolean
-      }
-      is_club_owner_or_officer: {
-        Args: { p_club_id: string; p_user_id: string }
-        Returns: boolean
-      }
       is_email_taken: { Args: { p_email: string }; Returns: boolean }
       is_login_id_taken: { Args: { p_login_id: string }; Returns: boolean }
       is_nickname_taken: {
         Args: { p_exclude_user_id?: string; p_nickname: string }
         Returns: boolean
       }
-      is_request_party: { Args: { p_request_id: string }; Returns: boolean }
-      is_room_participant: { Args: { p_room_id: string }; Returns: boolean }
-      is_rotation_session_party: {
-        Args: { p_session_id: string }
-        Returns: boolean
-      }
-      is_rotation_session_seat: {
-        Args: { p_session_id: string }
-        Returns: boolean
-      }
-      join_club_via_invite: { Args: { p_token: string }; Returns: string }
-      join_match_room_as_player: {
-        Args: { p_room_id: string; p_user_id: string }
-        Returns: undefined
-      }
-      kick_room_member: {
-        Args: { p_room_id: string; p_target_user_id: string }
-        Returns: undefined
-      }
-      leave_match_room: { Args: { p_room_id: string }; Returns: undefined }
-      mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
-      mark_request_opponent_response: {
-        Args: { p_accept: boolean; p_request_id: string }
-        Returns: boolean
-      }
-      mark_request_participant_response: {
-        Args: { p_accept: boolean; p_request_id: string }
-        Returns: boolean
-      }
-      materialize_accepted_request: {
-        Args: {
-          p_group_seq?: number
-          p_request_id: string
-          p_rotation_session_id?: string
-        }
-        Returns: undefined
-      }
-      maybe_materialize_request: {
-        Args: { p_request_id: string }
-        Returns: boolean
-      }
-      normalize_set_scores: {
-        Args: { p_keep_ad: boolean; p_sets: Json }
-        Returns: Json
-      }
-      normalize_to_requester_perspective: {
-        Args: { p_seat: string; p_sets: Json }
-        Returns: Json
-      }
-      notify_users: {
-        Args: {
-          p_actor: string
-          p_dedupe_key?: string
-          p_payload?: Json
-          p_request_id: string
-          p_room_id: string
-          p_type: string
-          p_user_ids: string[]
-        }
-        Returns: number
-      }
-      propose_match_result: {
-        Args: { p_request_id: string; p_set_scores: Json }
-        Returns: undefined
-      }
-      recompute_match_room_settled: {
-        Args: { p_room_id: string }
-        Returns: undefined
-      }
-      reject_match_request: {
-        Args: { p_request_id: string }
-        Returns: undefined
-      }
-      remove_room_guest: { Args: { p_guest_id: string }; Returns: undefined }
-      remove_rotation_session_player: {
-        Args: { p_session_id: string; p_user_id: string }
-        Returns: undefined
-      }
-      reopen_match_result: {
-        Args: { p_reason?: string; p_request_id: string }
-        Returns: undefined
-      }
-      reopen_match_room: { Args: { p_room_id: string }; Returns: undefined }
-      replace_room_lineup: {
-        Args: { p_game_ids: string[]; p_games: Json; p_room_id: string }
-        Returns: number
-      }
-      request_result_seats: {
-        Args: { p_request_id: string }
-        Returns: string[]
-      }
-      request_seat_of: {
-        Args: { p_request_id: string; p_user_id: string }
+      add_match_guest: {
+        Args: { p_match_id: string; p_name: string; p_ntrp: number; p_gender?: string | null; p_hand?: string | null }
         Returns: string
       }
-      resolve_login_email: { Args: { p_login_id: string }; Returns: string }
-      resolve_room_player: {
-        Args: { p: Json; p_room_id: string }
+      remove_match_guest: { Args: { p_guest_id: string }; Returns: undefined }
+      join_match_as_guest: {
+        Args: { p_token: string; p_name: string; p_ntrp: number; p_gender?: string | null; p_hand?: string | null }
         Returns: Json
       }
-      resolve_rotation_player: { Args: { p_player: Json }; Returns: Json }
-      respond_request_participation: {
-        Args: { p_accept: boolean; p_request_id: string }
-        Returns: boolean
-      }
-      respond_room_invite: {
-        Args: { p_accept: boolean; p_room_id: string }
-        Returns: undefined
-      }
-      respond_rotation_participation: {
-        Args: { p_accept: boolean; p_rotation_session_id: string }
-        Returns: number
-      }
-      respond_rotation_plan: {
-        Args: { p_accept: boolean; p_session_id: string }
-        Returns: undefined
-      }
-      room_end_at: {
-        Args: { r: Database["public"]["Tables"]["match_rooms"]["Row"] }
+      get_invited_match: { Args: { p_token: string; p_guest_id?: string }; Returns: Json }
+      leave_match_as_guest: { Args: { p_token: string; p_guest_id: string }; Returns: undefined }
+      add_match_members: { Args: { p_match_id: string; p_user_ids: string[] }; Returns: number }
+      admin_court_overview: { Args: never; Returns: Json }
+      merge_court_names: { Args: { p_official: string; p_names: string[] }; Returns: Json }
+      rename_court: { Args: { p_court_id: string; p_name: string }; Returns: Json }
+      remove_court_alias: { Args: { p_key: string }; Returns: undefined }
+      apply_match: { Args: { p_match_id: string }; Returns: undefined }
+      can_see_game: { Args: { p_game_id: string }; Returns: boolean }
+      can_see_match: { Args: { p_match_id: string }; Returns: boolean }
+      cancel_application: { Args: { p_match_id: string }; Returns: undefined }
+      create_match: {
+        Args: {
+          p_court_name: string
+          p_court_no?: string | null
+          p_court_fee?: number | null
+          p_capacity?: number | null
+          p_duration_minutes: number | null
+          p_invitee_ids?: string[]
+          p_listed: boolean
+          p_match_type: string
+          p_notes: string | null
+          p_password?: string | null
+          p_played_at: string
+          p_played_time: string | null
+          p_surface: string | null
+          p_title: string
+        }
         Returns: string
       }
-      room_game_tallies: {
-        Args: { p_room_ids: string[] }
+      decide_application: { Args: { p_approve: boolean; p_match_id: string; p_user_id: string }; Returns: undefined }
+      delete_game: { Args: { p_game_id: string }; Returns: string[] }
+      delete_match: { Args: { p_match_id: string }; Returns: undefined }
+      get_match_invite_token: { Args: { p_match_id: string }; Returns: string }
+      get_member_rankings: {
+        Args: { p_kind?: string; p_limit?: number; p_min_games?: number }
         Returns: {
-          room_id: string
-          settled: number
-          total: number
+          games: number
+          name: string
+          nickname: string
+          profile_image: string | null
+          rating: number | null
+          user_id: string
+          wins: number
         }[]
       }
-      room_joined_user_ids: { Args: { p_room_id: string }; Returns: string[] }
-      room_member_has_games: {
-        Args: { p_room_id: string; p_user_id: string }
-        Returns: boolean
+      get_user_games: { Args: { p_user_id: string }; Returns: Json }
+      is_match_member: { Args: { p_match_id: string }; Returns: boolean }
+      join_match: { Args: { p_match_id?: string; p_password?: string; p_token?: string }; Returns: Json }
+      leave_match: { Args: { p_match_id: string }; Returns: undefined }
+      remove_match_member: { Args: { p_match_id: string; p_user_id: string }; Returns: undefined }
+      record_game: {
+        Args: {
+          p_court_name: string | null
+          p_court_no: string | null
+          p_duration_minutes: number | null
+          p_games: Json
+          p_match_type: string
+          p_notes: string | null
+          p_played_at: string | null
+          p_played_time: string | null
+          p_surface: string | null
+        }
+        Returns: Json
       }
-      room_reachable_user_ids: {
-        Args: { p_room_id: string }
+      save_match_games: { Args: { p_match_id: string; p_upserts: Json; p_deletes?: string[] }; Returns: Json }
+      search_court_names: {
+        Args: { p_query?: string; p_limit?: number }
+        Returns: { name: string; uses: number; official: boolean; via: string | null }[]
+      }
+      set_match_password: { Args: { p_match_id: string; p_password: string }; Returns: undefined }
+      set_game_locked: { Args: { p_game_id: string; p_locked: boolean }; Returns: undefined }
+      set_match_closed: { Args: { p_closed: boolean; p_match_id: string }; Returns: undefined }
+      set_match_confirmed: { Args: { p_confirmed: boolean; p_match_id: string }; Returns: undefined }
+      update_game: {
+        Args: {
+          p_court_name?: string | null
+          p_court_no?: string | null
+          p_duration_minutes?: number | null
+          p_game_id: string
+          p_notes: string | null
+          p_played_at?: string | null
+          p_played_time?: string | null
+          p_sets: Json
+          p_surface?: string | null
+        }
         Returns: string[]
       }
-      room_snapshot: { Args: { p_room_id: string }; Returns: Json }
-      room_start_at: {
-        Args: { r: Database["public"]["Tables"]["match_rooms"]["Row"] }
-        Returns: string
-      }
-      rotation_seats_accepted: {
-        Args: { p_session_id: string; p_uids: string[] }
-        Returns: boolean
-      }
-      settle_match_result: {
-        Args: { p_request_id: string }
+      update_match: {
+        Args: {
+          p_court_name: string
+          p_court_no?: string | null
+          p_court_fee?: number | null
+          p_capacity?: number | null
+          p_duration_minutes: number | null
+          p_listed: boolean
+          p_match_id: string
+          p_match_type: string
+          p_notes: string | null
+          p_password?: string | null
+          p_played_at: string
+          p_played_time: string | null
+          p_surface: string | null
+          p_title: string
+        }
         Returns: undefined
       }
-      swap_opponent_perspective: { Args: { p_sets: Json }; Returns: Json }
-      swap_partner_perspective: { Args: { p_sets: Json }; Returns: Json }
+      mark_notifications_read: { Args: { p_ids?: string[] }; Returns: number }
+      resolve_login_email: { Args: { p_login_id: string }; Returns: string }
       throttle_hit: {
         Args: { p_bucket: string; p_limit: number; p_window: string }
         Returns: undefined
       }
       throttle_subject: { Args: never; Returns: string }
-      update_match_game: {
-        Args: {
-          p_courts: Json
-          p_date: string
-          p_match_game_id: string
-          p_matches: Json
-          p_name: string
-          p_rounds: Json
-        }
-        Returns: string
-      }
-      update_match_room_password: {
-        Args: { p_password: string; p_room_id: string }
-        Returns: undefined
-      }
-      validate_set_scores: { Args: { p_sets: Json }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
