@@ -1,6 +1,6 @@
 # 계정 생명주기 E2E 절차서 — A0~A9
 
-> 규약(계정·태그·정리 SQL·도구)은 `README.md`. 결과는 `runs.md`, 결함은 `findings.md`, UX 관찰은 `improvements.md`. 표의 열은 매칭 룸 절차서와 같다 — `#` · `계정` · `조작`(코드 라벨 그대로, `[ ]`는 버튼) · `기대` · `검증`(앱 술어 / RPC / SQL / vitest) · `수단`(B 브라우저 · S SQL · V vitest · M 사용자 수동 조작 + 실행자 검증 · 코드).
+> 규약(계정·태그·정리 SQL·도구)은 `README.md`. 결과와 결함은 `runs.md`. 표의 열은 `rebuild-scenarios.md`와 같다 — `#` · `계정` · `조작`(코드 라벨 그대로, `[ ]`는 버튼) · `기대` · `검증`(앱 술어 / RPC / SQL / vitest) · `수단`(B 브라우저 · S SQL · V vitest · M 사용자 수동 조작 + 실행자 검증 · 코드).
 >
 > 신규 가입 계정은 `e2e<n>@e2e.test`(README 「신규 가입·탈퇴 전용 계정」). 기존 A~G는 탈퇴시키지 않는다. **A9(탈퇴)는 마지막 Phase에서** 돌린다.
 
@@ -21,11 +21,11 @@
 | # | 계정 | 조작 | 기대 | 검증 | 수단 |
 |---|---|---|---|---|---|
 | 0.1 | — | 정리 SQL(태그·회원) | 잔재 0 | README | S |
-| 0.2 | 비로그인 | `/profile/settings` · `/me/personal-matches` · `/onboarding/profile` · `/clubs` · `/match-rooms/new?x=1` | 각각 `/login?next=<원경로+쿼리 인코딩>` | `lib/supabase/middleware.ts` 보호 목록 | B |
+| 0.2 | 비로그인 | `/profile/settings` · `/games` · `/onboarding/profile` · `/matches/new?x=1` | 각각 `/login?next=<원경로+쿼리 인코딩>`(옛 `/me/personal-matches`·`/match-rooms/*`는 `next.config` 리다이렉트가 먼저 새 경로로 보낸다) | `lib/supabase/middleware.ts` 보호 목록 | B |
 | 0.3 | 비로그인 | `/find-id` · `/forgot-password` · `/guide` · `/tiers` · `/` | 리다이렉트 없이 열린다 | 공개 경로 | B |
-| 0.4 | 비로그인 | `/login?next=//evil.example` → 로그인 | `//`는 거부 → `/profile/<uid>?scope=personal` | `isSafeNext` | B |
-| 0.5 | A | 로그인 상태로 `/login` · `/signup` · `/` | 전부 `/profile/<uid>?scope=personal` | `isAuthRoute` 정확 일치 | B |
-| 0.6 | A | 로그인 상태로 `/find-id` · `/forgot-password` | `/profile/<A>?scope=personal`로 리다이렉트(auth 라우트 — Week 63 U-4) | `middleware.ts` `isAuthRoute` | B |
+| 0.4 | 비로그인 | `/login?next=//evil.example` → 로그인 | `//`는 거부 → `/home` | `isSafeNext` | B |
+| 0.5 | A | 로그인 상태로 `/login` · `/signup` · `/` | 전부 `/home` | `isAuthRoute` 정확 일치 | B |
+| 0.6 | A | 로그인 상태로 `/find-id` · `/forgot-password` | `/home`으로 리다이렉트(auth 라우트 — Week 63 U-4) | `middleware.ts` `isAuthRoute` | B |
 | 0.7 | A | 로그아웃 | `/login`. 뒤로가기로 보호 페이지 → 다시 `/login?next=` | `logoutAction` | B |
 
 ## A1 이메일 가입 — 필드 전수 · 실시간 중복 · 제출 잠금
@@ -44,7 +44,7 @@
 | 1.10 | — | 동의 체크 안 하고 제출 | 브라우저 required 툴팁, 서버 미호출 | `agree_privacy` | B |
 | 1.11 | — | 동의 체크 → 모든 필드 유효 → 비밀번호 확인만 틀리게 → [회원가입] | 버튼 비활성 그대로(`pwMismatch`). 고치면 활성 | disabled 조건 7종 | B |
 | 1.12 | — | **실패 후 보존**: 닉네임을 `남자01`로 바꿔 서버가 거절하도록 클라 검사를 우회할 수 없으므로, 대신 SQL로 `e2e_signup1` 닉네임을 다른 행에 잠깐 심고(롤백 불가 — 테스트 계정 D의 닉네임을 일시 변경 후 복원) 제출 | 서버 `이미 사용 중인 닉네임입니다.` + **입력값 유지**(Week 52 uncontrolled reset 수정) | `signupAction` 순서 8 | B+S |
-| 1.13 | — | [회원가입] 성공 | `/profile/<uid>?scope=personal&notice=welcome` 착지 + 배너 `가입이 완료됐습니다.` 1회 + 체크리스트. 헤더에 닉네임·아바타(사진을 올렸다면 스토리지 URL, 512px webp) | `auth.ts` `WELCOME_NOTICE`(Week 63 F-pre-4·U-6) | B |
+| 1.13 | — | [회원가입] 성공 | `/home` 착지(환영 배너·체크리스트는 Week 72에 삭제 — 0경기 회원은 홈의 안내 1장). 헤더에 닉네임·아바타(사진을 올렸다면 스토리지 URL, 512px webp) | `auth.ts` `WELCOME_NOTICE`(Week 63 F-pre-4·U-6) | B |
 | 1.14 | — | SQL | `public.users`: `login_id='e2esignup1'`, `email`, `nickname`, `name='테스트가입자'`, `phone='010-1234-5601'`, `gender·dominant_hand·ntrp·tennis_start_date='2022-07-01'`, `profile_image`=기본 아바타 경로, `racket_brand='기타'/model`, `deleted_at null`. `auth.users` 1행, `raw_user_meta_data`에 같은 값 | `handle_new_user` | S |
 | 1.15 | — | anon 컨텍스트 SQL `is_login_id_taken('e2esignup1')`·`is_nickname_taken('E2E_SIGNUP1')`·`is_email_taken('E2E1@e2e.test')` | 전부 true(정규화·anon EXECUTE) | 0080·0081·0085 | S |
 | 1.16 | — | 같은 이메일로 다시 가입(다른 아이디·닉네임) | 실시간 `이미 가입된 이메일입니다.` + 제출 잠금 | `emailTaken` | B |
@@ -54,12 +54,12 @@
 | # | 계정 | 조작 | 기대 | 검증 | 수단 |
 |---|---|---|---|---|---|
 | 2.1 | — | `/login` | 라벨 `아이디`(placeholder `아이디를 입력하세요`), `비밀번호` + 눈 아이콘(`비밀번호 표시`/`비밀번호 숨기기`), 「로그인 상태 유지」, 링크 `아이디 찾기`·`비밀번호 찾기`·[회원가입], `OR` + [Google로 계속하기] | `login-form.tsx` | B |
-| 2.2 | A | `namja01` / `NAMJA01 ` / `aaa@aaa.com` / `AAA@AAA.COM` + `123123` | 네 경우 모두 로그인 → `/profile/<A>?scope=personal` | `resolveLoginEmail`·`normalizeLoginId` | B |
+| 2.2 | A | `namja01` / `NAMJA01 ` / `aaa@aaa.com` / `AAA@AAA.COM` + `123123` | 네 경우 모두 로그인 → `/home`(테스트 계정은 비밀번호가 정책 미달이라 실제로는 2.7의 착지) | `resolveLoginEmail`·`normalizeLoginId` | B |
 | 2.3 | — | `nobody99`+`123123` / `namja01`+`wrong` / `aaa@aaa.com`+`wrong` / `ab`(형식 오류) | 전부 **같은 문구** `아이디 또는 비밀번호가 올바르지 않습니다.` | `INVALID_CREDENTIALS_MESSAGE` | B |
 | 2.4 | — | anon SQL `resolve_login_email('namja01')` / `('nobody99')` | 이메일 반환 / null — **아이디→이메일 열거**가 열려 있음을 기록(K 후보 아님, 0085 결정) | 0085 | S |
 | 2.5 | A | `/login?next=%2Fmatch-rooms%3Ftab%3Dpast` → 로그인 | `/match-rooms?tab=past` | hidden `next` | B |
 | 2.6 | — | `/login?error=oauth` / `?error=deleted` | 배너 `소셜 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.` / `탈퇴한 계정입니다.` | `mapAuthQueryError` | B |
-| 2.7 | A | 비밀번호 `123123`(정책 미달)으로 로그인 | 대시보드 최소 길이 8이 **켜져 있으면** `/profile/<A>?scope=personal&notice=weak_password` + 배너 `비밀번호 규칙이 강화되었습니다.` … / 꺼져 있으면 배너 없음 → **SKIP(사유: 대시보드 설정)**으로 기록하고 Week 60 잔여 유지 | `data.weakPassword` | B |
+| 2.7 | A | 비밀번호 `123123`(정책 미달)으로 로그인 | 대시보드 최소 길이 8이 **켜져 있으면** `/profile/<A>?notice=weak_password` + 배너 `비밀번호 규칙이 강화되었습니다.` … / 꺼져 있으면 배너 없음 → **SKIP(사유: 대시보드 설정)**으로 기록하고 Week 60 잔여 유지 | `data.weakPassword` | B |
 | 2.8 | A | 로그인 폼 | 「로그인 상태 유지」 체크박스 **없음**(Week 63 U-pre-2 — 동작이 없던 UI를 없앴다) | — | B |
 | 2.9 | A | 눈 아이콘 | 비밀번호 평문 토글, aria-label 전환 | — | B |
 
@@ -95,7 +95,7 @@
 | 5.4 | e2e1 | 폼 | 사진(기존 아바타 유지) · 이름 프리필 `테스트가입자` · 닉네임 프리필 · 휴대폰 · 성별·주력손·시작일·NTRP **미선택** · 라켓 · 동의. [회원가입] 비활성 | `ProfileOnboardingForm` disabled = `nicknameTaken ‖ tennisMissing` | B |
 | 5.5 | e2e1 | 닉네임을 `남자닉네임02`로 | `이미 사용 중인 닉네임입니다.` + 잠금(본인 닉네임은 `excludeUserId`로 통과) | `is_nickname_taken(p_exclude_user_id)` | B |
 | 5.6 | e2e1 | 성별 여성·왼손·`2021/03`·NTRP 2.5·동의 → [회원가입] | `/match-rooms`(next) 착지, 헤더·사이드바 복귀(next가 없으면 프로필 + `notice=welcome` 배너). SQL: 넷이 채워짐 | `completeProfileAction` → `next` | B+S |
-| 5.7 | e2e1 | 다시 `/onboarding/profile` | `/profile/<uid>?scope=personal`로 되돌림 | `page.tsx:38` | B |
+| 5.7 | e2e1 | 다시 `/onboarding/profile` | `/home`으로 되돌림 | `page.tsx:38` | B |
 | 5.8 | e2e1 | `/profile/settings` | 성별 `여성`·주력손 `왼손`·시작일 `2021년 3월`·NTRP `2.5` **읽기 전용** | 입력 후 불변 | B |
 | 5.9 | — | `completeProfileAction` 재호출 경로 | 코드: `ntrp != null` → `이미 입력된 정보입니다.` | `onboarding.ts` | 코드 |
 | 5.10 | — | 프로필 행 없는 계정의 게이트 판정(Week 56 잔여) | 코드: `/auth/callback`은 `profile?.ntrp == null` → 완성 화면, `needsProfileOnboarding`은 `!!profile && …` → 통과 — 두 술어가 다름을 기록(K 후보) | `onboarding-gate.ts:18` | 코드 |
@@ -128,7 +128,7 @@
 
 | # | 계정 | 조작(사용자) | 기대 | 검증(실행자) | 수단 |
 |---|---|---|---|---|---|
-| 8.1 | G | `/login` → [Google로 계속하기] → 재로그인 | 계정 선택 없이 바로 `/profile/<G>?scope=personal`(구글 세션 잔존 — 정상) | `auth_logs`: `/authorize` referer가 `…/auth/callback` 전체 경로 + `/token grant_type=pkce 200` | M+S |
+| 8.1 | G | `/login` → [Google로 계속하기] → 재로그인 | 계정 선택 없이 바로 `/home`(구글 세션 잔존 — 정상) | `auth_logs`: `/authorize` referer가 `…/auth/callback` 전체 경로 + `/token grant_type=pkce 200` | M+S |
 | 8.2 | G | 로그아웃 → `/login?next=%2Fmatch-rooms` → 구글 | `/match-rooms` 복귀(소셜 버튼에 next 전달, Week 55 ⑤) | — | M |
 | 8.3 | G | 헤더 아바타 | 구글 사진(`lh3.googleusercontent.com`)이 `<img>`로 표시 | SQL `profile_image` 호스트 | M+S |
 | 8.4 | G | `/profile/settings` | 크래시 없음(Week 56 ①), 사진 표시, 아이디 칸 **없음**(소셜 전용), 비밀번호 안내 카드 | `canSetLoginId=false` | M |
@@ -142,8 +142,8 @@
 
 | # | 계정 | 조작 | 기대 | 검증 | 수단 |
 |---|---|---|---|---|---|
-| 9.1 | e2e1 | `/profile/settings` 하단 | 카드 `회원 탈퇴` / `탈퇴 시 모든 클럽에서 나가지고 계정 정보가 삭제됩니다. 되돌릴 수 없습니다.` [회원 탈퇴] | `delete-account-button.tsx` | B |
-| 9.2 | e2e1 | [회원 탈퇴] → 다이얼로그 | `정말 탈퇴하시겠습니까? 모든 클럽에서 탈퇴되고 계정 정보가 삭제됩니다. 과거 경기 기록은 "탈퇴한 회원"으로 남으며, 이 작업은 되돌릴 수 없습니다.` [탈퇴하기]/[취소]. [취소] → 닫힘 | — | B |
+| 9.1 | e2e1 | `/profile/settings` 하단 | 카드 `회원 탈퇴` / `탈퇴하면 계정 정보가 삭제됩니다. 되돌릴 수 없습니다.` [회원 탈퇴] | `delete-account-button.tsx` | B |
+| 9.2 | e2e1 | [회원 탈퇴] → 다이얼로그 | `정말 탈퇴하시겠습니까? 계정 정보가 삭제됩니다. 과거 경기 기록은 "탈퇴한 회원"으로 남으며, 이 작업은 되돌릴 수 없습니다.` [탈퇴하기]/[취소]. [취소] → 닫힘 | — | B |
 | 9.3 | e2e1 | 미확정 게임(제안 대기)이 있는 방에 참가한 채로 [탈퇴하기] | **가드 없음** → 탈퇴 성공 → `/login`. 그 방의 협상 분모에서 빠지는지(S14.13 거울) — 남은 좌석만으로 확정되는지 S로 확인 | `deleteAccountAction`에 방 가드 없음 → K 후보 | B+S |
 | 9.4 | — | SQL `public.users` | `name='탈퇴한 회원'`, `nickname='탈퇴한 회원'`, `email='deleted+<uid>@deleted.local'`, `login_id null`, `phone·profile_image·gender·dominant_hand·tennis_start_date·racket_brand·racket_model null`, `stats_hidden=true`, `deleted_at` 세팅. `auth.users` 행 **잔존**(email 원본), `club_members` 0행 | 익명화 12컬럼 | S |
 | 9.5 | — | 옛 아이디 `e2esignup1`+비번 / 옛 이메일 `e2e1@e2e.test`+비번 | `아이디 또는 비밀번호가 올바르지 않습니다.`(login_id null → resolve 실패) / **`탈퇴한 계정입니다.`**(auth 이메일 잔존 → signIn 성공 → deleted_at 검사 → signOut) | `auth.ts:54-65` | B |

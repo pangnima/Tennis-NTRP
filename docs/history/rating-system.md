@@ -1,4 +1,4 @@
-> **보관본** — Week 14~15의 레이팅 시스템 명세. §1의 "NTRP는 자가 선언 정적 값" 서술은 그 시점의 것이고, 지금은 클럽 ELO(`lib/rating/elo.ts`)·개인 NTRP(`personal-rating.ts`)·8계급 티어(`tier.ts`)가 구현돼 있다. 상수·공식은 코드(`lib/rating/`, vitest)가 정본.
+> **보관본** — Week 14~15의 클럽 레이팅 명세(클럽 테이블은 0097에서 삭제). **현행 명세는 `docs/rating.md`**. §1의 "NTRP는 자가 선언 정적 값" 서술은 그 시점의 것이고, 지금은 클럽 ELO(`lib/rating/elo.ts`)·개인 NTRP(`personal-rating.ts`)·8계급 티어(`tier.ts`)가 구현돼 있다. 상수·공식은 코드(`lib/rating/`, vitest)가 정본.
 
 # 클럽 레이팅 시스템 (동적 NTRP) 명세
 

@@ -1,10 +1,7 @@
-// 개인 경기(personal_matches) 승패 기반 개인 레이팅 — 온더플라이 계산(영속화 없음).
-// 클럽 ELO 엔진(elo.ts)의 스칼라 primitive를 그대로 재사용하되, 상대 레이팅은
-// 풀(pool)에서 동적 조회하지 않고 경기별 추정치(+fallback)를 주입한다. docs/rating-system.md §9.
-//
-// 클럽 ELO와의 차이:
-//   - '나' 한 명의 레이팅 시계열만 순차 재생한다(복식 파트너 강함은 무시).
-//   - 상대(팀) 레이팅 = 저장 추정치 → 등록상대 ntrp → 본인 ntrp → 기본 2.5 순서로 결정.
+// 개인 레이팅 — 내가 뛴 게임(스코어 있는 것)을 처음부터 재생해 계산한다. docs/rating.md §3.
+// ELO 스칼라(elo.ts)를 쓰되, 상대 레이팅은 풀에서 굴리지 않고 게임에 적힌 NTRP 스냅샷(+fallback)을 쓴다.
+//   - '나' 한 명의 레이팅 시계열만 순차 재생한다.
+//   - 상대(팀) 레이팅 = 스냅샷 → 상대 회원 자가선언 ntrp → 본인 ntrp → 기본 2.5 순서로 결정.
 
 import type { PersonalMatch, PersonalMatchWinner } from '@/types'
 import type { SettledPersonalMatch } from '@/lib/personal-matches/winner'
@@ -19,7 +16,6 @@ import {
     PROVISIONAL_THRESHOLD,
 } from './elo'
 
-// 트렌드 카드(ClubRatingTrendCard 패턴)의 RatingHistoryPoint와 구조 호환.
 export type PersonalRatingPoint = {
     matchId: string
     createdAt: string // playedAt (정렬·표시용)
