@@ -5,7 +5,7 @@ import { PasswordRulesHint } from '@/components/auth/password-rules-hint'
 import { ActionButton } from '@/components/common/action-button'
 import { updatePasswordAction } from '@/lib/actions/profile'
 import { PASSWORD_MIN_LEN } from '@/lib/auth/password-policy'
-import { CARD_BASE } from '@/lib/dashboard/tokens'
+import { CARD_BASE } from '@/lib/design/tokens'
 import { TextField } from '@/components/common/text-field'
 
 export function PasswordChangeForm() {

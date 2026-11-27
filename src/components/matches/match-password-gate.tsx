@@ -4,7 +4,7 @@ import { Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 import { MatchPasswordForm } from '@/components/matches/match-password-form'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**

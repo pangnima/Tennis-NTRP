@@ -7,7 +7,7 @@ import { join } from 'node:path'
 
 // 브랜드 색 — globals.css `:root`(라이트) 토큰의 수동 미러.
 // Satori는 CSS 변수를 해석하지 못해 값을 복제해야 한다. 드리프트는
-// src/lib/dashboard/colors.test.ts가 globals.css와 대조해 잡는다 (docs/color-system.md §6).
+// src/lib/design/colors.test.ts가 globals.css와 대조해 잡는다 (docs/color-system.md §6).
 export const OG = {
     size: { width: 1200, height: 630 },
     background: '#f4f7f9',      // --background

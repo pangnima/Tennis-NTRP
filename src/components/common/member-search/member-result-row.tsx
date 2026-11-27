@@ -5,7 +5,7 @@ import { UserAvatar } from '@/components/common/user-avatar'
 import type { OpponentCandidate } from '@/lib/queries/users'
 import { derivePublicNtrp } from '@/lib/personal-matches/ntrp'
 import { formatDominantHand } from '@/lib/profile/signup-fields'
-import { NTRP_BADGE, memberStatusChipClass } from '@/lib/dashboard/member-badges'
+import { NTRP_BADGE, memberStatusChipClass } from '@/lib/design/member-badges'
 import { actionButtonClass } from '@/components/common/action-button-class'
 import { formatNtrp } from '@/lib/rating/display'
 

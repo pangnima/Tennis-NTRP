@@ -4,7 +4,7 @@ import { ArrowLeftRight, ArrowUpDown } from 'lucide-react'
 
 import { ActionButton } from '@/components/common/action-button'
 import { BoardSlotSelect } from '@/components/matches/board/board-slot-select'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import type { BoardRow, PoolPlayer } from '@/lib/games/board'
 import { cn } from '@/lib/utils'
 

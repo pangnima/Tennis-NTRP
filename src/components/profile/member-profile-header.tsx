@@ -1,6 +1,6 @@
 import { GENDER_SHORT_LABEL, HAND_LABEL } from '@/lib/profile/signup-fields'
 import { UserAvatar } from '@/components/common/user-avatar'
-import { Badge } from '@/components/ui/badge'
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { DeletedBadge } from '@/components/common/deleted-badge'
 import { TierIcon } from '@/components/common/tier-icon'
 import { ProfileTierProgress } from '@/components/profile/profile-tier-progress'
@@ -10,7 +10,7 @@ import { WinRateRing } from '@/components/stats/win-rate-ring'
 import { RecentFormStrip } from '@/components/stats/recent-form-strip'
 import { getTier, TIER_LABELS, TIER_TEXT } from '@/lib/rating/tier'
 import { effectiveNtrp, formatNtrp } from '@/lib/rating/display'
-import { CARD_BASE } from '@/lib/dashboard/tokens'
+import { CARD_BASE } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 import type { RecentFormResult } from '@/lib/analytics/form'
 import type { User } from '@/types'
@@ -74,9 +74,9 @@ export function MemberProfileHeader({ user, summary, recentForm, personalRating 
                             </div>
                         </div>
                         {!user.deletedAt && (
-                            <Badge variant="outline" className="text-caption font-mono shrink-0">
+                            <span className={chipClass({ className: `${CHIP_NEUTRAL} tabular-nums` })}>
                                 NTRP {ntrpDisplay}
-                            </Badge>
+                            </span>
                         )}
                     </div>
 

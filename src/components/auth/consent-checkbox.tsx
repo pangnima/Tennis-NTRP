@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { TEXT_LINK } from '@/lib/dashboard/tokens'
+import { TEXT_LINK } from '@/lib/design/tokens'
 
 type Props = {
     checked: boolean

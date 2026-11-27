@@ -2,7 +2,7 @@ import { SectionCard } from '@/components/common/section-card'
 import { TierEmblem } from '@/components/common/tier-emblem'
 import { TierDeltaBadge } from '@/components/common/tier-delta-badge'
 import { TIER_LABELS, getTier } from '@/lib/rating/tier'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 import type { PersonalRatingPoint } from '@/lib/rating/personal-rating'
 
 type Props = {

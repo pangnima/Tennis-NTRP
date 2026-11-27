@@ -6,7 +6,7 @@ import { ActionButton } from '@/components/common/action-button'
 import { ConfirmButton } from '@/components/common/confirm-button'
 import { useActionRun } from '@/components/matches/use-action-run'
 import { leaveMatchAsGuestAction, pickInviteGuestAction } from '@/lib/actions/matches'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import type { InviteMe } from '@/lib/matches/invite'
 import { cn } from '@/lib/utils'
 

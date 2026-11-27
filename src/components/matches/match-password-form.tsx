@@ -6,7 +6,7 @@ import { fieldClass } from '@/components/common/field-class'
 import { ActionButton } from '@/components/common/action-button'
 import { FormActions } from '@/components/common/form-actions'
 import { joinMatchByPasswordAction } from '@/lib/actions/matches'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { MATCH_PASSWORD_MAX } from '@/lib/matches/password'
 import { cn } from '@/lib/utils'
 

@@ -3,7 +3,7 @@ import { aggregateRecentForm } from '@/lib/analytics/form'
 import { aggregateComebackRate } from '@/lib/analytics/form'
 import { aggregateByNtrpDiff } from '@/lib/analytics/ntrp'
 import { aggregateBySurface } from '@/lib/analytics/surface'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
+import { SURFACE_LABELS } from '@/lib/design/surface'
 
 export type DiagnosticItem = {
     label: string

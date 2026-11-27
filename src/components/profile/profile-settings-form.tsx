@@ -10,7 +10,7 @@ import { ProfileIdentityFields } from '@/components/profile/profile-identity-fie
 import { PhoneField } from '@/components/auth/phone-field'
 import { updateProfileAction } from '@/lib/actions/profile'
 import { StatsVisibilityField } from '@/components/profile/stats-visibility-field'
-import { CARD_BASE } from '@/lib/dashboard/tokens'
+import { CARD_BASE } from '@/lib/design/tokens'
 
 type ProfileData = {
     name: string

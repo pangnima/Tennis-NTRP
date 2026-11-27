@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { EMPTY_BLOCK } from '@/lib/dashboard/tokens'
+import { EMPTY_BLOCK } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 type Props = {

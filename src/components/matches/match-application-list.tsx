@@ -7,7 +7,7 @@ import { CARD_GRID, CARD_HEAD_ACTION, CARD_WIDE, DataList, ROW_BOX, ROW_GRID, RO
 import { NtrpTierCell, PersonCell } from '@/components/matches/person-cells'
 import { useActionRun } from '@/components/matches/use-action-run'
 import { decideApplicationAction } from '@/lib/actions/matches'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { formatDominantHand } from '@/lib/profile/signup-fields'
 import type { MatchApplicant } from '@/lib/queries/matches'
 import { cn } from '@/lib/utils'

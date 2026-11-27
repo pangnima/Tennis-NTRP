@@ -1,4 +1,4 @@
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { EmptyState } from '@/components/common/empty-state'
 import type { ReactNode } from 'react'
 

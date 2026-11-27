@@ -6,7 +6,7 @@ import { Lock } from 'lucide-react'
 import { ActionButton } from '@/components/common/action-button'
 import { ConfirmButton } from '@/components/common/confirm-button'
 import { deleteGameAction, setGameLockedAction } from '@/lib/actions/games'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /** matchId가 있으면 매칭 게임 — [수정]은 매칭 화면의 게임 보드로 간다(매칭 게임에는 상세 수정 화면이 없다) */

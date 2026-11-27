@@ -1,8 +1,8 @@
 import type { UnifiedHeadToHeadDetail } from '@/lib/analytics/head-to-head'
-import { TYPO } from '@/lib/dashboard/tokens'
-import { formatRecord } from '@/lib/dashboard/outcome'
-import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
+import { TYPO } from '@/lib/design/tokens'
+import { formatRecord } from '@/lib/design/outcome'
+import { MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { SURFACE_LABELS } from '@/lib/design/surface'
 
 /** 규칙기반 분석 코멘트 박스 */
 export function H2HAnalysisComment({ lines }: { lines: string[] }) {

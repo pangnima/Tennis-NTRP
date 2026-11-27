@@ -1,6 +1,6 @@
 import { summarizeHeadToHead, type UnifiedHeadToHeadDetail } from '@/lib/analytics/head-to-head'
-import { calcWinRate } from '@/lib/dashboard/tokens'
-import { H2H_OUTCOME_STYLE, H2H_OUTCOME_LABEL } from '@/lib/dashboard/outcome'
+import { winRateOf } from '@/lib/stats'
+import { H2H_OUTCOME_STYLE, H2H_OUTCOME_LABEL } from '@/lib/design/outcome'
 import { H2HOpponentHeader } from '@/components/stats/head-to-head/h2h-opponent-header'
 import { H2HAnalysisComment, H2HBreakdownList } from '@/components/stats/head-to-head/h2h-breakdown'
 import { H2HMatchRow } from '@/components/stats/head-to-head/h2h-match-row'
@@ -43,7 +43,7 @@ export function H2HDetail({ detail, myName, opponentDisplayName }: Props) {
                 <div>
                     <p className="text-body2 font-medium text-foreground mb-2 truncate">{opponentDisplayName}</p>
                     <p className="text-h2 font-bold tabular-nums text-foreground">{detail.myLosses}</p>
-                    <p className="text-body2 text-foreground mt-1">승 ({calcWinRate(detail.myLosses, detail.myWins) ?? 0}%)</p>
+                    <p className="text-body2 text-foreground mt-1">승 ({winRateOf(detail.myLosses, detail.myWins) ?? 0}%)</p>
                 </div>
             </div>
 
@@ -61,7 +61,7 @@ export function H2HDetail({ detail, myName, opponentDisplayName }: Props) {
                     <p className="text-caption text-muted-foreground">최근 {detail.last5.length}경기</p>
                     <div className="flex gap-1.5">
                         {detail.last5.map((o, i) => (
-                            <span key={i} className={`inline-flex items-center justify-center w-8 h-8 rounded-[4px] text-caption font-bold border ${H2H_OUTCOME_STYLE[o]}`}>
+                            <span key={i} className={`inline-flex items-center justify-center w-8 h-8 rounded-sm text-caption font-bold border ${H2H_OUTCOME_STYLE[o]}`}>
                                 {H2H_OUTCOME_LABEL[o]}
                             </span>
                         ))}

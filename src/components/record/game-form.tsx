@@ -9,7 +9,7 @@ import { NotesSection } from '@/components/personal-matches/form-sections/notes-
 import { RecordGameRows } from '@/components/record/record-game-rows'
 import { RecordPoolField } from '@/components/record/record-pool-field'
 import { useGameForm, type GameFormDefaults } from '@/components/record/use-game-form'
-import { MATCH_TYPE_OPTIONS } from '@/lib/dashboard/match-type-style'
+import { MATCH_TYPE_OPTIONS } from '@/lib/design/match-type-style'
 
 type Props = { defaults: GameFormDefaults; recentCourtNames: string[] }
 

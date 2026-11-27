@@ -1,6 +1,6 @@
 import { CalendarDays, PencilLine, TrendingUp } from 'lucide-react'
 
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { NAV_LABEL } from '@/lib/nav-items'
 import { cn } from '@/lib/utils'
 

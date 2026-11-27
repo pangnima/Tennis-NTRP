@@ -8,7 +8,7 @@ import { needsProfileOnboarding } from '@/lib/profile/onboarding-gate'
 import { logoutAction } from '@/lib/actions/auth'
 import { ProfileOnboardingForm } from '@/components/onboarding/profile-onboarding-form'
 import { BrandLogo } from '@/components/common/brand-logo'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 
 export const metadata = { title: '프로필 완성' }
 

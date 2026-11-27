@@ -1,5 +1,5 @@
 import type { SurfaceStats } from '@/lib/analytics/surface'
-import { SURFACE_LABELS, SURFACE_BAR_CLASS } from '@/lib/dashboard/surface'
+import { SURFACE_LABELS, SURFACE_BAR_CLASS } from '@/lib/design/surface'
 import { SectionCard } from '@/components/common/section-card'
 import { StatBarRow } from '@/components/stats/stat-bar-row'
 

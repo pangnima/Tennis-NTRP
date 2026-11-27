@@ -3,7 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 
 import { HeroCollage } from '@/components/landing/hero-collage'
 import { actionButtonClass } from '@/components/common/action-button-class'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**

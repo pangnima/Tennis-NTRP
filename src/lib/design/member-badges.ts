@@ -1,4 +1,4 @@
-import { PILL_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 
 /**
  * 회원 상태 칩·NTRP 배지의 클래스 — 룸 명단(RoomMemberRow)과 [회원 초대] 검색 결과 행(MemberResultRow)이 공유한다.
@@ -15,7 +15,7 @@ export const MEMBER_STATUS_CLASS: Record<string, string> = {
 export const MEMBER_STATUS_FALLBACK_CLASS = 'border-border text-foreground'
 
 export function memberStatusChipClass(label: string): string {
-    return `${PILL_BASE} shrink-0 ${MEMBER_STATUS_CLASS[label] ?? MEMBER_STATUS_FALLBACK_CLASS}`
+    return `${chipClass()} ${MEMBER_STATUS_CLASS[label] ?? MEMBER_STATUS_FALLBACK_CLASS}`
 }
 
 /**
@@ -33,9 +33,10 @@ const ROLE_TONE: Record<RoleKind, string> = {
     nonmember: 'border-transparent bg-muted text-foreground',
 }
 export function rolePillClass(role: RoleKind): string {
-    return `${PILL_BASE} shrink-0 whitespace-nowrap ${ROLE_TONE[role]}`
+    return chipClass({ className: ROLE_TONE[role] })
 }
 
 // NTRP는 이름 옆에 붙는다 — 실력이 곧 그 사람을 고르는 기준이라 이름과 한 덩어리로 읽혀야 한다.
 // shrink-0이라 어떤 폭에서도 잘리지 않고, 잘리는 것은 언제나 이름 뒤의 메타(닉네임·라켓)다.
-export const NTRP_BADGE = `${PILL_BASE} ${TYPO.micro} shrink-0 border-border text-foreground tabular-nums`
+export const NTRP_BADGE = chipClass({ size: 'micro', className: `${CHIP_NEUTRAL} tabular-nums` })
+

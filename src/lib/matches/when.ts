@@ -2,7 +2,7 @@
  * 매칭의 시간 표기와 종료 시각 — DB `match_end_at`(0096)의 거울(규칙이 같아야 한다: 시각을 모르면 그날 전체).
  * 시간은 시작 시각 + 소요 시간으로 둔다(자정을 넘겨도 종료 < 시작이 되지 않는다).
  */
-import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
+import { MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
 import { formatShortDate } from '@/lib/format'
 import { isMatchFull } from '@/lib/matches/fee'
 import type { TennisMatch } from '@/types'

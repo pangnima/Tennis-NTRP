@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 
 import { actionButtonClass } from '@/components/common/action-button-class'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /** 마지막 유도 — 흐름·기능을 읽고 내려온 사람이 위로 돌아가지 않게. 다크 스코프는 page 루트가 든다 */

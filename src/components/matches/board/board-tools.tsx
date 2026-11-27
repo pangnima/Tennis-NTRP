@@ -3,7 +3,7 @@
 import { ChevronDown, ChevronUp, Plus, Shuffle } from 'lucide-react'
 
 import { ActionButton } from '@/components/common/action-button'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { LEGAL_EFFECTIVE_DATE, type LegalSection } from '@/lib/legal/legal-section'
 
 type Props = {

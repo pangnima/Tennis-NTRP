@@ -8,7 +8,7 @@ import { MatchApplicationList } from '@/components/matches/match-application-lis
 import { MatchHeadline } from '@/components/matches/match-headline'
 import { MatchMembersSection } from '@/components/matches/match-members-section'
 import { MatchPasswordGate } from '@/components/matches/match-password-gate'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { guestKey, type PoolPlayer } from '@/lib/games/board'
 import { isMatchFull } from '@/lib/matches/fee'
 import { isRecruitmentClosed } from '@/lib/matches/when'

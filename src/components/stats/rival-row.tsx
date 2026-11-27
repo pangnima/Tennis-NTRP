@@ -1,8 +1,9 @@
+import { chipClass } from '@/components/common/chip-class'
 import type { RivalEntry } from '@/lib/analytics/rival'
 import type { User } from '@/types'
 import { getTier, TIER_LABELS, TIER_STYLE } from '@/lib/rating/tier'
 import { effectiveNtrp } from '@/lib/rating/display'
-import { PILL_BASE, TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 import { relativeDayLabel } from '@/lib/analytics/date-utils'
 import { ProfileLink } from '@/components/common/profile-link'
 import { RecentFormBadges } from '@/components/common/recent-form-badges'
@@ -35,7 +36,7 @@ export function RivalRow({ rival, userMap, today }: Props) {
                     ) : (
                         <span className="text-body2 font-medium text-foreground truncate">{name}</span>
                     )}
-                    {tier && <span className={`${PILL_BASE} ${TIER_STYLE[tier]} shrink-0`}>{TIER_LABELS[tier]}</span>}
+                    {tier && <span className={chipClass({ className: TIER_STYLE[tier] })}>{TIER_LABELS[tier]}</span>}
                 </div>
                 <span className="text-body2 text-foreground shrink-0 tabular-nums">
                     {rival.wins} · {rival.losses}

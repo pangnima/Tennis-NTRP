@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 
 import { BoardSeat, BoardSwapButton } from '@/components/matches/board/board-team-slots'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import type { BoardRow, PoolPlayer } from '@/lib/games/board'
 import { cn } from '@/lib/utils'
 

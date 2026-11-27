@@ -1,7 +1,7 @@
 import type { PartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import type { User } from '@/types'
 import { SectionCard } from '@/components/common/section-card'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 import { PartnerChemistryRow } from '@/components/stats/partner-chemistry-row'
 
 type Props = {

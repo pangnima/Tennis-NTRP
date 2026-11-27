@@ -1,6 +1,6 @@
 import { BarChart3, PencilLine, PlusCircle, Zap } from 'lucide-react'
 
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { GUIDE_FLOW } from '@/lib/guide/content'
 import { cn } from '@/lib/utils'
 

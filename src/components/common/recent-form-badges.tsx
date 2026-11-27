@@ -1,10 +1,10 @@
-import { FORM_BADGE_STYLE } from '@/lib/dashboard/outcome'
+import { FORM_BADGE_STYLE } from '@/lib/design/outcome'
 import { cn } from '@/lib/utils'
 
 type Outcome = 'W' | 'L' | 'D'
 
 const SIZE_CLASS = {
-    sm: 'w-4 h-4 rounded-[3px] text-micro',
+    sm: 'w-4 h-4 rounded-sm text-micro',
     md: 'w-5 h-5 rounded-sm text-micro',
 } as const
 

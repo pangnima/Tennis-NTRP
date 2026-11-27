@@ -5,7 +5,7 @@ import { ActionButton } from '@/components/common/action-button'
 import type { Notification } from '@/types'
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { NotificationRow } from '@/components/notifications/notification-row'
-import { TEXT_LINK, TYPO } from '@/lib/dashboard/tokens'
+import { TEXT_LINK, TYPO } from '@/lib/design/tokens'
 
 type Props = {
     recent: Notification[]

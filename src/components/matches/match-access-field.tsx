@@ -6,7 +6,7 @@ import { Eye, EyeOff } from 'lucide-react'
 
 import { ActionButton } from '@/components/common/action-button'
 import { FieldToggle } from '@/components/common/field-toggle'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { MATCH_PASSWORD_MAX, validateMatchPassword } from '@/lib/matches/password'
 import { cn } from '@/lib/utils'
 

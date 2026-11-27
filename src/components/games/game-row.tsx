@@ -1,8 +1,9 @@
+import { chipClass } from '@/components/common/chip-class'
 import { DeletedBadge } from '@/components/common/deleted-badge'
 import { ROW_BOX, ROW_GRID, ROW_PAD } from '@/components/common/data-list'
 import { GameCardActions } from '@/components/games/game-card-actions'
 import { GameScoreChips } from '@/components/personal-matches/set-score-chips'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { setsForSeat, teamSides, viewSeat } from '@/lib/games/perspective'
 import { canEditGame, canLockGame } from '@/lib/games/permissions'
 import { resolveResultBadge } from '@/lib/personal-matches/result-badge'
@@ -75,7 +76,7 @@ export function GameRow({ game, index, viewerId }: Props) {
 
             <div className="flex items-center gap-2 @4xl:contents">
                 <span className="justify-self-start">
-                    {played && <span className={cn('rounded-sm px-2 py-0.5 text-caption font-bold', badge.badgeClass)}>{badge.label}</span>}
+                    {played && <span className={cn(chipClass(), 'border-transparent font-bold', badge.badgeClass)}>{badge.label}</span>}
                 </span>
                 <GameScoreChips sets={sets} />
             </div>

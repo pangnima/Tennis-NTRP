@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { FIELD_LABEL, FIELD_SELECT_TRIGGER, fieldClass, fieldMessageClass } from '@/components/common/field-class'
 
-import { EMPTY_BLOCK, PILL_BASE, TYPO } from './tokens'
+import { EMPTY_BLOCK, TYPO } from './tokens'
 
 const SEMANTIC_TOKEN = /(?:^|\s)text-(display|h[1-4]|body2?|caption|micro)(?=\s|$)/g
 const BANNED_SIZE = /\btext-(xs|sm|base|lg|xl|\dxl|\[[^\]]+\])\b/
@@ -23,7 +23,6 @@ describe('TYPO 시맨틱 타이포 토큰', () => {
             FIELD_SELECT_TRIGGER,
             fieldMessageClass(),
             EMPTY_BLOCK,
-            PILL_BASE,
         ]
         for (const value of all) expect(value).not.toMatch(BANNED_SIZE)
     })

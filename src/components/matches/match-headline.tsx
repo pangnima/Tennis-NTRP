@@ -1,10 +1,11 @@
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import type { ReactNode } from 'react'
 import { Lock } from 'lucide-react'
 
 import { PageHeader } from '@/components/common/page-header'
-import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
-import { NEUTRAL_PILL, PILL_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { SURFACE_LABELS } from '@/lib/design/surface'
+import { TYPO } from '@/lib/design/tokens'
 import { formatCourt } from '@/lib/matches/court'
 import { formatFeeLine, isMatchFull } from '@/lib/matches/fee'
 import { displayMatchTitle } from '@/lib/matches/title'
@@ -41,10 +42,10 @@ export function MatchHeadline({ match, hostName, headcount, hideNotes = false, e
             title={match.title ? displayMatchTitle(match) : when}
             badge={
                 <span className="flex flex-wrap items-center gap-1.5">
-                    <span className={cn(PILL_BASE, getMatchTypeBadgeClass(match.matchType))}>{MATCH_TYPE_LABELS[match.matchType]}</span>
-                    <span className={NEUTRAL_PILL}>{MATCH_STATUS_LABEL[matchStatus(match)]}</span>
-                    {closed && <span className={NEUTRAL_PILL}>모집 마감</span>}
-                    {!match.isListed && <span className={cn(NEUTRAL_PILL, 'gap-1')}><Lock className="h-3 w-3" aria-hidden />비공개</span>}
+                    <span className={cn(chipClass(), getMatchTypeBadgeClass(match.matchType))}>{MATCH_TYPE_LABELS[match.matchType]}</span>
+                    <span className={cn(chipClass(), CHIP_NEUTRAL)}>{MATCH_STATUS_LABEL[matchStatus(match)]}</span>
+                    {closed && <span className={cn(chipClass(), CHIP_NEUTRAL)}>모집 마감</span>}
+                    {!match.isListed && <span className={cn(chipClass(), CHIP_NEUTRAL)}><Lock className="h-3 w-3" aria-hidden />비공개</span>}
                 </span>
             }
             info={[match.title && when, place, `호스트 ${hostName}`].filter(Boolean).join(' · ')}

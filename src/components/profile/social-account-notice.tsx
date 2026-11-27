@@ -1,4 +1,4 @@
-import { CARD_BASE } from '@/lib/dashboard/tokens'
+import { CARD_BASE } from '@/lib/design/tokens'
 import { FIELD_LABEL as labelCls } from '@/components/common/field-class'
 
 type Props = {

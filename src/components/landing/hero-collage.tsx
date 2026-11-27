@@ -3,7 +3,7 @@ import { CheckCircle2 } from 'lucide-react'
 import { DataList } from '@/components/common/data-list'
 import { GameSessionBlock } from '@/components/games/game-session'
 import { MatchCard } from '@/components/matches/match-card'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { FIXTURE_MATCHES, FIXTURE_SESSION, FIXTURE_VIEWER_ID } from '@/lib/guide/fixtures'
 import { cn } from '@/lib/utils'
 

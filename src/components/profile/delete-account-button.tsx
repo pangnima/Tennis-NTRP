@@ -12,7 +12,7 @@ import {
 import { ActionButton } from '@/components/common/action-button'
 import { UserX } from 'lucide-react'
 import { deleteAccountAction } from '@/lib/actions/auth'
-import { CARD_BASE, FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT } from '@/lib/dashboard/tokens'
+import { CARD_BASE, FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT } from '@/lib/design/tokens'
 
 // 계정(서비스) 탈퇴 — soft delete(익명화). 확인 다이얼로그 후 deleteAccountAction 호출.
 export function DeleteAccountButton() {

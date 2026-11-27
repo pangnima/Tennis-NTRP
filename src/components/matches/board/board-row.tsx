@@ -8,7 +8,7 @@ import { BoardScoreInput } from '@/components/matches/board/board-score-input'
 import { BoardTeamNames, BoardTeamSlots } from '@/components/matches/board/board-team-slots'
 import type { MatchBoard } from '@/components/matches/board/use-match-board'
 import { isPlanned, rowMode, rowWinner, type BoardRow as Row } from '@/lib/games/board'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**

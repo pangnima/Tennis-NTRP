@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { ActionButton } from '@/components/common/action-button'
-import { FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT } from '@/lib/dashboard/tokens'
+import { FORM_ACTION_ROW, FORM_CANCEL, FORM_SUBMIT } from '@/lib/design/tokens'
 
 type Props = {
     /** 상황별 문구만 다르다 — '경기 저장' · '매칭 만들기' · 'N명 초대하기' … */

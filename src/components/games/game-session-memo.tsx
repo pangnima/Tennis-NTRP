@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**

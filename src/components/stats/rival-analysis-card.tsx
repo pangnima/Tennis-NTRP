@@ -1,7 +1,7 @@
 import type { RivalEntry } from '@/lib/analytics/rival'
 import type { User } from '@/types'
 import { SectionCard } from '@/components/common/section-card'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 import { RivalRow } from '@/components/stats/rival-row'
 
 type Props = {

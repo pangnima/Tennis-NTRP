@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { PRESS_HEIGHT } from '@/components/common/action-button-class'
-import { Badge } from '@/components/ui/badge'
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { cn } from '@/lib/utils'
 
 export type LinkTabItem = {
@@ -48,9 +48,9 @@ export function LinkTabs({ items, activeKey, ariaLabel, trailing }: Props) {
                         >
                             {item.label}
                             {!!item.count && item.count > 0 && (
-                                <Badge variant="outline" className="text-caption text-foreground border-border">
+                                <span className={chipClass({ size: 'micro', className: `${CHIP_NEUTRAL} tabular-nums` })}>
                                     {item.count}
-                                </Badge>
+                                </span>
                             )}
                         </Link>
                     )

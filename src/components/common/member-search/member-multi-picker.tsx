@@ -7,7 +7,7 @@ import { MemberResultRow } from '@/components/common/member-search/member-result
 import { MemberSearchField } from '@/components/common/member-search/member-search-field'
 import { MemberSearchResults } from '@/components/common/member-search/member-search-results'
 import { useMemberLookup } from '@/components/common/member-search/use-member-lookup'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import type { OpponentCandidate } from '@/lib/queries/users'
 
 type Props = {

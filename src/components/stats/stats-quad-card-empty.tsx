@@ -1,8 +1,9 @@
+import { chipClass } from '@/components/common/chip-class'
 import Link from 'next/link'
 import { CalendarDays } from 'lucide-react'
 import type { MatchType } from '@/types'
-import { getMatchTypeStyle, MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { CARD_BASE, PILL_BASE } from '@/lib/dashboard/tokens'
+import { getMatchTypeStyle, MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { CARD_BASE } from '@/lib/design/tokens'
 import { actionButtonClass } from '@/components/common/action-button-class'
 
 type Props = {
@@ -23,7 +24,7 @@ export function StatsQuadCardEmpty({ matchType, recordHref }: Props) {
     return (
         <div className={`${CARD_BASE} p-4 flex flex-col h-full`}>
             <div className="flex items-center justify-between gap-2">
-                <span className={`${PILL_BASE} ${style.textClass} ${style.borderClass} ${style.bgClass}`}>
+                <span className={`${chipClass()} ${style.textClass} ${style.borderClass} ${style.bgClass}`}>
                     {style.label}
                 </span>
                 {recordHref && (

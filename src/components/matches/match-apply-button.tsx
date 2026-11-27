@@ -1,11 +1,12 @@
 'use client'
 
+import { chipClass, CHIP_ATTENTION, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { useState, useTransition } from 'react'
 
 import { ActionButton } from '@/components/common/action-button'
 import { useActionRun } from '@/components/matches/use-action-run'
 import { applyMatchAction, cancelApplicationAction } from '@/lib/actions/matches'
-import { PILL_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /**
@@ -19,13 +20,13 @@ export function MatchApplyButton({ matchId, hasApplied, closed }: { matchId: str
     const act = (fn: () => Promise<{ error: string | null }>) => startTransition(async () => setError(await run(fn)))
 
     // 호스트가 모집을 마감했거나 경기가 시작됐다(DB match_start_at과 같은 시각) — 어느 쪽이든 「모집 마감」 한 말
-    if (closed) return <span className={cn(PILL_BASE, 'border-border text-foreground')}>모집 마감</span>
+    if (closed) return <span className={cn(chipClass(), CHIP_NEUTRAL)}>모집 마감</span>
 
     return (
         <div className="flex flex-col items-end gap-1">
             {hasApplied ? (
                 <div className="flex items-center gap-2">
-                    <span className={cn(PILL_BASE, 'border-spot/50 text-spot')}>신청 중 · 호스트 승인 대기</span>
+                    <span className={cn(chipClass(), CHIP_ATTENTION)}>신청 중 · 호스트 승인 대기</span>
                     <ActionButton size="md" disabled={isPending} onClick={() => act(() => cancelApplicationAction(matchId))}>신청 취소</ActionButton>
                 </div>
             ) : (

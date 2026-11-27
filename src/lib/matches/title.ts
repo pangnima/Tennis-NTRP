@@ -3,7 +3,7 @@
  * 새 매칭은 필수, 1~40자(DB `normalize_match_title`의 거울 — 앞뒤 공백은 뺀다).
  * 0101 이전 매칭은 제목이 없어 화면이 종목으로 대신 부른다(`displayMatchTitle`).
  */
-import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
+import { MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
 import type { TennisMatch } from '@/types'
 
 export const MATCH_TITLE_MAX = 40

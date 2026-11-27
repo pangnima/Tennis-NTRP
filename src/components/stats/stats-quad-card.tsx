@@ -1,7 +1,8 @@
+import { chipClass } from '@/components/common/chip-class'
 import type { MatchType } from '@/types'
 import type { PlayerStats } from '@/lib/stats'
-import { getMatchTypeStyle } from '@/lib/dashboard/match-type-style'
-import { CARD_BASE, PILL_BASE } from '@/lib/dashboard/tokens'
+import { getMatchTypeStyle } from '@/lib/design/match-type-style'
+import { CARD_BASE } from '@/lib/design/tokens'
 
 type Props = {
     matchType?: MatchType
@@ -32,7 +33,7 @@ export function StatsQuadCard({ matchType, stats, variant = 'match', masked }: P
         <div className={`${CARD_BASE} p-4 flex flex-col h-full`}>
             {/* 헤더: 카테고리 pill(좌) — 승률(우, 강조) */}
             <div className="flex items-center justify-between gap-2">
-                <span className={`${PILL_BASE} ${style.textClass} ${style.borderClass} ${style.bgClass}`}>
+                <span className={`${chipClass()} ${style.textClass} ${style.borderClass} ${style.bgClass}`}>
                     {style.label}
                 </span>
                 <span className="text-h2 font-bold tabular-nums text-foreground leading-none">

@@ -11,7 +11,7 @@ import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { GameSessionBlock } from '@/components/games/game-session'
 import { MATCH_HEAD, MatchCard } from '@/components/matches/match-card'
-import { CARD_BASE, TEXT_TONE, TEXT_TONES, TYPO, TYPO_SCALE } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TEXT_TONE, TEXT_TONES, TYPO, TYPO_SCALE } from '@/lib/design/tokens'
 import { FIXTURE_MATCHES, FIXTURE_SESSION, FIXTURE_VIEWER_ID } from '@/lib/guide/fixtures'
 import { cn } from '@/lib/utils'
 

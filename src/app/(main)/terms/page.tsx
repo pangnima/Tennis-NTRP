@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { LegalPage } from '@/components/legal/legal-page'
-import { TEXT_LINK, TYPO } from '@/lib/dashboard/tokens'
+import { TEXT_LINK, TYPO } from '@/lib/design/tokens'
 import { TERMS_SECTIONS } from '@/lib/legal/terms'
 
 export const metadata = { title: '이용약관' }

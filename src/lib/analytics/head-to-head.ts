@@ -1,9 +1,9 @@
 import { winRateOf } from '@/lib/stats'
 import { type BundleWithPersonal } from '@/lib/analytics/shared'
 import { effectiveNtrp } from '@/lib/rating/display'
-import { formatRecord } from '@/lib/dashboard/outcome'
-import { MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
+import { formatRecord } from '@/lib/design/outcome'
+import { MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { SURFACE_LABELS } from '@/lib/design/surface'
 import type { CourtSurface, MatchType, User } from '@/types'
 
 /** 상대별 맞대결 요약 한 줄 — 회원이면 id, 비회원이면 이름이 정체성 */

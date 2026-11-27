@@ -1,12 +1,13 @@
+import { chipClass } from '@/components/common/chip-class'
 import Link from 'next/link'
 
 import { GameHistory } from '@/components/games/game-history'
 import { GameRow } from '@/components/games/game-row'
 import { GameSessionMemo } from '@/components/games/game-session-memo'
-import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { ROLE_LABEL, rolePillClass } from '@/lib/dashboard/member-badges'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
-import { PILL_BASE, TEXT_LINK, TYPO } from '@/lib/dashboard/tokens'
+import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { ROLE_LABEL, rolePillClass } from '@/lib/design/member-badges'
+import { SURFACE_LABELS } from '@/lib/design/surface'
+import { TEXT_LINK, TYPO } from '@/lib/design/tokens'
 import type { GameEdit } from '@/lib/games/history'
 import { formatTally, sessionTally, sessionWhen, type GameSession } from '@/lib/games/list'
 import { formatCourt } from '@/lib/matches/court'
@@ -46,7 +47,7 @@ export function GameSessionBlock({ session, viewerId, edits = [] }: Props) {
                 {place && <><HeadRule /><span className={cn(TYPO.body2, '@max-4xl:order-3 @max-4xl:basis-full')}>{place}</span></>}
                 <HeadRule />
                 <span className="flex items-center gap-1.5 @max-4xl:order-4">
-                    <span className={cn(PILL_BASE, getMatchTypeBadgeClass(session.matchType))}>{MATCH_TYPE_LABELS[session.matchType]}</span>
+                    <span className={cn(chipClass(), getMatchTypeBadgeClass(session.matchType))}>{MATCH_TYPE_LABELS[session.matchType]}</span>
                     <span className={rolePillClass(session.role)}>{ROLE_LABEL[session.role]}</span>
                     <span className={cn(TYPO.body2, 'ml-1 tabular-nums')}>{session.people}명</span>
                 </span>

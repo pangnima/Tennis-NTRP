@@ -1,9 +1,10 @@
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import Link from 'next/link'
 
 import { DeletedBadge } from '@/components/common/deleted-badge'
 import { TierIcon } from '@/components/common/tier-icon'
 import { UserAvatar } from '@/components/common/user-avatar'
-import { NEUTRAL_PILL, TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { derivePublicNtrp } from '@/lib/personal-matches/ntrp'
 import { GENDER_SHORT_LABEL } from '@/lib/profile/signup-fields'
 import { getTier, TIER_LABELS } from '@/lib/rating/tier'
@@ -16,7 +17,7 @@ type Person = OpponentCandidate & { deleted: boolean }
 /** 성별 글자 칩 — '남'/'여'. 색으로 나누지 않는다(cat 색은 이미 남복·여복·팀·코트 사이드의 뜻이 있다). 모르면 그리지 않는다 */
 export function GenderChip({ gender }: { gender?: 'male' | 'female' }) {
     if (!gender) return null
-    return <span className={cn(NEUTRAL_PILL, TYPO.micro, 'shrink-0 px-1.5')}>{GENDER_SHORT_LABEL[gender]}</span>
+    return <span className={cn(chipClass({ size: 'micro' }), CHIP_NEUTRAL)}>{GENDER_SHORT_LABEL[gender]}</span>
 }
 
 /**

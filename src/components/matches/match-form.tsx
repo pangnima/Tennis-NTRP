@@ -16,7 +16,7 @@ import { useMatchForm, type MatchFormValues } from '@/components/matches/use-mat
 import { MatchMetaSection } from '@/components/personal-matches/form-sections/match-meta-section'
 import { NotesSection } from '@/components/personal-matches/form-sections/notes-section'
 import { createMatchAction, updateMatchAction } from '@/lib/actions/matches'
-import { MATCH_TYPE_OPTIONS } from '@/lib/dashboard/match-type-style'
+import { MATCH_TYPE_OPTIONS } from '@/lib/design/match-type-style'
 
 type Props = {
     viewerId: string

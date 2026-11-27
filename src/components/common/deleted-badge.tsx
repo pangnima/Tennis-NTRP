@@ -1,4 +1,5 @@
-import { Badge } from '@/components/ui/badge'
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
+import { cn } from '@/lib/utils'
 
 /**
  * 탈퇴한 회원 표시(어휘표 「탈퇴 회원」) — 어디서나 같은 한 단어.
@@ -7,8 +8,8 @@ import { Badge } from '@/components/ui/badge'
  */
 export function DeletedBadge({ className }: { className?: string }) {
     return (
-        <Badge variant="outline" className={`text-caption text-foreground shrink-0 ${className ?? ''}`}>
+        <span className={cn(chipClass(), CHIP_NEUTRAL, className)}>
             탈퇴
-        </Badge>
+        </span>
     )
 }

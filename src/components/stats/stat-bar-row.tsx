@@ -1,4 +1,4 @@
-import { formatRecord } from '@/lib/dashboard/outcome'
+import { formatRecord } from '@/lib/design/outcome'
 
 type Props = {
     /** 항목 레이블 (예: "하드", "오른손 상대", "애드코트 (백핸드)") */

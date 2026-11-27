@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 import { WinRateTrendBody } from '@/components/stats/win-rate-trend-body'
 
 export type YearTrend = {
@@ -89,7 +89,7 @@ export function WinRateTrendCard({ years }: Props) {
                                 승률(%)
                             </span>
                             <span className="flex items-center gap-1.5">
-                                <span className="h-2.5 w-1.5 rounded-[1px] bg-muted-foreground/30" />
+                                <span className="h-2.5 w-1.5 rounded-xs bg-muted-foreground/30" />
                                 경기 수
                             </span>
                         </div>

@@ -1,3 +1,4 @@
+import { chipClass } from '@/components/common/chip-class'
 import type { PersonalMatchSetScore } from '@/types'
 import { gameChipClass } from '@/lib/personal-matches/result-badge'
 
@@ -8,7 +9,7 @@ export function GameScoreChips({ sets, className = '' }: { sets: PersonalMatchSe
             {sets.map((s, i) => (
                 <span
                     key={i}
-                    className={`px-1.5 py-1 rounded-[4px] text-caption font-semibold tabular-nums ${gameChipClass(s)}`}
+                    className={chipClass({ className: `border-transparent font-semibold tabular-nums ${gameChipClass(s)}` })}
                 >
                     {s.me}-{s.opp}
                 </span>

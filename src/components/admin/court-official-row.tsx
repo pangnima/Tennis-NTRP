@@ -1,12 +1,13 @@
 'use client'
 
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { useState, useTransition } from 'react'
 
 import { ActionButton } from '@/components/common/action-button'
 import { ConfirmButton } from '@/components/common/confirm-button'
 import { fieldClass, fieldMessageClass } from '@/components/common/field-class'
 import { removeCourtAliasAction, renameCourtAction } from '@/lib/actions/admin-courts'
-import { NEUTRAL_PILL, TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { COURT_NAME_MAX } from '@/lib/matches/court'
 import type { OfficialCourt } from '@/lib/matches/court-clusters'
 import { cn } from '@/lib/utils'
@@ -54,7 +55,7 @@ export function CourtOfficialRow({ court }: { court: OfficialCourt }) {
             {court.aliases.length > 0 && (
                 <ul className="flex flex-wrap items-center gap-1.5">
                     {court.aliases.map((a) => (
-                        <li key={a.key} className={cn(NEUTRAL_PILL, 'gap-1 py-0 pr-0')}>
+                        <li key={a.key} className={cn(chipClass({ size: 'sm' }), CHIP_NEUTRAL, 'pr-0.5')}>
                             {a.alias}
                             <ConfirmButton
                                 size="xs" variant="ghost" ariaLabel={`${a.alias} 빼기`}

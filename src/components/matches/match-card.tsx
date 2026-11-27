@@ -1,12 +1,13 @@
+import { chipClass } from '@/components/common/chip-class'
 import Link from 'next/link'
 import { Lock } from 'lucide-react'
 
 import { ROW_BOX, ROW_GRID, ROW_PAD } from '@/components/common/data-list'
 import { MatchStatusChips } from '@/components/matches/match-status-chips'
 import { PrivateMatchLink } from '@/components/matches/private-match-link'
-import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/dashboard/match-type-style'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
-import { PILL_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { getMatchTypeBadgeClass, MATCH_TYPE_LABELS } from '@/lib/design/match-type-style'
+import { SURFACE_LABELS } from '@/lib/design/surface'
+import { TYPO } from '@/lib/design/tokens'
 import { formatDayWithWeekday } from '@/lib/format'
 import { formatCourt } from '@/lib/matches/court'
 import { formatHeadcount, formatPerPerson } from '@/lib/matches/fee'
@@ -57,7 +58,7 @@ export function MatchCard({ match, showJoined = true }: Props) {
     const body = (
         <>
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 @4xl:contents">
-                <span className={cn(PILL_BASE, 'justify-self-start', getMatchTypeBadgeClass(match.matchType))}>{MATCH_TYPE_LABELS[match.matchType]}</span>
+                <span className={cn(chipClass(), 'justify-self-start', getMatchTypeBadgeClass(match.matchType))}>{MATCH_TYPE_LABELS[match.matchType]}</span>
                 <span className={WHEN}>{formatDayWithWeekday(match.playedAt)}</span>
                 <span className={WHEN}>{formatMatchHours(match.playedTime, match.durationMinutes) || '시간 미정'}</span>
             </div>

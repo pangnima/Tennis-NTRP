@@ -8,7 +8,7 @@ import { DeleteAccountButton } from '@/components/profile/delete-account-button'
 import { ActionButton } from '@/components/common/action-button'
 import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 export default async function ProfileSettingsPage() {

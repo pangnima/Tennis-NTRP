@@ -96,7 +96,7 @@
 
 /* ── 타이포 스케일 (docs/typography.md) ──────────────────────────────
    Display/H1~H4는 clamp()로 360→1024px 구간 유동(rem 항 포함 — 브라우저 확대 대응),
-   Body/Body2/Caption은 고정. weight는 토큰에 굽지 않고 TYPO(lib/dashboard/tokens.ts)에서 지정.
+   Body/Body2/Caption은 고정. weight는 토큰에 굽지 않고 TYPO(lib/design/tokens.ts)에서 지정.
    text-micro는 배지·카운트 전용 예외 — 본문·라벨에 사용 금지. */
 @theme {
   --text-display: clamp(2.25rem, 1.8vw + 1.85rem, 3rem); /* 36→48px */

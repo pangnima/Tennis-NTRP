@@ -5,7 +5,7 @@ import type { HourHeatmap } from '@/lib/analytics/hour-heatmap'
 import { WEEKDAY_LABELS } from '@/lib/analytics/date-utils'
 import { SectionCard } from '@/components/common/section-card'
 import { SegmentedToggle } from '@/components/common/segmented-toggle'
-import { TEXT_MUTED } from '@/lib/dashboard/tokens'
+import { TEXT_MUTED } from '@/lib/design/tokens'
 
 type Props = {
     weekly: HourHeatmap
@@ -68,7 +68,7 @@ export function ActivityHourHeatmapCard({ weekly, monthly }: Props) {
                             {HOURS.map((h) => (
                                 <div
                                     key={h}
-                                    className={`aspect-square h-full rounded-[3px] ${cellClass(data.grid[w][h], data.maxCount)}`}
+                                    className={`aspect-square h-full rounded-sm ${cellClass(data.grid[w][h], data.maxCount)}`}
                                     title={`${label}요일 ${h}시 · ${data.grid[w][h]}경기`}
                                 />
                             ))}
@@ -97,7 +97,7 @@ export function ActivityHourHeatmapCard({ weekly, monthly }: Props) {
                     <div className={`ml-auto flex items-center gap-1.5 text-caption ${TEXT_MUTED}`}>
                         <span>적음</span>
                         {['bg-data/20', 'bg-data/40', 'bg-data/60', 'bg-data/80'].map((c) => (
-                            <span key={c} className={`h-2.5 w-2.5 rounded-[2px] ${c}`} />
+                            <span key={c} className={`h-2.5 w-2.5 rounded-xs ${c}`} />
                         ))}
                         <span>많음</span>
                     </div>

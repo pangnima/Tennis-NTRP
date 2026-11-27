@@ -1,5 +1,5 @@
 import type { NtrpDiffStats } from '@/lib/analytics/ntrp'
-import { formatRecord } from '@/lib/dashboard/outcome'
+import { formatRecord } from '@/lib/design/outcome'
 import { SectionCard } from '@/components/common/section-card'
 
 type Props = {

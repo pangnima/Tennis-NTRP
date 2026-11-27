@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { PlusCircle } from 'lucide-react'
 
 import { ActionButton } from '@/components/common/action-button'
-import { TEXT_LINK } from '@/lib/dashboard/tokens'
+import { TEXT_LINK } from '@/lib/design/tokens'
 import { NAV_LABEL, RECORD_PATH } from '@/lib/nav-items'
 
 /**

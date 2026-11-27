@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { OpponentCandidate } from '@/lib/queries/users'
 import type { MemberLookupStatus } from '@/components/common/member-search/use-member-lookup'
 import { USER_SEARCH_LIMIT } from '@/lib/profile/user-search'
-import { TYPO, LIST_CARD } from '@/lib/dashboard/tokens'
+import { TYPO, LIST_CARD } from '@/lib/design/tokens'
 
 type Props = {
     status: MemberLookupStatus

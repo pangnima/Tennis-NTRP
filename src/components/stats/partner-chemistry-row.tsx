@@ -1,3 +1,4 @@
+import { chipClass } from '@/components/common/chip-class'
 import type { PartnerChemistry } from '@/lib/analytics/partner-chemistry'
 import type { User } from '@/types'
 import { ProfileLink } from '@/components/common/profile-link'
@@ -39,7 +40,7 @@ export function PartnerChemistryRow({ partner, userMap }: Props) {
                         <span className="text-body2 font-medium text-foreground truncate">{name}</span>
                     )}
                     {showStreak && (
-                        <span className="text-micro px-1.5 py-0.5 rounded-sm bg-win/20 text-win font-semibold shrink-0">
+                        <span className={chipClass({ size: 'micro', className: 'border-transparent bg-win/20 text-win font-semibold' })}>
                             {partner.currentStreak}연승
                         </span>
                     )}

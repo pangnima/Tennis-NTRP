@@ -1,4 +1,4 @@
-import { NEUTRAL_PILL, PILL_BASE } from '@/lib/dashboard/tokens'
+import { chipClass, CHIP_ATTENTION, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { isMatchFull } from '@/lib/matches/fee'
 import type { MatchListItem } from '@/lib/queries/matches'
 import { cn } from '@/lib/utils'
@@ -9,14 +9,14 @@ import { cn } from '@/lib/utils'
  * 비공개는 칩이 아니라 제목 앞 자물쇠, 내가 만든 매칭은 칩이 아니라 줄 배경·호스트 칸 색(제목 자리를 아끼려고).
  */
 export function MatchStatusChips({ match, showJoined }: { match: MatchListItem; showJoined: boolean }) {
-    const chip = 'shrink-0'
+    const chip = chipClass()
     return (
         <>
             {match.confirmedAt
-                ? <span className={cn(NEUTRAL_PILL, chip)}>확정됨</span>
-                : (match.closedAt || isMatchFull(match.capacity, match.memberCount)) && <span className={cn(NEUTRAL_PILL, chip)}>모집 마감</span>}
-            {!match.hosted && showJoined && match.joined && <span className={cn(PILL_BASE, chip, 'border-self/40 text-self')}>참가 중</span>}
-            {match.applied && !match.joined && <span className={cn(PILL_BASE, chip, 'border-spot/50 text-spot')}>신청 중</span>}
+                ? <span className={cn(chip, CHIP_NEUTRAL)}>확정됨</span>
+                : (match.closedAt || isMatchFull(match.capacity, match.memberCount)) && <span className={cn(chip, CHIP_NEUTRAL)}>모집 마감</span>}
+            {!match.hosted && showJoined && match.joined && <span className={cn(chip, 'border-self/40 text-self')}>참가 중</span>}
+            {match.applied && !match.joined && <span className={cn(chip, CHIP_ATTENTION)}>신청 중</span>}
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { FORM_BADGE_STYLE } from '@/lib/dashboard/outcome'
+import { FORM_BADGE_STYLE } from '@/lib/design/outcome'
 
 type Streak = { type: 'W' | 'L' | 'D'; length: number } | null
 

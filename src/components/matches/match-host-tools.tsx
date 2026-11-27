@@ -9,7 +9,7 @@ import { MatchInviteButton } from '@/components/matches/match-invite-button'
 import { MatchRecruitmentButton } from '@/components/matches/match-recruitment-button'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { setMatchPasswordAction } from '@/lib/actions/matches'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { MATCH_PASSWORD_MAX } from '@/lib/matches/password'
 import { cn } from '@/lib/utils'
 

@@ -1,7 +1,7 @@
 import type { HeadToHeadMatchEntry } from '@/lib/analytics/head-to-head'
-import { H2H_OUTCOME_STYLE, H2H_OUTCOME_LABEL } from '@/lib/dashboard/outcome'
-import { MATCH_TYPE_LABELS, getMatchTypeStyle } from '@/lib/dashboard/match-type-style'
-import { SURFACE_LABELS } from '@/lib/dashboard/surface'
+import { H2H_OUTCOME_STYLE, H2H_OUTCOME_LABEL } from '@/lib/design/outcome'
+import { MATCH_TYPE_LABELS, getMatchTypeStyle } from '@/lib/design/match-type-style'
+import { SURFACE_LABELS } from '@/lib/design/surface'
 
 type Props = {
     m: HeadToHeadMatchEntry
@@ -25,7 +25,7 @@ export function H2HMatchRow({ m, myName, opponentDisplayName }: Props) {
                 </span>
                 {m.surface && <span className="shrink-0 text-foreground">{SURFACE_LABELS[m.surface]}</span>}
                 <span className="flex-1 min-w-0 text-left text-foreground truncate">{m.score || '—'}</span>
-                <span className={`inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-[4px] text-caption font-bold border ${H2H_OUTCOME_STYLE[m.outcome]}`}>
+                <span className={`inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-sm text-caption font-bold border ${H2H_OUTCOME_STYLE[m.outcome]}`}>
                     {H2H_OUTCOME_LABEL[m.outcome]}
                 </span>
             </div>

@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 
 import { PRESS_HEIGHT } from '@/components/common/action-button-class'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { describeEdit, editStamp, type GameEdit } from '@/lib/games/history'
 import { cn } from '@/lib/utils'
 

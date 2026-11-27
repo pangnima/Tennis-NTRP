@@ -1,10 +1,10 @@
 'use client'
 
+import { chipClass, CHIP_NEUTRAL } from '@/components/common/chip-class'
 import { useState } from 'react'
 import { Plus, X } from 'lucide-react'
 
 import { ActionButton } from '@/components/common/action-button'
-import { PRESS_HEIGHT } from '@/components/common/action-button-class'
 import { FIELD_LABEL } from '@/components/common/field-class'
 import { MemberResultRow } from '@/components/common/member-search/member-result-row'
 import { MemberSearchField } from '@/components/common/member-search/member-search-field'
@@ -12,7 +12,6 @@ import { MemberSearchResults } from '@/components/common/member-search/member-se
 import { useMemberLookup } from '@/components/common/member-search/use-member-lookup'
 import { GuestAddForm } from '@/components/matches/board/guest-add-form'
 import type { GameFormState } from '@/components/record/use-game-form'
-import { NEUTRAL_PILL } from '@/lib/dashboard/tokens'
 import { GENDER_SHORT_LABEL } from '@/lib/profile/signup-fields'
 import { cn } from '@/lib/utils'
 import { formatNtrp } from '@/lib/rating/display'
@@ -36,7 +35,7 @@ export function RecordPoolField({ s, viewerId, viewerName }: { s: GameFormState;
             <div>
                 <p className={FIELD_LABEL}>참가자 <span className="tabular-nums">{s.pool.length}명</span></p>
                 <ul className="flex flex-wrap items-center gap-1.5">
-                    <li className={cn(NEUTRAL_PILL, PRESS_HEIGHT.sm, 'px-3')}>{viewerName}<span className="ml-1.5 text-muted-foreground">나</span></li>
+                    <li className={cn(chipClass({ size: 'sm' }), CHIP_NEUTRAL)}>{viewerName}<span className="ml-1.5 text-muted-foreground">나</span></li>
                     {[...s.members, ...s.guests].map((p) => (
                         <li key={p.key}>
                             <ActionButton size="sm" aria-label={`${p.name} 빼기`} onClick={() => s.removePlayer(p.key)}>

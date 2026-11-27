@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 
 type PageHeaderProps = {
     /** 페이지 대제목 (H1) — 페이지당 하나 */

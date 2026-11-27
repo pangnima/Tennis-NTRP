@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /** 색 톤 — 뜻은 color-system §4: spot = 주의·대기, primary = 안내, win = 완료, muted = 잠금·보조, neutral = 무채 */

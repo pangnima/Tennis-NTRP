@@ -5,7 +5,7 @@ import { aggregateHeadToHeadUnified, type UnifiedHeadToHeadDetail } from '@/lib/
 import type { UnifiedHeadToHead } from '@/lib/analytics/head-to-head'
 import type { User } from '@/types'
 import type { BundleWithPersonal } from '@/lib/analytics/shared'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { H2HDetail } from '@/components/stats/head-to-head/h2h-detail'
 import { H2HOpponentSelect, h2hOpponentKey } from '@/components/stats/head-to-head/h2h-opponent-select'
 

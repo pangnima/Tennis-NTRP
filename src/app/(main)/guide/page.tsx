@@ -1,6 +1,6 @@
 import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { GUIDE_FLOW, GUIDE_SECTIONS } from '@/lib/guide/content'
 import { cn } from '@/lib/utils'
 

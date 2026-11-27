@@ -1,7 +1,7 @@
 import type { PersonalMatchSetScore, PersonalMatchWinner } from '@/types'
 import {
     OUTCOME_LABEL, PENDING_RESULT_BADGE, PENDING_RESULT_BAR, PENDING_RESULT_LABEL, formatGameSummary,
-} from '@/lib/dashboard/outcome'
+} from '@/lib/design/outcome'
 import { resolveSetWinner, tallySets } from '@/lib/personal-matches/winner'
 
 /**

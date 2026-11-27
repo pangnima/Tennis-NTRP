@@ -9,9 +9,9 @@ import { MobileNav } from '@/components/common/mobile-nav'
 import { useSidebar } from '@/components/common/sidebar-context'
 import { UserAvatar } from '@/components/common/user-avatar'
 import { NotificationBell } from '@/components/notifications/notification-bell'
-import { Badge } from '@/components/ui/badge'
+import { chipClass, CHIP_ATTENTION } from '@/components/common/chip-class'
 import { logoutAction } from '@/lib/actions/auth'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { HOME_PATH, SETTINGS_PATH } from '@/lib/nav-items'
 import type { NotificationInbox } from '@/lib/queries/notifications'
 
@@ -57,10 +57,10 @@ export function Header({ userDisplay = null, userId = null, inbox = null }: Head
                             <UserAvatar size="sm" name={userDisplay.name} nickname={userDisplay.nickname} image={userDisplay.profileImage} userId={userId} />
                             <span className={TYPO.body2Strong}>{userDisplay.name}</span>
                             {userDisplay.role === 'admin' && (
-                                <Badge variant="outline" className="text-caption px-1.5 py-0 h-5 border-spot/50 text-spot gap-1">
-                                    <Shield className="w-2.5 h-2.5" />
+                                <span className={chipClass({ size: 'micro', className: CHIP_ATTENTION })}>
+                                    <Shield className="size-2.5" />
                                     관리자
-                                </Badge>
+                                </span>
                             )}
                         </Link>
                         <form action={logoutAction} className="hidden md:block">

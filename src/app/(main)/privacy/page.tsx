@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { LegalPage } from '@/components/legal/legal-page'
 import { ADMIN_CONTACT_EMAIL } from '@/lib/auth/password-reset-mode'
-import { TEXT_LINK, TYPO } from '@/lib/dashboard/tokens'
+import { TEXT_LINK, TYPO } from '@/lib/design/tokens'
 import { PRIVACY_SECTIONS } from '@/lib/legal/privacy'
 
 export const metadata = { title: '개인정보처리방침' }

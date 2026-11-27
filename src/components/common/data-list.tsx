@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 
 /** 열 제목 한 칸 — 좁은 자리에서 숨는 열은 행의 칸과 **같은 숨김 클래스**를 함께 준다(제목만 남으면 칸이 밀린다) */

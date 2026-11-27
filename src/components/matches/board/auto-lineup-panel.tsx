@@ -10,7 +10,7 @@ import type { PoolPlayer } from '@/lib/games/board'
 import {
     COURT_OPTIONS, PER_PLAYER_OPTIONS, buildLineup, gamesForPerPlayer, recommendPerPlayer, toLineupPlayers, type LineupGame,
 } from '@/lib/games/lineup'
-import { CARD_BASE, TYPO } from '@/lib/dashboard/tokens'
+import { CARD_BASE, TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 import type { MatchType } from '@/types'
 

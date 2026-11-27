@@ -61,10 +61,6 @@ export const TYPO_SCALE: ReadonlyArray<{ token: keyof typeof TYPO; size: string;
     { token: 'micro', size: '11px', use: '배지·카운트 전용(본문 금지)' },
 ]
 
-// 칩 radius 4px(rounded-sm)
-export const PILL_BASE = 'inline-flex items-center text-caption px-2 py-0.5 rounded-sm border'
-// 중립 필 — 색으로 뜻을 싣지 않는 칩(확정됨·비공개·진행 중·손잡이). 담긴 글자는 값이므로 기본색이다(테두리가 중립을 말한다)
-export const NEUTRAL_PILL = `${PILL_BASE} border-border text-foreground`
 // 목록 컨테이너 — 카드 안에서 행을 구분선으로 가른다(목록 화면·명단·라운드 묶음)
 export const LIST_CARD = `${CARD_BASE} divide-y divide-border`
 // 본문 안 텍스트 링크 — 색·밑줄만 든다. 크기는 자리마다 TYPO를 앞에 붙인다(버튼은 ActionButton)
@@ -102,9 +98,3 @@ export const FORM_ACTION_ROW = 'flex w-full gap-3 lg:justify-end'
 // 높이는 여기 적지 않는다 — 버튼 단계(ActionButton lg = 44px)가 정한다. 여기는 폭만
 export const FORM_SUBMIT = 'flex-1 lg:flex-none lg:min-w-44'
 export const FORM_CANCEL = 'lg:min-w-24'
-
-/** 승률 계산 (무승부 제외 분모). 경기 없으면 null. */
-export function calcWinRate(wins: number, losses: number): number | null {
-    const decisive = wins + losses
-    return decisive === 0 ? null : Math.round((wins / decisive) * 100)
-}

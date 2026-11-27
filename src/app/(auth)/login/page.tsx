@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { LoginForm } from '@/components/auth/login-form'
 import { LoginHero } from '@/components/auth/login-hero'
 import { mapAuthQueryError } from '@/lib/auth/auth-error-messages'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 
 export default async function LoginPage({
     searchParams,

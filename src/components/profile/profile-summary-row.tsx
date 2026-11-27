@@ -1,6 +1,5 @@
-import { Badge } from '@/components/ui/badge'
-import { MATCH_TYPE_LABELS, getMatchTypeBadgeClass } from '@/lib/dashboard/match-type-style'
-import { cn } from '@/lib/utils'
+import { chipClass } from '@/components/common/chip-class'
+import { MATCH_TYPE_LABELS, getMatchTypeBadgeClass } from '@/lib/design/match-type-style'
 import type { MatchType } from '@/types'
 
 export type ProfileSummary = {
@@ -28,9 +27,9 @@ export function ProfileSummaryRow({ wins, losses, draws, topMatchType }: Profile
                     <span className="h-4 w-px bg-border" aria-hidden />
                     <span className="flex items-center gap-1.5">
                         <span className="text-caption text-muted-foreground">주력</span>
-                        <Badge variant="outline" className={cn('text-caption', getMatchTypeBadgeClass(topMatchType))}>
+                        <span className={chipClass({ className: getMatchTypeBadgeClass(topMatchType) })}>
                             {MATCH_TYPE_LABELS[topMatchType]}
-                        </Badge>
+                        </span>
                     </span>
                 </>
             )}

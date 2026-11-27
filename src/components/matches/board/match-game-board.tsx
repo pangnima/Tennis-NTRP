@@ -13,7 +13,7 @@ import { useMatchBoard } from '@/components/matches/board/use-match-board'
 import { addMatchGuestAction } from '@/lib/actions/matches'
 import type { PoolPlayer } from '@/lib/games/board'
 import { countMine, isPlanned } from '@/lib/games/board'
-import { TYPO } from '@/lib/dashboard/tokens'
+import { TYPO } from '@/lib/design/tokens'
 import { cn } from '@/lib/utils'
 import type { Game, MatchType } from '@/types'
 

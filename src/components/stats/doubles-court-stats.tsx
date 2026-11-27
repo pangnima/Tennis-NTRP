@@ -1,5 +1,5 @@
 import type { DoublesCourtStats } from '@/lib/stats'
-import { calcWinRate } from '@/lib/dashboard/tokens'
+import { winRateOf } from '@/lib/stats'
 import { SectionCard } from '@/components/common/section-card'
 import { StatBarRow } from '@/components/stats/stat-bar-row'
 
@@ -28,7 +28,7 @@ export function DoublesCourtStatsCard({ court }: Props) {
                 wins={court.ad.wins}
                 losses={court.ad.losses}
                 draws={court.ad.draws}
-                winRate={calcWinRate(court.ad.wins, court.ad.losses)}
+                winRate={winRateOf(court.ad.wins, court.ad.losses)}
                 barClass={COURT_BAR_CLASS.ad}
             />
             <StatBarRow
@@ -37,7 +37,7 @@ export function DoublesCourtStatsCard({ court }: Props) {
                 wins={court.deuce.wins}
                 losses={court.deuce.losses}
                 draws={court.deuce.draws}
-                winRate={calcWinRate(court.deuce.wins, court.deuce.losses)}
+                winRate={winRateOf(court.deuce.wins, court.deuce.losses)}
                 barClass={COURT_BAR_CLASS.deuce}
             />
             <p className="text-caption text-muted-foreground border-t border-border-subtle pt-2">
