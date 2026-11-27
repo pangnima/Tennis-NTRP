@@ -1,6 +1,6 @@
 # 테니스 매칭·경기 기록 플랫폼 — CLAUDE.md
 
-> 이 문서는 **현재 규칙과 구조**만 담는다. Week 72 재구축의 배경·달라진 점·남은 일은 `docs/history/week-72-rebuild.md`, 그 이전(Week 1~71)의 규칙과 서사는 `docs/history/claude-md-2026-11-25.md`(재구축 직전 CLAUDE.md 전문)·`…09-16.md`·`…09-08.md`에 있다. 사람용 진입 문서는 `README.md`, **할 일은 `ROADMAP.md`**, 설계 문서는 `docs/`(**design-system** = 화면 규칙 하나 · rating · social-login), **브라우저 E2E는 `docs/e2e/`**(README = 계정·도구 규약 / `rebuild-scenarios.md` = 현행 절차서 / `runs.md` 실행 기록).
+> 이 문서는 **현재 규칙과 구조**만 담는다. Week 72 재구축의 배경·달라진 점·남은 일은 `docs/history/week-72-rebuild.md`, 그 이전(Week 1~71)의 규칙과 서사는 `docs/history/claude-md-2026-11-25.md`(재구축 직전 CLAUDE.md 전문)·`…09-16.md`·`…09-08.md`에 있다. 사람용 진입 문서는 `README.md`(**새 PC 세팅·배포 순서의 초보자용 단계별 안내는 `docs/setup-and-release.md`** — 세팅·릴리스 절차가 바뀌면 이 문서도 함께 고친다), **할 일은 `ROADMAP.md`**, 설계 문서는 `docs/`(**design-system** = 화면 규칙 하나 · rating · social-login), **브라우저 E2E는 `docs/e2e/`**(README = 계정·도구 규약 / `rebuild-scenarios.md` = 현행 절차서 / `runs.md` 실행 기록).
 
 ## 프로젝트 정의
 개인 회원 중심의 테니스 **매칭 + 경기 기록** 서비스. 공개/비공개 매칭이나 매칭 없는 기록으로 회원·비회원 경기를 쌓고, 그 누적으로 통계·강약점·랭킹을 돌려준다. 핵심 기능은 **매칭 · 경기 기록 · 내 정보** 셋. 클럽은 이후(지금은 코드도 DB도 없다).

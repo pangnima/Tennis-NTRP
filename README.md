@@ -6,6 +6,8 @@ Next.js 16(App Router) + Supabase(Auth·PostgreSQL·Storage), Vercel 배포.
 
 ## 처음 실행하기
 
+> **처음이거나 새 PC라면 → [`docs/setup-and-release.md`](docs/setup-and-release.md)** — 계정·설치·`.env.local`·매일 개발·DB 변경·실서비스 배포·문제 해결을 Windows·Mac 단계별로 적었다.
+
 ```bash
 npm install
 cp .env.example .env.local   # 값 채우는 법은 .env.example 주석 참고
@@ -35,6 +37,7 @@ npx tsc --noEmit && npm run lint && npm run build && npx vitest run
 
 | 무엇을 알고 싶나 | 어디 |
 |---|---|
+| 새 PC 세팅 · 개발 흐름 · 실서비스 배포 순서 (초보자용 단계별) | `docs/setup-and-release.md` |
 | 규칙·구조·도메인 용어·DB 요약 (Claude가 매 세션 읽는 문서) | `CLAUDE.md` |
 | 주차별 결정 배경(왜 그렇게 했나) | `docs/history/` |
 | 설계 문서(컬러·타이포·레이팅·소셜 로그인) | `docs/` |
