@@ -26,11 +26,15 @@ export default async function ProfileOnboardingPage({ searchParams }: Props) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data: profile } = await supabase
-        .from('users')
-        .select('name, nickname, profile_image, ntrp, phone, racket_brand, racket_model')
-        .eq('id', user.id)
-        .single()
+    // 휴대폰 번호는 컬럼 권한으로 가려져 있어(0110) 본인 것도 RPC로 읽는다
+    const [{ data: profile }, { data: account }] = await Promise.all([
+        supabase
+            .from('users')
+            .select('name, nickname, profile_image, ntrp, racket_brand, racket_model')
+            .eq('id', user.id)
+            .single(),
+        supabase.rpc('get_my_account').maybeSingle(),
+    ])
 
     const { next } = await searchParams
     const safeNext = isSafeNext(next) ? next : undefined
@@ -59,7 +63,7 @@ export default async function ProfileOnboardingPage({ searchParams }: Props) {
                         defaultName={profile?.name ?? ''}
                         defaultNickname={profile?.nickname ?? ''}
                         defaultProfileImage={profile?.profile_image ?? null}
-                        defaultPhone={profile?.phone ?? ''}
+                        defaultPhone={account?.phone ?? ''}
                         defaultRacket={{ brand: profile?.racket_brand ?? null, model: profile?.racket_model ?? null }}
                         userId={user.id}
                     />

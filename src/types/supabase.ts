@@ -573,6 +573,10 @@ export type Database = {
         Args: { p_token: string; p_name: string; p_ntrp: number; p_gender?: string | null; p_hand?: string | null }
         Returns: Json
       }
+      get_my_account: {
+        Args: never
+        Returns: { email: string; phone: string | null; login_id: string | null }[]
+      }
       get_invited_match: { Args: { p_token: string; p_guest_id?: string }; Returns: Json }
       leave_match_as_guest: { Args: { p_token: string; p_guest_id: string }; Returns: undefined }
       add_match_members: { Args: { p_match_id: string; p_user_ids: string[] }; Returns: number }

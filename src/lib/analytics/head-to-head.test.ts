@@ -14,8 +14,8 @@ const OPP2 = 'opp2'
 
 function user(id: string, name: string, extra: Partial<User> = {}): User {
     return {
-        id, email: `${id}@t.com`, name, nickname: name, role: 'member',
-        phone: '', gender: 'male', dominantHand: 'right', ntrp: 3.5,
+        id, name, nickname: name, role: 'member',
+        gender: 'male', dominantHand: 'right', ntrp: 3.5,
         tennisStartDate: '2020-01-01', createdAt: '2020-01-01',
         isGuest: false, statsHidden: false, ...extra,
     }

@@ -156,7 +156,7 @@
 3. prod에 `0096_rebuild_matches_games` 적용(옛 테이블 옆에 생기므로 옛 앱에 무해).
 4. `git checkout main && git merge dev && git push` → Production 배포 확인.
 5. prod에 `0097_drop_legacy_schema` 적용(옛 테이블 삭제 — **반드시 4 뒤**).
-6. prod에 `0098_match_game_board`, `0099_match_access`, `0100_save_match_games_rows`, `0101_match_title_recruitment`, `0102_court_directory`, `0103_court_registry`, `0104_match_fee_capacity`, `0105_game_unit_history`, `0106_game_created_order`, `0107_guest_gender`, `0108_match_guests` 적용(새 앱이 부르는 RPC — 4와 바로 이어서). 개인정보처리방침 개정 공지(시행 12-03).
+6. prod에 `0098_match_game_board`, `0099_match_access`, `0100_save_match_games_rows`, `0101_match_title_recruitment`, `0102_court_directory`, `0103_court_registry`, `0104_match_fee_capacity`, `0105_game_unit_history`, `0106_game_created_order`, `0107_guest_gender`, `0108_match_guests`, `0109_invite_guest_self`, `0110_users_private_columns` 적용(새 앱이 부르는 RPC — 4와 바로 이어서. 0110은 앱이 `get_my_account`로 연락처를 읽으므로 배포와 함께). 개인정보처리방침 개정 공지(시행 12-04).
 7. `git checkout dev`.
 
 ## 되돌리기

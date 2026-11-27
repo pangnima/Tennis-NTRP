@@ -80,7 +80,7 @@ export async function updateProfileAction(
     if (loginIdRaw) {
         const invalid = validateLoginId(loginIdRaw)
         if (invalid) return { error: invalid }
-        const { data: current } = await supabase.from('users').select('login_id').eq('id', user.id).single()
+        const { data: current } = await supabase.rpc('get_my_account').maybeSingle()
         if (current?.login_id != null) return { error: '아이디는 이미 설정되어 변경할 수 없습니다.' }
         const { data: taken } = await supabase.rpc('is_login_id_taken', { p_login_id: loginIdRaw })
         if (taken) return { error: LOGIN_ID_TAKEN_MESSAGE }

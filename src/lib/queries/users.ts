@@ -4,7 +4,14 @@ import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/supabase'
 import type { User } from '@/types'
 
-type UserRow = Database['public']['Tables']['users']['Row']
+/**
+ * 다른 회원에게 보이는 컬럼 — DB의 컬럼 권한(0110)과 같은 목록이다.
+ * email·phone·login_id는 여기 없다(본인 것만 `get_my_account()`로 읽는다). `select('*')`는 권한 오류가 난다.
+ */
+export const PUBLIC_USER_COLUMNS =
+    'id, name, nickname, role, profile_image, gender, dominant_hand, ntrp, personal_ntrp, tennis_start_date, racket_brand, racket_model, stats_hidden, is_guest, deleted_at, created_at'
+
+type UserRow = Omit<Database['public']['Tables']['users']['Row'], 'email' | 'phone' | 'login_id'>
 
 // DB row → User 도메인 타입 변환. queries/clubs.ts, queries/match-games.ts 등에서 재사용.
 // 기본값은 게스트 선수의 미입력 NULL 컬럼 대응:
@@ -14,12 +21,10 @@ type UserRow = Database['public']['Tables']['users']['Row']
 export function mapUserRow(row: UserRow): User {
     return {
         id: row.id,
-        email: row.email,
         name: row.name,
         nickname: row.nickname,
         role: row.role as User['role'],
         profileImage: row.profile_image ?? undefined,
-        phone: row.phone ?? '',
         gender: (row.gender ?? 'male') as User['gender'],
         dominantHand: (row.dominant_hand ?? 'right') as User['dominantHand'],
         ntrp: row.ntrp ?? 0,
@@ -38,7 +43,7 @@ export async function fetchUserById(id: string): Promise<User | null> {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('users')
-        .select('*')
+        .select(PUBLIC_USER_COLUMNS)
         .eq('id', id)
         .single()
     if (error || !data) return null
@@ -50,7 +55,7 @@ export async function fetchUsersByIds(ids: string[]): Promise<User[]> {
     const supabase = await createClient()
     const { data, error } = await supabase
         .from('users')
-        .select('*')
+        .select(PUBLIC_USER_COLUMNS)
         .in('id', ids)
     if (error || !data) return []
     return data.map(mapUserRow)

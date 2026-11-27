@@ -16,13 +16,18 @@ export default async function ProfileSettingsPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) redirect('/login')
 
-    const { data } = await supabase
-        .from('users')
-        .select('name, nickname, phone, gender, dominant_hand, tennis_start_date, ntrp, racket_brand, racket_model, profile_image, stats_hidden, login_id, role')
-        .eq('id', user.id)
-        .single()
+    // 연락처·아이디는 컬럼 권한으로 가려져 있어(0110) 본인 것도 RPC로 읽는다
+    const [{ data: row }, { data: account }] = await Promise.all([
+        supabase
+            .from('users')
+            .select('name, nickname, gender, dominant_hand, tennis_start_date, ntrp, racket_brand, racket_model, profile_image, stats_hidden, role')
+            .eq('id', user.id)
+            .single(),
+        supabase.rpc('get_my_account').maybeSingle(),
+    ])
 
-    if (!data) redirect('/login')
+    if (!row) redirect('/login')
+    const data = { ...row, phone: account?.phone ?? null, login_id: account?.login_id ?? null }
 
     const signals = { identities: user.identities, providers: user.app_metadata?.providers }
     // 아이디(0085)는 비밀번호로 로그인하는 계정에만 뜻이 있다 — 소셜 전용 계정에는 설정란을 열지 않는다

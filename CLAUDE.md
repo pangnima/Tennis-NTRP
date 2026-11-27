@@ -18,7 +18,7 @@
 
 **브랜치·릴리스**: 개발은 `dev`에서 커밋·push(Vercel 프리뷰 = dev DB). 릴리스는 ① 마이그레이션을 **prod DB에 먼저** 적용 → ② `git checkout main && git merge dev && git push` → ③ Vercel Production 배포 → ④ `git checkout dev`. `main`에 직접 커밋하지 않는다.
 **마이그레이션**: dev 롤백 스모크 → dev 적용 → prod 적용. 재현 정본은 `supabase/history/`(원격 `schema_migrations` 사본) — 적용 뒤 `scripts/db-history.ts export`로 갱신한다. 히스토리 밖에서 `execute_sql`로만 한 DDL·권한 변경은 prod에 재현되지 않는다. Auth 설정(Google provider·Site URL·Redirect URLs)은 두 대시보드에서 각각.
-**⚠ Week 72 릴리스 상태**: 0096~0109는 **dev에만** 적용됐다. prod는 아직 옛 구조다 — 릴리스 순서는 `prod 0096 → main 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109`(0097은 옛 테이블을 지우므로 반드시 앱 배포 뒤, 0098~0109는 새 앱이 부르는 RPC라 배포와 함께). **0103은 Vercel Production에 prod의 `SUPABASE_SERVICE_ROLE_KEY`를 넣은 뒤** — 0103부터 레이팅 캐시는 이 키로만 갱신된다(없으면 prod 랭킹이 멈춘다). `docs/history/week-72-rebuild.md` 「릴리스」.
+**⚠ Week 72 릴리스 상태**: 0096~0110은 **dev에만** 적용됐다. prod는 아직 옛 구조다 — 릴리스 순서는 `prod 0096 → main 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110`(0097은 옛 테이블을 지우므로 반드시 앱 배포 뒤, 0098~0110은 새 앱이 부르는 RPC라 배포와 함께). **0103은 Vercel Production에 prod의 `SUPABASE_SERVICE_ROLE_KEY`를 넣은 뒤** — 0103부터 레이팅 캐시는 이 키로만 갱신된다(없으면 prod 랭킹이 멈춘다). `docs/history/week-72-rebuild.md` 「릴리스」.
 
 ## 기술 스택
 Next.js 16 (App Router) · React 19 · TypeScript strict · shadcn/ui(@base-ui/react) + Tailwind v4 · Supabase(Auth + PostgreSQL + Storage) · Vercel · vitest(순수 함수만)
@@ -103,7 +103,7 @@ Client Component (read)  → lib/supabase/client.ts — RLS로 보호된 read-on
 ## DB 스키마 (0096~0097 재구축 — 테이블 8개 + 코트 2개 + 수정 기록 1개 + 명단 비회원 1개)
 | 테이블 | 핵심 규칙 |
 |---|---|
-| `users` | 본인만 UPDATE — **단, 보호 칸은 트리거 `guard_user_protected_columns`가 막는다(0103)**: `role` 변경 불가 · `personal_ntrp`는 서버의 service_role만(탈퇴 익명화로 비우는 것만 허용) · `ntrp`·`login_id`는 비어 있을 때 1회(어기면 `protected_column`). 화면(PostgREST)에서 온 UPDATE만 본다. `users_select`는 `authenticated` 전용. 행 생성은 `handle_new_user` 트리거. `login_id`(가입 시 1회 후 불변)·`ntrp`(자가선언, 가입 1회)·`personal_ntrp`(개인 경기 레이팅 **캐시**)·`deleted_at`(soft delete)·`stats_hidden`. 닉네임·아이디 부분 유니크(탈퇴 행 제외) |
+| `users` | **email·phone·login_id는 컬럼 권한으로 본인만**(0110 — 남의 것은 API로도 못 읽는다, 본인 것은 `get_my_account()`. 공개 컬럼 목록은 `PUBLIC_USER_COLUMNS`, `select('*')` 금지 — 새 컬럼은 공개라면 `grant select (…)`를 따로). 본인만 UPDATE — **단, 보호 칸은 트리거 `guard_user_protected_columns`가 막는다(0103)**: `role` 변경 불가 · `personal_ntrp`는 서버의 service_role만(탈퇴 익명화로 비우는 것만 허용) · `ntrp`·`login_id`는 비어 있을 때 1회 · `email`은 탈퇴 익명화 때만 · `deleted_at`은 되돌릴 수 없고 · `is_guest` 불변(0110)(어기면 `protected_column`). 화면(PostgREST)에서 온 UPDATE만 본다. `users_select`는 `authenticated` 전용. 행 생성은 `handle_new_user` 트리거. `login_id`(가입 시 1회 후 불변)·`ntrp`(자가선언, 가입 1회)·`personal_ntrp`(개인 경기 레이팅 **캐시**)·`deleted_at`(soft delete)·`stats_hidden`. 닉네임·아이디 부분 유니크(탈퇴 행 제외) |
 | `matches` | 매칭. `host_id`·**`title`**(방 제목 1~40자, 0101 이전 행은 null)·종목·`played_at`·`played_time`·`duration_minutes`(기본 120)·표면·코트명(새 매칭은 필수, 저장할 때 같은 코트의 대표 철자로)·**`court_no`**(코트 번호, 선택 10자, 0102)·**`court_fee`**(코트 비용 총액, 선택, 0104)·**`capacity`**(정원, 호스트 포함 2~50, 0104)·메모·**`is_listed`**(공개)·**`confirmed_at`**(호스트 최종 확정 = 잠금)·**`closed_at`**(모집 마감, 0101). SELECT: **로그인 회원 전원**(0099 — 비공개도 목록에 자물쇠로). 명단·게임은 `can_see_match`(공개 ∨ 참가자) |
 | `match_secrets` | `invite_token` · **`password_hash`**(비공개 매칭 비밀번호, bcrypt, null = 없음) — 정책 0개(RPC 전용) |
 | `match_applications` | 공개 매칭 **참가 신청**(0099). `(match_id, user_id)` — 행이 있으면 신청 중, 승인하면 `match_members`로 옮겨지고 거절·취소·확정·경기 시작이면 지워진다. SELECT = 본인 ∨ 그 매칭 호스트 |
@@ -186,7 +186,7 @@ npm run dev · npm run build · npm run lint · npx tsc --noEmit · npx vitest r
 - [ ] git commit (conventional commits) — **`dev` 브랜치에서**
 
 ## 다음 할 일
-1. **Week 72 릴리스** — prod 덤프 → prod 0096 → `main` 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109. **먼저** Vercel에 `SUPABASE_SERVICE_ROLE_KEY`(Production = prod 키, Preview·Development = dev 키 — 0103 이후 필수). 개인정보처리방침 개정(성별 표시 + 비회원 참가자·초대 링크로 보이는 범위, 시행 12-04) 공지 — 문구는 오너 확인
+1. **Week 72 릴리스** — prod 덤프 → prod 0096 → `main` 배포 → prod 0097 → prod 0098 → prod 0099 → prod 0100 → prod 0101 → prod 0102 → prod 0103 → prod 0104 → prod 0105 → prod 0106 → prod 0107 → prod 0108 → prod 0109 → prod 0110. **먼저** Vercel에 `SUPABASE_SERVICE_ROLE_KEY`(Production = prod 키, Preview·Development = dev 키 — 0103 이후 필수). 개인정보처리방침 개정(성별 표시 + 비회원 참가자·초대 링크로 보이는 범위, 시행 12-04) 공지 — 문구는 오너 확인
 2. `types/supabase.ts` 전체 재생성(지금은 손으로 맞춘 상태)·`db-history.ts export`로 history 재확인(`DATABASE_URL` 필요)
 3. 잔여 정리 — `lib/analytics`의 클럽 입력 모양(`matches`·`gameMetaById` 등 언제나 빈 값), `types/index.ts`의 옛 타입(`Match`·`MatchGame`·`PersonalMatchConfirmation` 등), storage `club-logos` 버킷
 4. 화면 — 목록 페이지네이션(`/matches` 60건 — `/games`는 「이전 경기 더 보기」로 그리는 양만 줄였다, 한 사람의 게임이 수천 건이 되면 RPC를 쪼갠다) · 초대 링크 재발급(지금은 되돌릴 수 없어 종료 7일 뒤 자동으로 닫는다) · 비회원 기록을 가입 계정과 잇기(오너 보류)

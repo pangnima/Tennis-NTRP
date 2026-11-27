@@ -1,11 +1,9 @@
 export type User = {
     id: string
-    email: string
     name: string
     nickname: string
     role: 'admin' | 'member'
     profileImage?: string
-    phone: string
     gender: 'male' | 'female'
     dominantHand: 'right' | 'left'
     ntrp: number            // 가입 시 자가선언 NTRP (불변 시드, 빈 값 방지용)
