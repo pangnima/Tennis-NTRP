@@ -16,7 +16,7 @@ import { splitMatchesByEnd } from '@/lib/matches/when'
 import { NAV_LABEL, RECORD_PATH, statsHref } from '@/lib/nav-items'
 import { explodePersonalMatchSets } from '@/lib/personal-matches/explode'
 import { fetchUserGames } from '@/lib/queries/games'
-import { fetchMatchesByIds, fetchMatchList } from '@/lib/queries/matches'
+import { fetchMatchesByIds, fetchMatchHeadcounts, fetchMatchList } from '@/lib/queries/matches'
 import { fetchUserById } from '@/lib/queries/users'
 import { replayPersonalRatings } from '@/lib/rating/personal-rating'
 import { createClient } from '@/lib/supabase/server'
@@ -45,9 +45,10 @@ export default async function HomePage() {
     const [me, games, myMatches] = await Promise.all([fetchUserById(user.id), fetchUserGames(user.id), fetchMatchList(user.id, 'mine')])
     // 최근 경기 = 최근 묶음 셋(같은 자리에서 친 게임은 한 덩어리) — 경기 결과와 같은 컴포넌트
     const recent = games.slice(0, 12)
-    const recentMatches = await fetchMatchesByIds([...new Set(recent.flatMap((g) => (g.matchId ? [g.matchId] : [])))])
+    const recentIds = [...new Set(recent.flatMap((g) => (g.matchId ? [g.matchId] : [])))]
+    const [recentMatches, headcounts] = await Promise.all([fetchMatchesByIds(recentIds), fetchMatchHeadcounts(recentIds)])
     const hosted = new Set([...recentMatches.values()].filter((m) => m.hostId === user.id).map((m) => m.id))
-    const sessions = groupGamesIntoSessions(recent, recentMatches, hosted).slice(0, 3)
+    const sessions = groupGamesIntoSessions(recent, recentMatches, hosted, headcounts).slice(0, 3)
     const summary = summarizeGames(games, user.id)
     const upcoming = splitMatchesByEnd(myMatches.filter((m) => !m.confirmedAt)).upcoming.slice(0, 3)
     // 레이팅은 통계 화면과 같은 식으로 그 자리에서 계산한다 — 캐시(users.personal_ntrp)를 읽으면 두 화면의 숫자가 갈릴 수 있다

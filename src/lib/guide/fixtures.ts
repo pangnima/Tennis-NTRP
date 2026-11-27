@@ -37,6 +37,6 @@ export const FIXTURE_GAME: Game = {
 /** 같은 자리에서 친 두 게임 — 경기 결과의 묶음 한 덩어리 */
 export const FIXTURE_SESSION: GameSession = {
     key: 'fixture-session', kind: 'direct', playedAt: FIXTURE_GAME.playedAt, playedTime: FIXTURE_GAME.playedTime, durationMinutes: 120,
-    courtName: FIXTURE_GAME.courtName, surface: 'hard', matchType: 'singles', role: 'direct',
+    courtName: FIXTURE_GAME.courtName, surface: 'hard', matchType: 'singles', role: 'direct', people: 2, memos: [],
     games: [FIXTURE_GAME, { ...FIXTURE_GAME, id: 'fixture-game-2', sets: [{ t1: 7, t2: 5 }], createdAt: '2026-11-22T01:00:01Z' }],
 }

@@ -83,15 +83,34 @@ export type GameSession = {
     surface?: CourtSurface
     matchType: MatchType
     role: GameRole
+    /**
+     * 함께 친 인원 — 매칭은 명단(회원 + 비회원), 직접 기록은 그 묶음의 게임에 나온 서로 다른 선수.
+     * 둘 중 큰 값이다: 매칭에서 나간 사람이 뛴 게임이 남아 있거나 명단을 읽지 못해도(0) 선수 수가 받친다
+     */
+    people: number
+    /** 묶음의 메모 — 매칭 메모 먼저, 이어서 게임 메모(같은 글은 한 번만). 머리 아래 메모 줄이 그린다 */
+    memos: string[]
     /** 1게임부터(먼저 친 것이 위) */
     games: Game[]
+}
+
+const playerKey = (p: Game['players'][number]): string => p.userId ?? `guest:${p.name}`
+
+function uniqueMemos(notes: Array<string | undefined>): string[] {
+    return [...new Set(notes.flatMap((n) => (n?.trim() ? [n.trim()] : [])))]
 }
 
 /**
  * 게임(최신순) → 묶음(최신순). 매칭 묶음의 일시·장소·길이는 **매칭의 값**이다(게임은 길이를 갖지 않는다) —
  * 매칭을 못 읽으면 게임의 값으로 물러난다. 묶음 안은 기록한 순서(1게임, 2게임 …).
  */
-export function groupGamesIntoSessions(games: Game[], matches: ReadonlyMap<string, TennisMatch>, hostedMatchIds: ReadonlySet<string>): GameSession[] {
+export function groupGamesIntoSessions(
+    games: Game[],
+    matches: ReadonlyMap<string, TennisMatch>,
+    hostedMatchIds: ReadonlySet<string>,
+    /** 매칭 id → 명단 인원(회원 + 비회원). 없으면 게임의 선수 수로 센다 */
+    headcounts: ReadonlyMap<string, number> = new Map(),
+): GameSession[] {
     const byKey = new Map<string, GameSession>()
     for (const g of games) {
         const key = sessionKey(g)
@@ -106,10 +125,16 @@ export function groupGamesIntoSessions(games: Game[], matches: ReadonlyMap<strin
             playedAt: m?.playedAt ?? g.playedAt, playedTime: m?.playedTime ?? g.playedTime,
             durationMinutes: m ? m.durationMinutes : g.durationMinutes,
             courtName: m?.courtName ?? g.courtName, courtNo: m ? m.courtNo : g.courtNo, surface: m?.surface ?? g.surface,
-            matchType: g.matchType, role: gameRole(g, hostedMatchIds), games: [g],
+            matchType: g.matchType, role: gameRole(g, hostedMatchIds), people: 0, memos: [], games: [g],
         })
     }
-    return [...byKey.values()].map((s) => ({ ...s, games: [...s.games].sort((a, b) => a.createdAt.localeCompare(b.createdAt)) }))
+    return [...byKey.values()].map((s) => {
+        const ordered = [...s.games].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+        const players = new Set(ordered.flatMap((g) => g.players.map(playerKey))).size
+        const roster = s.matchId ? headcounts.get(s.matchId) ?? 0 : 0
+        const matchNotes = s.matchId ? matches.get(s.matchId)?.notes : undefined
+        return { ...s, games: ordered, people: Math.max(roster, players), memos: uniqueMemos([matchNotes, ...ordered.map((g) => g.notes)]) }
+    })
 }
 
 /** 구분·종목은 묶음 단위로, 승패는 게임 단위로 거른다 — 맞는 게임이 없는 묶음은 뺀다 */

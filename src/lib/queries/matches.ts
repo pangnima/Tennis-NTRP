@@ -50,6 +50,17 @@ export async function fetchMatchesByIds(ids: string[]): Promise<Map<string, Tenn
     return new Map((data ?? []).map((row) => [row.id, mapMatchRow(row)]))
 }
 
+/**
+ * 매칭별 참가 인원(회원 + 명단의 비회원) — 경기 결과의 묶음 머리 「4명」. 명단을 볼 수 없는 매칭(나간 비공개 매칭)은
+ * RLS가 0으로 준다 — 호출부(`groupGamesIntoSessions`)가 게임의 선수 수로 받친다.
+ */
+export async function fetchMatchHeadcounts(ids: string[]): Promise<Map<string, number>> {
+    if (ids.length === 0) return new Map()
+    const supabase = await createClient()
+    const { data } = await supabase.from('matches').select('id, members:match_members(count), guests:match_guests(count)').in('id', ids)
+    return new Map((data ?? []).map((row) => [row.id, (row.members[0]?.count ?? 0) + (row.guests[0]?.count ?? 0)]))
+}
+
 /** 참가자 명단(호스트 먼저, 그다음 들어온 순) */
 export async function fetchMatchMembers(matchId: string): Promise<MatchMember[]> {
     const supabase = await createClient()

@@ -15,11 +15,10 @@ type Props = { gameId: string; matchId?: string; locked: boolean; canEdit: boole
 /**
  * 행동 칸의 틀.
  *   · 표 모드: **세 칸 grid**(확정 │ 수정 │ 삭제). 버튼마다 자기 칸이 정해져 있어 버튼 수가 달라도 세로로 맞는다
- *   · 카드 모드: 맨 아래 줄(위에 구분선), 순서는 수정 · 확정 · 삭제
- * 구분선은 카드 모드에만 건다(`@max-4xl:`) — 표 모드에 선이 남을 수 없다.
+ *   · 카드 모드: 둘째 줄의 오른쪽(왼쪽은 승패·스코어 — `GameRow`의 2열 grid), 순서는 수정 · 확정 · 삭제. 구분선은 없다
  */
 const SLOT = cn(
-    'flex flex-wrap items-center gap-1.5 @max-4xl:border-t @max-4xl:border-border @max-4xl:pt-3',
+    'flex items-center justify-end gap-1.5',
     '@4xl:grid @4xl:grid-cols-3 @4xl:gap-1',
 )
 /** 표 모드에서 버튼이 자기 칸을 꽉 채운다 — 세 버튼의 폭이 같아진다 */

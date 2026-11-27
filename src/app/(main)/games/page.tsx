@@ -16,7 +16,7 @@ import {
 } from '@/lib/games/list'
 import { NAV_LABEL, RECORD_PATH } from '@/lib/nav-items'
 import { fetchGameEdits, fetchUserGames } from '@/lib/queries/games'
-import { fetchMatchesByIds } from '@/lib/queries/matches'
+import { fetchMatchesByIds, fetchMatchHeadcounts } from '@/lib/queries/matches'
 import { createClient } from '@/lib/supabase/server'
 
 export const metadata = { title: NAV_LABEL.games }
@@ -52,9 +52,9 @@ export default async function GamesPage({ searchParams }: Props) {
     const shown = parseShown(params.n)
     const all = await fetchUserGames(user.id)
     const matchIds = [...new Set(all.flatMap((g) => (g.matchId ? [g.matchId] : [])))]
-    const [matches, edits] = await Promise.all([fetchMatchesByIds(matchIds), fetchGameEdits(user.id, matchIds)])
+    const [matches, edits, headcounts] = await Promise.all([fetchMatchesByIds(matchIds), fetchGameEdits(user.id, matchIds), fetchMatchHeadcounts(matchIds)])
     const hosted = new Set([...matches.values()].filter((m) => m.hostId === user.id).map((m) => m.id))
-    const sessions = filterSessions(groupGamesIntoSessions(all, matches, hosted), user.id, filter)
+    const sessions = filterSessions(groupGamesIntoSessions(all, matches, hosted, headcounts), user.id, filter)
     const editsOf = groupEditsBySession(edits)
     const { groups, restGames } = takeSessions(groupSessionsByMonth(sessions, user.id), shown)
     const record = <ActionButton href={RECORD_PATH} variant="solid" size="md">+ {NAV_LABEL.record}</ActionButton>

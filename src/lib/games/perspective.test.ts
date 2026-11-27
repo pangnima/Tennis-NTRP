@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { Game, GamePlayer } from '@/types'
 
-import { setsForSeat, setsFromSeat, toPersonalMatch, toPersonalMatches, viewSeat } from './perspective'
+import { setsForSeat, setsFromSeat, teamSides, toPersonalMatch, toPersonalMatches, viewSeat } from './perspective'
 
 const player = (team: 1 | 2, slot: 1 | 2, id: string | undefined, name: string, extra: Partial<GamePlayer> = {}): GamePlayer =>
     ({ team, slot, userId: id, name, ...extra })
@@ -118,5 +118,17 @@ describe('toPersonalMatch', () => {
         expect(toPersonalMatch(doubles, 'zzz')).toBeNull()
         expect(toPersonalMatches([doubles], 'zzz')).toEqual([])
         expect(toPersonalMatches([doubles], 'b')).toHaveLength(1)
+    })
+})
+
+describe('teamSides — 복식의 포/백 자리(애드 slot = 백)', () => {
+    it('팀마다 스코어의 애드 slot을 읽는다', () => {
+        expect(teamSides(doubles, 1)).toEqual({ fore: 2, back: 1 })
+        expect(teamSides(doubles, 2)).toEqual({ fore: 1, back: 2 })
+    })
+    it('애드를 적지 않은 팀·예정 게임·단식은 null', () => {
+        expect(teamSides({ ...doubles, sets: [{ t1: 6, t2: 4, t1Ad: 2 }] }, 2)).toBeNull()
+        expect(teamSides({ ...doubles, sets: [] }, 1)).toBeNull()
+        expect(teamSides({ ...doubles, matchType: 'singles' }, 1)).toBeNull()
     })
 })

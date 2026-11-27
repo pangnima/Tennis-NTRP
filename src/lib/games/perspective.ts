@@ -48,6 +48,17 @@ export function setsFromSeat(sets: PersonalMatchSetScore[], seat: Pick<GamePlaye
     })
 }
 
+/**
+ * 복식 한 팀의 포/백 자리 — 스코어의 애드 slot이 백(애드 코트), 나머지가 포(듀스 코트).
+ * 단식·예정 게임·애드를 적지 않은 옛 기록은 null(화면은 이름표 없이 그린다).
+ */
+export function teamSides(game: Game, team: 1 | 2): { fore: 1 | 2; back: 1 | 2 } | null {
+    if (game.matchType === 'singles') return null
+    const back = team === 1 ? game.sets[0]?.t1Ad : game.sets[0]?.t2Ad
+    if (!back) return null
+    return { fore: back === 1 ? 2 : 1, back }
+}
+
 /** 화면이 게임을 그릴 기준 좌석 — 보는 사람이 뛰었으면 그 자리, 아니면 team1 slot1(제3자는 팀1 기준으로 읽는다). */
 export function viewSeat(game: Game, viewerId: string): Pick<GamePlayer, 'team' | 'slot'> {
     return findSeat(game, viewerId) ?? { team: 1, slot: 1 }

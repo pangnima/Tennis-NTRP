@@ -123,3 +123,32 @@ describe('gameRole · sessionKey · parseGameFilter', () => {
         expect(parseGameFilter({ type: 'doubles', result: 'win', role: 'direct' })).toEqual({ type: 'doubles', result: 'win', role: 'direct' })
     })
 })
+
+describe('묶음의 인원과 메모', () => {
+    const withNotes = (g: Game, notes?: string, others: string[] = []): Game => ({
+        ...g, notes, players: [...g.players, ...others.map((name, i) => ({ team: 2 as const, slot: 2 as const, userId: `u${i}-${name}`, name }))],
+    })
+    const games = [
+        withNotes(game('m2', '2026-11-26', 6, 3, { doubles: true, matchId: 'm1', createdAt: '2' })),
+        withNotes(game('m1', '2026-11-26', 4, 6, { doubles: true, matchId: 'm1', createdAt: '1' }), ' 2게임부터 바람 '),
+        withNotes(game('d2', '2026-11-25', 2, 6, { time: '16:00', createdAt: '4' }), '서브가 잘 들어간 날', ['셋째']),
+        withNotes(game('d1', '2026-11-25', 6, 3, { time: '16:00', createdAt: '3' }), '서브가 잘 들어간 날'),
+        withNotes(game('x1', '2026-11-20', 6, 3, { matchId: 'gone', createdAt: '0' })),
+    ]
+    const matches = new Map([['m1', match('m1', 'me', { notes: '끝나고 식사' })]])
+    const [m, d, x] = groupGamesIntoSessions(games, matches, new Set(['m1']), new Map([['m1', 6], ['gone', 0]]))
+
+    it('인원 — 매칭은 명단, 직접 기록은 그 묶음의 서로 다른 선수, 명단을 못 읽으면 선수 수', () => {
+        expect([m.people, d.people, x.people]).toEqual([6, 3, 2])
+    })
+    it('메모 — 매칭 메모 먼저, 게임 메모는 같은 글을 한 번만(앞뒤 공백 제거)', () => {
+        expect(m.memos).toEqual(['끝나고 식사', '2게임부터 바람'])
+        expect(d.memos).toEqual(['서브가 잘 들어간 날'])
+        expect(x.memos).toEqual([])
+    })
+    it('승패로 게임을 걸러도 인원·메모는 그대로', () => {
+        const [fm] = filterSessions([m], 'me', { type: 'all', result: 'win', role: 'all' })
+        expect(fm).toMatchObject({ people: 6, memos: ['끝나고 식사', '2게임부터 바람'] })
+        expect(fm.games.map((g) => g.id)).toEqual(['m2'])
+    })
+})
