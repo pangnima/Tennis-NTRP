@@ -20,7 +20,7 @@ npm run dev                  # http://localhost:3000
 
 | | 테스트(dev) | 실서비스(prod) |
 |---|---|---|
-| Supabase 프로젝트 | TennisClubs `xiwwbgltkbvxdzxxxoba` | baselineplay-prod `rjuhydxaoizgfiatyfpo` |
+| Supabase 프로젝트 | Tennis-NTRP-dev `xiwwbgltkbvxdzxxxoba` | Tennis-NTRP-prod `rjuhydxaoizgfiatyfpo` |
 | 붙는 곳 | 로컬 `npm run dev`, Vercel 프리뷰(`dev` 브랜치) | `baselineplay.vercel.app`(`main` 브랜치) |
 | 계정 | 테스트 계정(비밀번호 `123123`, `docs/e2e/README.md`) | 실제 가입자만 |
 

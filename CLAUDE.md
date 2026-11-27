@@ -10,7 +10,7 @@
 ## 환경 (dev / prod 두 프로젝트)
 | | dev (테스트 전용) | prod (실사용자 전용) |
 |---|---|---|
-| Supabase ref | `xiwwbgltkbvxdzxxxoba` (TennisClubs, 서울) | `rjuhydxaoizgfiatyfpo` (baselineplay-prod, 서울) |
+| Supabase ref | `xiwwbgltkbvxdzxxxoba` (Tennis-NTRP-dev, 서울) | `rjuhydxaoizgfiatyfpo` (Tennis-NTRP-prod, 서울) |
 | 누가 붙나 | 로컬 `npm run dev`(`.env.local`) · E2E · Vercel **Preview/Development** | Vercel **Production**(baselineplay.vercel.app)만 |
 | 계정 | 남자01~·여자01~·관리자 등 테스트 계정 57명(비밀번호 123123, `docs/e2e/README.md`). **남자01(`aaa@aaa.com`)·여자01(`aaaa@aaaa.com`)은 기록 0건의 초기 상태 계정**, 나머지 일부는 시드 기록이 있다(`scripts/seed-dev.sql` — 11-26에 경기·매칭을 전부 지우고 다시 넣었다) | 실사용자만 |
 | git 브랜치 | **`dev`** — 평소 작업·커밋은 전부 여기 | **`main`** — 릴리스 전용. `dev`를 merge할 때만 움직인다 |

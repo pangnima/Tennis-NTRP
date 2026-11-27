@@ -43,7 +43,7 @@
  └──────────────┬─────────────────┘
                 │ git push
                 ▼
- ┌──────────── GitHub (pangnima/ttd) ────────────┐
+ ┌──── GitHub (pangnima/Tennis-NTRP) ─────────────┐
  │  dev 브랜치  ── 평소 작업이 쌓이는 곳            │
  │  main 브랜치 ── 실서비스에 나간 코드 (릴리스 때만) │
  └───────┬──────────────────────────┬────────────┘
@@ -54,8 +54,8 @@
  │ → Supabase dev 에 붙음 │   │ → Supabase prod 에 붙음 (실사용자) │
  └──────────────────────┘   └───────────────────────────────────┘
 
- Supabase dev  (TennisClubs, xiwwbgltkbvxdzxxxoba)        — 테스트 계정 57명, 마음대로 써도 된다
- Supabase prod (baselineplay-prod, rjuhydxaoizgfiatyfpo) — 실사용자. 데이터를 손으로 고치지 않는다
+ Supabase dev  (Tennis-NTRP-dev, xiwwbgltkbvxdzxxxoba)        — 테스트 계정 57명, 마음대로 써도 된다
+ Supabase prod (Tennis-NTRP-prod, rjuhydxaoizgfiatyfpo) — 실사용자. 데이터를 손으로 고치지 않는다
  Google Cloud  — 「Google로 계속하기」 로그인 버튼의 설정
 ```
 
@@ -82,7 +82,7 @@
 
 | 서비스 | 주소 | 여기서 하는 일 | 자주 가는 화면 |
 |---|---|---|---|
-| **GitHub** | github.com | 코드 보관. 저장소 `pangnima/ttd` | 저장소 → Branches · Pull requests |
+| **GitHub** | github.com | 코드 보관. 저장소 `pangnima/Tennis-NTRP` | 저장소 → Branches · Pull requests |
 | **Vercel** | vercel.com | 코드를 빌드해 인터넷에 올린다. 프로젝트 `baselineplay` | 프로젝트 → Deployments · Settings → Environment Variables |
 | **Supabase** | supabase.com/dashboard | DB·로그인 서버. 프로젝트 둘(dev·prod) | 프로젝트 → Table Editor · SQL Editor · Authentication · Project Settings |
 | **Google Cloud Console** | console.cloud.google.com | 「Google로 계속하기」 버튼의 OAuth 설정 | APIs & Services → Credentials · OAuth consent screen |
@@ -200,7 +200,7 @@ https://code.visualstudio.com 에서 설치. 코드를 읽고 고칠 편집기�
 Windows (PowerShell):
 ```powershell
 cd C:\
-git clone https://github.com/pangnima/ttd.git
+git clone https://github.com/pangnima/Tennis-NTRP.git ttd
 cd C:\ttd
 git checkout dev
 ```
@@ -208,7 +208,7 @@ git checkout dev
 Mac (터미널):
 ```bash
 cd ~
-git clone https://github.com/pangnima/ttd.git
+git clone https://github.com/pangnima/Tennis-NTRP.git ttd
 cd ~/ttd
 git checkout dev
 ```
@@ -248,7 +248,7 @@ npm install
    cp .env.example .env.local
    ```
 2. `.env.local`을 편집기로 연다(VS Code: `code .env.local` / Windows 메모장: `notepad .env.local` / Mac: `open -e .env.local`).
-3. Supabase 대시보드에서 **dev 프로젝트(TennisClubs)**를 열고 [§2 표](#값마다--무엇--어디서--어디에)대로 세 줄을 채운다.
+3. Supabase 대시보드에서 **dev 프로젝트(Tennis-NTRP-dev)**를 열고 [§2 표](#값마다--무엇--어디서--어디에)대로 세 줄을 채운다.
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://xiwwbgltkbvxdzxxxoba.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_…(대시보드에서 복사)
@@ -463,12 +463,12 @@ git diff --stat origin/main..origin/dev -- supabase/migrations
 
 > 💬 **Claude에게**: 「0113을 prod에 적용해줘」 — Claude는 적용 뒤 prod와 dev의 함수·정책·권한을 비교해 같은지 확인한다.
 
-**직접 하기** — [§5 직접 하기](#5-db-바꾸기마이그레이션)의 2·3번을 **prod 프로젝트(baselineplay-prod)**에서 한다. 프로젝트 이름을 **두 번 확인**한다. 4번(history 저장)은 하지 않는다(history는 dev 기록의 사본).
+**직접 하기** — [§5 직접 하기](#5-db-바꾸기마이그레이션)의 2·3번을 **prod 프로젝트(Tennis-NTRP-prod)**에서 한다. 프로젝트 이름을 **두 번 확인**한다. 4번(history 저장)은 하지 않는다(history는 dev 기록의 사본).
 
 ### 6.4 `main`에 합치고 올리기 — 두 방법 중 하나
 
 **방법 A — GitHub 웹(초보자 권장, 화면으로 확인하며)**
-1. github.com/pangnima/ttd → **Pull requests** → **New pull request**
+1. github.com/pangnima/Tennis-NTRP → **Pull requests** → **New pull request**
 2. 위쪽 두 칸을 **base: `main`** ← **compare: `dev`** 로 맞춘다(방향 주의).
 3. 바뀐 파일 목록을 훑어보고 **Create pull request** → 제목 예: 「릴리스 2026-12-01」
 4. **Merge pull request** → **Confirm merge**
@@ -548,7 +548,7 @@ https://baselineplay.vercel.app 에서:
 
 ### 7.2 Supabase — 두 프로젝트 각각
 
-| 설정 위치 | dev (TennisClubs) | prod (baselineplay-prod) |
+| 설정 위치 | dev (Tennis-NTRP-dev) | prod (Tennis-NTRP-prod) |
 |---|---|---|
 | Authentication → **URL Configuration → Site URL** | 로컬 개발용 주소 | `https://baselineplay.vercel.app` |
 | Authentication → URL Configuration → **Redirect URLs** | `http://localhost:3000/**` | `https://baselineplay.vercel.app/**` |
@@ -600,7 +600,7 @@ https://baselineplay.vercel.app 에서:
 
 | 용어 | 한 줄 뜻 |
 |---|---|
-| 저장소(repository) | 코드와 그 변경 기록 전체. GitHub의 `pangnima/ttd` |
+| 저장소(repository) | 코드와 그 변경 기록 전체. GitHub의 `pangnima/Tennis-NTRP` |
 | 브랜치(branch) | 같은 저장소 안의 갈래. `dev` = 작업용, `main` = 실서비스용 |
 | 커밋(commit) | 변경을 한 묶음으로 기록한 것(저장 시점) |
 | push / pull | 내 PC → GitHub로 올리기 / GitHub → 내 PC로 받기 |

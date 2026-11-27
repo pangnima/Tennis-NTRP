@@ -142,7 +142,7 @@ li:has(> input[type=checkbox]){list-style:none;margin-left:-20px}
  └──────────────┬─────────────────┘
                 │ git push
                 ▼
- ┌──────────── GitHub (pangnima/ttd) ────────────┐
+ ┌──── GitHub (pangnima/Tennis-NTRP) ─────────────┐
  │  dev 브랜치  ── 평소 작업이 쌓이는 곳            │
  │  main 브랜치 ── 실서비스에 나간 코드 (릴리스 때만) │
  └───────┬──────────────────────────┬────────────┘
@@ -153,8 +153,8 @@ li:has(> input[type=checkbox]){list-style:none;margin-left:-20px}
  │ → Supabase dev 에 붙음 │   │ → Supabase prod 에 붙음 (실사용자) │
  └──────────────────────┘   └───────────────────────────────────┘
 
- Supabase dev  (TennisClubs, xiwwbgltkbvxdzxxxoba)        — 테스트 계정 57명, 마음대로 써도 된다
- Supabase prod (baselineplay-prod, rjuhydxaoizgfiatyfpo) — 실사용자. 데이터를 손으로 고치지 않는다
+ Supabase dev  (Tennis-NTRP-dev, xiwwbgltkbvxdzxxxoba)        — 테스트 계정 57명, 마음대로 써도 된다
+ Supabase prod (Tennis-NTRP-prod, rjuhydxaoizgfiatyfpo) — 실사용자. 데이터를 손으로 고치지 않는다
  Google Cloud  — 「Google로 계속하기」 로그인 버튼의 설정
 </code></pre>
 <p><strong>핵심 세 가지</strong></p>
@@ -206,7 +206,7 @@ li:has(> input[type=checkbox]){list-style:none;margin-left:-20px}
 <tbody><tr>
 <td><strong>GitHub</strong></td>
 <td>github.com</td>
-<td>코드 보관. 저장소 <code>pangnima/ttd</code></td>
+<td>코드 보관. 저장소 <code>pangnima/Tennis-NTRP</code></td>
 <td>저장소 → Branches · Pull requests</td>
 </tr>
 <tr>
@@ -382,13 +382,13 @@ npm -v
 <p><strong>어디에?</strong> — Windows는 <strong><code>C:\ttd</code></strong>, Mac은 <strong><code>~/ttd</code></strong>(홈 폴더 아래)를 권장한다. 경로가 같으면 Claude의 메모리 폴더 이름도 같아진다(<a href="#310-선택-claude-메모리-옮기기">§3.10</a>).</p>
 <p>Windows (PowerShell):</p>
 <pre><code class="language-powershell">cd C:\
-git clone https://github.com/pangnima/ttd.git
+git clone https://github.com/pangnima/Tennis-NTRP.git ttd
 cd C:\ttd
 git checkout dev
 </code></pre>
 <p>Mac (터미널):</p>
 <pre><code class="language-bash">cd ~
-git clone https://github.com/pangnima/ttd.git
+git clone https://github.com/pangnima/Tennis-NTRP.git ttd
 cd ~/ttd
 git checkout dev
 </code></pre>
@@ -422,7 +422,7 @@ git checkout dev
 </li>
 <li><p><code>.env.local</code>을 편집기로 연다(VS Code: <code>code .env.local</code> / Windows 메모장: <code>notepad .env.local</code> / Mac: <code>open -e .env.local</code>).</p>
 </li>
-<li><p>Supabase 대시보드에서 **dev 프로젝트(TennisClubs)**를 열고 <a href="#값마다--무엇--어디서--어디에">§2 표</a>대로 세 줄을 채운다.</p>
+<li><p>Supabase 대시보드에서 **dev 프로젝트(Tennis-NTRP-dev)**를 열고 <a href="#값마다--무엇--어디서--어디에">§2 표</a>대로 세 줄을 채운다.</p>
 <pre><code>NEXT_PUBLIC_SUPABASE_URL=https://xiwwbgltkbvxdzxxxoba.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_…(대시보드에서 복사)
 SUPABASE_SERVICE_ROLE_KEY=…(대시보드에서 복사)
@@ -647,11 +647,11 @@ git diff --stat origin/main..origin/dev -- supabase/migrations
 <h3 id="63-prod-마이그레이션-적용"><a class="anchor" href="#63-prod-마이그레이션-적용">#</a>6.3 prod 마이그레이션 적용</h3>
 <blockquote class="claude"><p>💬 <strong>Claude에게</strong>: 「0113을 prod에 적용해줘」 — Claude는 적용 뒤 prod와 dev의 함수·정책·권한을 비교해 같은지 확인한다.</p>
 </blockquote>
-<p><strong>직접 하기</strong> — <a href="#5-db-바꾸기마이그레이션">§5 직접 하기</a>의 2·3번을 **prod 프로젝트(baselineplay-prod)**에서 한다. 프로젝트 이름을 <strong>두 번 확인</strong>한다. 4번(history 저장)은 하지 않는다(history는 dev 기록의 사본).</p>
+<p><strong>직접 하기</strong> — <a href="#5-db-바꾸기마이그레이션">§5 직접 하기</a>의 2·3번을 **prod 프로젝트(Tennis-NTRP-prod)**에서 한다. 프로젝트 이름을 <strong>두 번 확인</strong>한다. 4번(history 저장)은 하지 않는다(history는 dev 기록의 사본).</p>
 <h3 id="64-main에-합치고-올리기--두-방법-중-하나"><a class="anchor" href="#64-main에-합치고-올리기--두-방법-중-하나">#</a>6.4 <code>main</code>에 합치고 올리기 — 두 방법 중 하나</h3>
 <p><strong>방법 A — GitHub 웹(초보자 권장, 화면으로 확인하며)</strong></p>
 <ol>
-<li>github.com/pangnima/ttd → <strong>Pull requests</strong> → <strong>New pull request</strong></li>
+<li>github.com/pangnima/Tennis-NTRP → <strong>Pull requests</strong> → <strong>New pull request</strong></li>
 <li>위쪽 두 칸을 <strong>base: <code>main</code></strong> ← <strong>compare: <code>dev</code></strong> 로 맞춘다(방향 주의).</li>
 <li>바뀐 파일 목록을 훑어보고 <strong>Create pull request</strong> → 제목 예: 「릴리스 2026-12-01」</li>
 <li><strong>Merge pull request</strong> → <strong>Confirm merge</strong></li>
@@ -757,8 +757,8 @@ git checkout dev
 <thead>
 <tr>
 <th>설정 위치</th>
-<th>dev (TennisClubs)</th>
-<th>prod (baselineplay-prod)</th>
+<th>dev (Tennis-NTRP-dev)</th>
+<th>prod (Tennis-NTRP-prod)</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -901,7 +901,7 @@ git checkout dev
 </thead>
 <tbody><tr>
 <td>저장소(repository)</td>
-<td>코드와 그 변경 기록 전체. GitHub의 <code>pangnima/ttd</code></td>
+<td>코드와 그 변경 기록 전체. GitHub의 <code>pangnima/Tennis-NTRP</code></td>
 </tr>
 <tr>
 <td>브랜치(branch)</td>
