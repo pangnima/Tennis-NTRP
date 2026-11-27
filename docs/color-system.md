@@ -22,7 +22,7 @@
 | 브랜드 비비드 채움 | `--X-solid` | **글자를 얹지 않는** 넓은 바·링·아이콘·로고 |
 | 채움 위 텍스트 | `--X-foreground` | `bg-win text-win-foreground` |
 
-글자를 얹는 채움은 **`--X`** 를 쓴다(`bg-win text-win-foreground`). 비비드 `--X-solid`는 흰 배경 위 대비가 2:1 안팎이라 그 위에 읽을 수 있는 글자를 올릴 수 없기 때문이다 — 승패 바(`personal-match-card`), 승률 링(`win-rate-ring`), 라이벌 스택바처럼 **텍스트가 없는 넓은 면**에만 쓴다. 예외는 옐로우로, `--spot-solid`는 명도가 높아 짙은 글자를 얹을 수 있다(Chip solid / Badge `lime` / Button `accent` / `CTA_LINK`). **채움 버튼은 전부 이 옐로우다**(Week 66 — §5).
+글자를 얹는 채움은 **`--X`** 를 쓴다(`bg-win text-win-foreground`). 비비드 `--X-solid`는 흰 배경 위 대비가 2:1 안팎이라 그 위에 읽을 수 있는 글자를 올릴 수 없기 때문이다 — 승패 바(`personal-match-card`), 승률 링(`win-rate-ring`), 라이벌 스택바처럼 **텍스트가 없는 넓은 면**에만 쓴다. 예외는 옐로우로, `--spot-solid`는 명도가 높아 짙은 글자를 얹을 수 있다(Chip solid / Badge `lime` / `ActionButton` `solid`). **채움 버튼은 전부 이 옐로우다**(Week 66 — §5).
 
 다크 모드는 배경이 어두워 비비드 원본이 그대로 AA를 넘기므로 `--X`와 `--X-solid` 값이 같은 경우가 많다.
 
@@ -36,7 +36,7 @@
 | `--foreground` | `#1d2d35` | `#e6edf0` | 13.2:1 / 15.8:1 |
 | `--card` `--popover` | `#ffffff` | `#15222b` | — |
 | `--secondary` `--muted` `--accent` | `#e6edf2` | `#1e2e38` | surface-2 |
-| `--muted-foreground` | `#5e7383` | `#8d9fa8` | 4.6:1 / 5.9:1 |
+| `--muted-foreground` | `#435562` | `#a9b9c1` | 카드 7.7:1 / 8.0:1 · 회색 바탕 6.5:1 / 6.9:1 — **값이 아닌 글자 전용**(§5) |
 | `--border` | `#d3dde4` | `#344854` | — |
 | `--input` | `#7c8f9c` | `#647985` | 3.4:1 / 3.6:1 (WCAG 1.4.11) |
 | `--ring` | `var(--primary)` | `var(--primary)` | 포커스 링 = 액션 색 |
@@ -87,14 +87,28 @@
 
 값이 아니라 **용도**로 고른다.
 
-1. **채움 버튼·CTA**(저장·제출·로그인·참가 수락·[다시 시도]…) → `spot-solid`(Button `accent` / `CTA_LINK`). 채움 색의 출처가 둘(`accent` = 옐로우, `bg-primary` = 다크 민트·라이트 블루)이라 화면마다 갈리던 것을 Week 66에 하나로 모았다. `--primary`를 옐로우로 바꾸지 않은 이유는 `colors.test.ts`가 primary의 **텍스트** 대비(card·background 위 ≥4.5)를 가드하고, 링크·포커스 링까지 번지기 때문이다. 파괴적 확인만 예외(`destructive`)
+1. **채움 버튼·CTA**(저장·제출·로그인·참가 수락·[다시 시도]…) → `spot-solid`(`ActionButton` `solid`). 채움 색의 출처가 둘(`accent` = 옐로우, `bg-primary` = 다크 민트·라이트 블루)이라 화면마다 갈리던 것을 Week 66에 하나로 모았다. `--primary`를 옐로우로 바꾸지 않은 이유는 `colors.test.ts`가 primary의 **텍스트** 대비(card·background 위 ≥4.5)를 가드하고, 링크·포커스 링까지 번지기 때문이다. 파괴적 확인만 예외(`destructive`)
 1-b. 텍스트 링크·포커스 링·활성 탭·선택 표시 → `primary`
-2. 경기 결과(승/패) → `win` / `loss`, 무·미확정 → `muted`
+   - 1-c. **내 것 = 옅은 민트 바탕 `bg-primary/10`** — 참가자 표의 내 줄, 매칭 리스트의 내가 만든 매칭(+ 호스트 칸 이름 `text-primary` 굵게). 눌린/열린 토글([자동 대진표])·선택된 칩도 같은 `border-primary/50 bg-primary/10`. 승/패 색(`win`)은 쓰지 않는다 — 결과가 아니라 소속이다
+2. 경기 결과(승/패) → `win` / `loss`, 무·미확정 → 회색 바탕(`bg-muted`) + **기본색 글자**(값을 흐리게 하지 않는다)
+   - 2-b. **게임 보드의 이긴 쪽**(두 팀을 나란히 놓은 절대 좌표) → 이긴 숫자 `text-win` + 굵게, 이긴 팀 이름 굵게. 진 쪽은 **보통 굵기의 기본색** — `loss`를 쓰지 않는다: 보드는 보는 사람 관점이 아니라 "나의 패"가 아니다(내 관점 승/패는 경기 결과 목록의 배지가 맡는다). 무승부·예정은 표시 없음(`BoardScoreValue`)
 3. 삭제·탈퇴·에러 문구·이의 제기 → `destructive`
 4. 대기·미완료·주의·별점·관리자 같은 "눈길을 끄는 꼬리표" → `spot`(테두리·틴트). 채움 버튼과 같은 hue이지만 **형태**로 갈린다 — 필은 테두리/틴트, 버튼은 채움
 5. 보조 정보·부가 데이터 → `info`
 6. 결과가 아닌 **분류 태그** → `cat-1~8` (승패 색을 빌려 쓰지 않는다)
-7. 그 외 전부 → `foreground` / `muted-foreground` / `border` / `secondary`
+7. 그 외 전부 → `foreground` / `muted-foreground` / `border` / `secondary` — 글자색은 아래 두 단계 규칙을 따른다
+
+### 글자색은 두 단계
+
+| 단계 | 토큰 | 쓰는 자리 |
+|---|---|---|
+| **기본** | `text-foreground` | 읽어야 하는 **값** — 이름·날짜·시간·장소·숫자·메모·본문. 회색 바탕 위의 값도 기본 |
+| **보조** | `text-muted-foreground` | 값이 아닌 것 — 열 제목·필드 이름표·도움말·구분 기호(`·` `vs`)·placeholder·선택 안 된 탭/칩 |
+
+- **판정**: 그 글자를 지우면 정보가 사라지면 값, 값은 남고 설명만 줄면 보조. 데이터에서 온 글자(행·사용자마다 달라지는 글자)는 값이고, 코드에 박혀 어디서나 같은 글자와 "값 없음" 표시(`-`·미입력)는 보조다.
+- **위계는 굵기로** 만든다(주 정보 medium·semibold, 나머지 regular). 색으로 "덜 중요함"을 표현하지 않는다 — 목록의 날짜·경기장·호스트를 흐리게 칠했다가 "너무 안 보인다"는 피드백을 받았다(Week 72).
+- 두 단계 사이를 **알파(`text-foreground/70`)나 `opacity-NN`으로 만들지 않는다.** 흐려지는 것은 누를 수 없는 컨트롤뿐(`disabled:opacity-50`)이다. 지난 매칭 행에 건 `opacity-60`은 보조색을 2.4:1까지 떨어뜨렸었다.
+- 단계표는 `tokens.ts`의 `TEXT_TONES`이고 `/styleguide`가 그대로 그린다.
 
 ## 6. 예외와 수동 동기화
 
@@ -113,6 +127,7 @@
 - 새 `dark:` 색상 분기 — 모드 차이는 토큰이 흡수한다
 - `text-*` 네임스페이스 충돌: 색상 토큰 이름에 `display` `h1~h4` `body` `body2` `caption` `micro` 사용 금지 (`docs/typography.md` 참고)
 - `globals.css` 밖에서의 hex 색상 정의 (§6 예외 밖)
+- 알파를 붙인 글자색(`text-foreground/70`·`text-primary/60`…)과 상태 접두어 없는 `opacity-NN` — 글자색은 두 단계뿐이다(§5)
 
 ## 8. 검증
 
@@ -121,7 +136,8 @@ npx vitest run src/lib/dashboard/colors.test.ts
 ```
 
 - 금지 클래스·임의값 **0건** 단언
-- `globals.css` hex를 파싱해 라이트/다크 양쪽의 **대비율** 단언 (본문 7:1, 보조 텍스트·악센트 4.5:1, 경계 3:1)
+- `globals.css` hex를 파싱해 라이트/다크 양쪽의 **대비율** 단언 (본문 7:1 · **보조 텍스트도 카드·배경 위 7:1, 회색 바탕 위 5.5:1** · 악센트 4.5:1 · 경계 3:1 · 기본색과 보조색의 구분 1.5:1 이상)
+- 알파 글자색·맨 `opacity-NN` **0건** 단언(주석 줄 제외, 실패하면 `파일:줄`)
 - `lib/og/brand.ts` 6개 값이 라이트 토큰과 일치하는지 단언(드리프트 검출)
 
 ```bash

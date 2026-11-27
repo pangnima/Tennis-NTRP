@@ -25,9 +25,9 @@
 | 키 | 클래스 | 쓰임 |
 |---|---|---|
 | `display` `h1` `h2` `h3` `h4` | 토큰 + `font-extrabold/bold/semibold` + `text-foreground` | 헤딩 |
-| `body` / `bodyMuted` | `text-body` + foreground / muted | 본문 |
-| `body2` / `body2Muted` | `text-body2` + foreground / muted | 부가 텍스트 |
-| `caption` / `captionStrong` | `text-caption` muted / medium foreground | 캡션 |
+| `body` / `bodyMuted` | `text-body` + foreground / muted | 본문 / 설명·도움말 문장 |
+| `body2` / `body2Muted` | `text-body2` + foreground / muted | 목록 행의 값·메뉴·버튼 / 설명·도움말 문장(값에는 쓰지 않는다) |
+| `captionStrong` / `caption` | `text-caption` medium foreground / muted | 12px 자리의 값 / 도움말·범례·눈금 |
 | `eyebrow` | `text-caption font-medium tracking-eyebrow uppercase tabular-nums` | 소형 대문자 라벨 (구 mono-label) |
 | `micro` | `text-micro font-medium leading-none` | 배지·카운트 |
 
@@ -80,3 +80,23 @@ rg -n "\btext-(xs|sm|base|lg|xl|[2-6]xl)\b|text-\[[0-9.]+(px|rem)\]|(sm|md|lg):t
 ```
 
 `npx vitest run src/lib/utils.test.ts src/lib/dashboard/tokens.test.ts`가 `cn()`의 토큰 병합과 `TYPO` 구성을 가드한다.
+
+## 자리 → 단계 (Week 72 후속)
+
+단계가 있어도 한 줄에 18·14·12px를 섞어 쓰면 "뒤죽박죽"으로 읽힌다. 그래서 **크기는 자리가 정한다**. 같은 표가 `TYPO_SCALE`(tokens.ts)에 있고 `/styleguide`가 그대로 그린다.
+
+| 자리 | 토큰 |
+|---|---|
+| 페이지 제목 (h1, `PageHeader`만) | `TYPO.h1` |
+| 섹션 제목 (h2 태그) | `TYPO.h3` |
+| 카드·빈 상태·폼 그룹 제목 | `TYPO.h4` |
+| 본문·폼 입력 / 모바일 카드의 주 정보 | `TYPO.body` / `TYPO.bodyStrong` |
+| **목록(표) 행** — 주 정보 / 나머지 값 | `TYPO.body2Strong` / `TYPO.body2` (둘 다 기본색 — 흐린 색은 값에 쓰지 않는다) |
+| 열 제목·필드 이름표 | `TYPO.label` |
+| 메타·도움말·필 안의 글자 | `TYPO.caption` |
+| 배지·카운트 | `TYPO.micro` |
+
+- **값의 강조는 굵기 두 단**(`Strong` · 기본, 둘 다 기본색). `Muted` 변형은 값이 아닌 설명·도움말 문장 전용이다 — 글자색은 두 단계(`docs/color-system.md` §5, `TEXT_TONES`).
+- **한 줄(행) 안에서는 크기 단계 하나.** 위계는 굵기로 만든다(필·칩은 예외 — 그 자체가 다른 형태다). 색으로 위계를 만들지 않는다: 값은 전부 기본색이다.
+- 표 모드와 카드 모드의 크기가 다른 칸은 `cn(TYPO.bodyStrong, '@4xl:text-body2 @4xl:font-medium')`처럼 자리(container)에 따라 단계를 바꾼다.
+- 검사: `src/lib/dashboard/typography.test.ts` — 단계 밖 크기(`text-sm`·`text-[13px]` 등) 사용, 토큰 누락, `TYPO` 값의 크기 클래스 개수.
